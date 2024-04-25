@@ -34,11 +34,13 @@ for Chapter in range(NumChapters):
     StoryBodyText += Writer.OllamaInterface.GetLastMessageText(Messages) + "\n\n\n"
 
 
-# Calculate Total Words
-StatsString:str = "Work Statistics"
-StatsString += "Total Words: " + str(len(StoryBodyText.split()))
-StatsString += "\n\n\n\n"
 
+# Calculate Total Words
+TotalWords:int = len(StoryBodyText.split())
+Writer.PrintUtils.PrintBanner(f"Story Total Word Count: {TotalWords}", "blue")
+
+StatsString:str = "Work Statistics"
+StatsString += "Total Words: " + str(TotalWords)
 
 
 Writer.PrintUtils.PrintBanner("Saving Story To Disk", "yellow")
