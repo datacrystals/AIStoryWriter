@@ -2,7 +2,7 @@ import Writer.OllamaInterface
 import Writer.PrintUtils
 import Writer.ChapterDetector
 import Writer.Statistics
-
+import Writer.OutlineGenerator
 
 
 # Initialize Client
@@ -11,7 +11,7 @@ Client = Writer.OllamaInterface.InitClient("http://10.1.65.4:11434")
 Writer.PrintUtils.PrintBanner("Spinning Up Model For first Inference")
 
 StartingPrompt:str = '''
-Please outline a 75k word novel about the following prompt. Make 25 chapters.
+Please outline a 5k word novel about the following prompt. Make 3 chapters.
 
 Alhaitham and Kaveh are both playable characters. They are frequently mentioned throughout character voicelines and Sumeru bulletin boards. The two first met in the House of Daena, and Kaveh had taken interest in his outstanding junior. The two were best friends before walking separate paths after a major quarrel during a large research project. Both Kaveh and Alhaitham graduated from Sumeru Akademiya, Kaveh graduating from the Kshahrewar Darshan while Alhaitham from the Haravatat Darshan. Alhaitham is still a member of this Darshan, and is responsible for documenting their findings and drafting ordinances. Kaveh is a renowned architect and independent contractor who occasionally serves as a visiting professor at the Akademiya and receives subsidies as a result. Despite being a Kshahrewar alumnus, Kaveh is still identified as the Darshan's representative and touts his association with them, which leads to him introducing himself and being introduced as someone that is from the Akademiya. As well, when referring to the Kshahrewar, he at times will use "we." In official media, he is occasionally seen at the Akademiya with what appear to be his students. When Kaveh is a visiting professor at the Akademiya, Alhaitham and Kaveh can be considered coworkers.
 After Kaveh sold his family house and went bankrupt because of his dedication to completing his magnum opus, Alhaitham offered him residence. According to the Sumeru bulletin boards, Alhaitham sometimes handles Kaveh's additional fees, such as alcohol fees.
@@ -24,10 +24,15 @@ Please write a piece of fanfiction about Kaveh/Alhaitham, focusing on the Hanaha
 Make a markdown formatted outline, with a numbered list for each chapter and bullet points for each part of what it contains. Do not use ranges for chapters, write them out individually.
 '''
 
-# Generate the summary
-Messages = [Writer.OllamaInterface.BuildUserQuery(StartingPrompt)]
-Messages = Writer.OllamaInterface.ChatAndStreamResponse(Client, Messages)
-SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
+
+
+# Generate the Outline
+Outline = Writer.OutlineGenerator.GenerateOutline(Client, StartingPrompt, 90)
+
+
+Prompt = "Here is an outline that you will use to build your award winning novel from.\n\n"
+Prompt += Outline
+Messages = [Writer.OllamaInterface.BuildUserQuery(Prompt)]
 
 
 # Detect the number of chapters
@@ -67,6 +72,6 @@ StatsString += "Total Words: " + str(TotalWords)
 Writer.PrintUtils.PrintBanner("Saving Story To Disk", "yellow")
 with open("Story_L.txt", "w") as F:
     Out = StatsString + "\n\n\n==============\n\n\n"
-    Out += SummaryText + "\n\n\n==============\n\n\n"
+    Out += Outline + "\n\n\n==============\n\n\n"
     Out += StoryBodyText
     F.write(Out)
