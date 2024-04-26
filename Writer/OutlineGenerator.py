@@ -39,7 +39,7 @@ def GenerateOutline(_Client, _OutlinePrompt, _QualityThreshold:int = 85):
         Feedback = Writer.LLMEditor.GetFeedbackOnOutline(_Client, Outline)
         Rating = Writer.LLMEditor.GetOutlineRating(_Client, Outline)
 
-        Outline = Writer.LLMEditor.ReviseOutline(Outline, Feedback)
+        Outline = ReviseOutline(Outline, Feedback)
 
     Writer.PrintUtils.PrintBanner("Quality Standard Met, Exiting Feedback/Revision Loop", "yellow")
 
