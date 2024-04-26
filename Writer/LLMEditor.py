@@ -13,7 +13,7 @@ def GetFeedbackOnOutline(_Client, _Outline:str, _History:list = []):
     Writer.PrintUtils.PrintBanner("Prompting LLM To Critique Outline", "green")
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(StartingPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.REVISION_MODEL)
     Writer.PrintUtils.PrintBanner("Finished Getting Outline Feedback", "green")
 
     return Writer.OllamaInterface.GetLastMessageText(Messages), Messages
@@ -28,7 +28,7 @@ def GetOutlineRating(_Client, _Outline:str, _History:list = []):
     Writer.PrintUtils.PrintBanner("Prompting LLM To Get Review JSON", "green")
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(StartingPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.REVISION_MODEL)
     Writer.PrintUtils.PrintBanner("Finished Getting Review JSON", "green")
 
 
@@ -69,11 +69,6 @@ Outline:
 {_Outline}
 ---
 """
-    # StartingPrompt += "\nDo not give bad advice - only give feedback when needed. If you have no criticisms, do not make up feedback just to put something down. Remember to check if the characters' names are spelled correctly."
-    # StartingPrompt += "\nMake sure not to trust the original author - make sure what they say makes sense and is coherant.\n Do not comment on sentence length, instead focus on ensuring the chapter follows the outline well."
-    # StartingPrompt += "\nPlease also check if we're on track to meet the word count, and ensure that it's a well-written piece of art.\n\n==="
-    # StartingPrompt += _Chapter
-    # StartingPrompt += "\n===\n\nRemember to check if the chapter follows the outline well and has substance and a coherent plot between chapters that is rich and interesting."
 
     Writer.PrintUtils.PrintBanner("Prompting LLM To Critique Chapter", "green")
     Messages = _History

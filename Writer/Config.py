@@ -1,0 +1,2 @@
+WRITER_MODEL="llama3"
+REVISION_MODEL="mixtral:8x22b"

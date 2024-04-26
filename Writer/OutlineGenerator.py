@@ -1,6 +1,7 @@
 import Writer.LLMEditor
 import Writer.OllamaInterface
 import Writer.PrintUtils
+import Writer.Config
 
 
 def ReviseOutline(_Client, _Outline, _Feedback, _History:list = []):
@@ -14,7 +15,7 @@ def ReviseOutline(_Client, _Outline, _Feedback, _History:list = []):
     Writer.PrintUtils.PrintBanner("Revising Outline", "green")
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(RevisionPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.REVISION_MODEL)
     SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     Writer.PrintUtils.PrintBanner("Done Revising Outline", "green")
 
@@ -29,7 +30,7 @@ def GenerateOutline(_Client, _OutlinePrompt, _QualityThreshold:int = 85):
     # Generate Initial Outline
     Writer.PrintUtils.PrintBanner("Generating Initial Outline", "green")
     Messages = [Writer.OllamaInterface.BuildUserQuery(Prompt)]
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.WRITER_MODEL)
     Outline:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     Writer.PrintUtils.PrintBanner("Done Generating Initial Outline", "green")
 
@@ -66,7 +67,7 @@ Based on the following feedback:
     Writer.PrintUtils.PrintBanner("Revising Chapter", "green")
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(RevisionPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.REVISION_MODEL)
     SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     Writer.PrintUtils.PrintBanner("Done Revising Chapter", "green")
 
@@ -94,7 +95,7 @@ As a reminder, here is the outline:
     # Writer.PrintUtils.PrintMessageHistory(Messages)
     # print(f"---------------------------\n\n\n\n\n\n\n\n\n\n\n")
 
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.WRITER_MODEL)
     Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     Writer.PrintUtils.PrintBanner("Done Generating Initial Chapter", "green")
 

@@ -12,7 +12,7 @@ def ChatAndStreamResponse(_Client, _Messages, _Model:str="llama3"):
         stream=True,
         options=dict(seed=10)
     )
-
+    print(f"DEBUG: Using Model {_Model}")
     _Messages.append(StreamResponse(Stream))
 
     return _Messages
