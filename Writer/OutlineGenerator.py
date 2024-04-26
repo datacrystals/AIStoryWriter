@@ -67,7 +67,7 @@ Based on the following feedback:
     Writer.PrintUtils.PrintBanner("Revising Chapter", "green")
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(RevisionPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.REVISION_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.WRITER_MODEL)
     SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     Writer.PrintUtils.PrintBanner("Done Revising Chapter", "green")
 

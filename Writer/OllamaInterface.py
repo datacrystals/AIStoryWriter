@@ -1,4 +1,7 @@
+import Writer.Config
+
 import ollama
+
 
 
 def InitClient(_ClientHost:str = "http://10.1.65.4:11434"):
@@ -10,7 +13,7 @@ def ChatAndStreamResponse(_Client, _Messages, _Model:str="llama3"):
         model=_Model,
         messages=_Messages,
         stream=True,
-        options=dict(seed=10)
+        options=dict(seed=Writer.Config.SEED)
     )
     print(f"DEBUG: Using Model {_Model}")
     _Messages.append(StreamResponse(Stream))
