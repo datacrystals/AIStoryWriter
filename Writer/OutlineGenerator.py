@@ -20,8 +20,6 @@ def ReviseOutline(_Client, _Outline, _Feedback, _History:list = []):
 
     return SummaryText, Messages
 
-
-
 def GenerateOutline(_Client, _OutlinePrompt, _QualityThreshold:int = 85):
 
     Prompt = "Please write a markdown formatted outline based on the following prompt:\n\n"
@@ -58,11 +56,12 @@ def GenerateOutline(_Client, _OutlinePrompt, _QualityThreshold:int = 85):
 
 def ReviseChapter(_Client, _Chapter, _Feedback, _History:list = []):
 
-    RevisionPrompt = "Please revise the following chapter:\n\n"
-    RevisionPrompt += _Chapter
-    RevisionPrompt += "\n\nBased on the following feedback:\n\n"
-    RevisionPrompt += _Feedback
-    RevisionPrompt += "\n\nRemember to expand upon your chapter and add content to make it as best as it can be!"
+    RevisionPrompt = f"""
+Please revise the following chapter:
+{_Chapter}
+Based on the following feedback:
+{_Feedback}
+"""
 
     Writer.PrintUtils.PrintBanner("Revising Chapter", "green")
     Messages = _History
@@ -75,14 +74,26 @@ def ReviseChapter(_Client, _Chapter, _Feedback, _History:list = []):
 
 
 
-def GenerateChapter(_Client, _ChapterNum, _History:list = [], _QualityThreshold:int = 85):
+def GenerateChapter(_Client, _ChapterNum:int, _Outline:str, _History:list = [], _QualityThreshold:int = 85):
 
-    Prompt = f"Please write chapter {_ChapterNum} based on the earlier outline."
+    Prompt = f"""
+Please write chapter {_ChapterNum} based on the outline.
+
+As a reminder, here is the outline:
+---
+{_Outline}
+---
+"""
 
     # Generate Initial Chapter
     Writer.PrintUtils.PrintBanner("Generating Initial Chapter", "green")
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
+
+    # print(f"\n\n\n\n\n\n\n\n\n\n---------------------------")
+    # Writer.PrintUtils.PrintMessageHistory(Messages)
+    # print(f"---------------------------\n\n\n\n\n\n\n\n\n\n\n")
+
     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages)
     Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     Writer.PrintUtils.PrintBanner("Done Generating Initial Chapter", "green")
@@ -93,12 +104,11 @@ def GenerateChapter(_Client, _ChapterNum, _History:list = [], _QualityThreshold:
     WritingHistory = Messages
     Rating:int = 0
     while True:
-        Feedback, FeedbackHistory = Writer.LLMEditor.GetFeedbackOnChapter(_Client, Chapter, FeedbackHistory)
+        Feedback, FeedbackHistory = Writer.LLMEditor.GetFeedbackOnChapter(_Client, Chapter, _Outline, FeedbackHistory)
         Rating, FeedbackHistory = Writer.LLMEditor.GetChapterRating(_Client, Chapter, FeedbackHistory)
 
         if (Rating >= _QualityThreshold):
             break
-
         Chapter, WritingHistory = ReviseChapter(_Client, Chapter, Feedback, WritingHistory)
 
     Writer.PrintUtils.PrintBanner("Quality Standard Met, Exiting Feedback/Revision Loop", "yellow")

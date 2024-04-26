@@ -44,9 +44,9 @@ Writer.PrintUtils.PrintBanner(f"Found {NumChapters} Chapter(s)", "yellow")
 # Write the chapters
 Writer.PrintUtils.PrintBanner("Starting Chapter Writing", "yellow")
 StoryBodyText:str = ""
-for Chapter in range(NumChapters):
+for i in range(1, NumChapters + 1):
 
-    Chapter = Writer.OutlineGenerator.GenerateChapter(Client, Chapter, Messages)
+    Chapter = Writer.OutlineGenerator.GenerateChapter(Client, i, Outline, Messages)
 
     # PromptStr:str = f"Please write Chapter {Chapter + 1}"
     # Writer.PrintUtils.PrintBanner(f"Prompting: {PromptStr}", "green")
@@ -55,7 +55,7 @@ for Chapter in range(NumChapters):
     # Messages = Writer.OllamaInterface.ChatAndStreamResponse(Client, Messages)
 
     # ChapterText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
-    # StoryBodyText += ChapterText + "\n\n\n"
+    StoryBodyText += Chapter + "\n\n\n"
     ChapterWordCount = Writer.Statistics.GetWordCount(Chapter)
     Writer.PrintUtils.PrintBanner(f"Chapter Word Count: {ChapterWordCount}", "blue")
 

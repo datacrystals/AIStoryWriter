@@ -17,3 +17,9 @@ def PrintBanner(_Text, _Color="green", _Banner=True):
     if _Banner:
         print(termcolor.colored(BannerBlock, _Color))
 
+
+def PrintMessageHistory(_Messages):
+    print("------------------------------------------------------------")
+    for Message in _Messages:
+        print(Message)
+    print("------------------------------------------------------------")

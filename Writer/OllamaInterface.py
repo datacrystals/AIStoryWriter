@@ -5,9 +5,9 @@ def InitClient(_ClientHost:str = "http://10.1.65.4:11434"):
     return ollama.Client(host=_ClientHost)
 
 
-def ChatAndStreamResponse(_Client, _Messages):
+def ChatAndStreamResponse(_Client, _Messages, _Model:str="llama3"):
     Stream = _Client.chat(
-        model='llama3:70b',
+        model=_Model,
         messages=_Messages,
         stream=True,
         options=dict(seed=10)
