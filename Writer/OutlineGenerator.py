@@ -3,20 +3,22 @@ import Writer.OllamaInterface
 import Writer.PrintUtils
 
 
-def ReviseOutline(_Client, _Outline, _Feedback):
+def ReviseOutline(_Client, _Outline, _Feedback, _History:list = []):
 
     RevisionPrompt = "Please revise the following outline:\n\n"
     RevisionPrompt += _Outline
     RevisionPrompt += "\n\nBased on the following feedback:\n\n"
     RevisionPrompt += _Feedback
+    RevisionPrompt += "\n\nRemember to expand upon your outline and add content to make it as best as it can be!"
 
     Writer.PrintUtils.PrintBanner("Revising Outline", "green")
-    Messages = [Writer.OllamaInterface.BuildUserQuery(RevisionPrompt)]
+    Messages = _History
+    Messages.append(Writer.OllamaInterface.BuildUserQuery(RevisionPrompt))
     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages)
     SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     Writer.PrintUtils.PrintBanner("Done Revising Outline", "green")
 
-    return SummaryText
+    return SummaryText, Messages
 
 
 
@@ -34,12 +36,14 @@ def GenerateOutline(_Client, _OutlinePrompt, _QualityThreshold:int = 85):
 
     
     Writer.PrintUtils.PrintBanner("Entering Feedback/Revision Loop", "yellow")
+    FeedbackHistory = []
+    WritingHistory = Messages
     Rating:int = 0
     while Rating < _QualityThreshold:
-        Feedback = Writer.LLMEditor.GetFeedbackOnOutline(_Client, Outline)
-        Rating = Writer.LLMEditor.GetOutlineRating(_Client, Outline)
+        Feedback, FeedbackHistory = Writer.LLMEditor.GetFeedbackOnOutline(_Client, Outline, FeedbackHistory)
+        Rating, FeedbackHistory = Writer.LLMEditor.GetOutlineRating(_Client, Outline, FeedbackHistory)
 
-        Outline = ReviseOutline(Outline, Feedback)
+        Outline, WritingHistory = ReviseOutline(_Client, Outline, Feedback, WritingHistory)
 
     Writer.PrintUtils.PrintBanner("Quality Standard Met, Exiting Feedback/Revision Loop", "yellow")
 
