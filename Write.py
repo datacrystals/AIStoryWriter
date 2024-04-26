@@ -30,7 +30,7 @@ Make a markdown formatted outline, with a numbered list for each chapter and bul
 Outline = Writer.OutlineGenerator.GenerateOutline(Client, StartingPrompt)
 
 
-Prompt = "Here is an outline that you will use to build your award winning novel from.\n\n"
+Prompt = "Here is an outline that you will use to build your award winning novel from. Remember to spell the character's names correctly.\n\n"
 Prompt += Outline
 Messages = [Writer.OllamaInterface.BuildUserQuery(Prompt)]
 

@@ -6,7 +6,7 @@ import json
 
 def GetFeedbackOnOutline(_Client, _Outline:str, _History:list = []):
 
-    StartingPrompt:str = "Please critique the following outline - make sure to provide constructive criticism on how it can be improved and point out any problems with it."
+    StartingPrompt:str = "Please critique the following outline - make sure to provide constructive criticism on how it can be improved and point out any problems with it. Remember to check if the characters' names are spelled correctly."
     StartingPrompt += "\n\n\n"
     StartingPrompt += _Outline
 
@@ -55,7 +55,7 @@ def GetOutlineRating(_Client, _Outline:str, _History:list = []):
 def GetFeedbackOnChapter(_Client, _Chapter:str, _History:list = []):
 
     StartingPrompt:str = "Please critique the following chapter - make sure to provide constructive criticism on how it can be improved and point out any problems with it."
-    StartingPrompt += "\nDo not give bad advice - only give feedback when needed. If you have no criticisms, do not make up feedback just to put something down."
+    StartingPrompt += "\nDo not give bad advice - only give feedback when needed. If you have no criticisms, do not make up feedback just to put something down. Remember to check if the characters' names are spelled correctly."
     StartingPrompt += "\nPlease also check if we're on track to meet the word count, and ensure that it's a well-written piece of art.\n\n"
     StartingPrompt += _Chapter
 
