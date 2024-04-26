@@ -3,12 +3,12 @@ import Writer.PrintUtils
 import Writer.ChapterDetector
 import Writer.Statistics
 import Writer.OutlineGenerator
+import Writer.StoryInfo
 
 
 # Initialize Client
 Writer.PrintUtils.PrintBanner("Created OLLAMA Client", "red")
 Client = Writer.OllamaInterface.InitClient("http://10.1.65.4:11434")
-Writer.PrintUtils.PrintBanner("Spinning Up Model For first Inference")
 
 StartingPrompt:str = '''
 Please outline a 3k word novel about the following prompt. Make 5 chapters.
@@ -70,9 +70,23 @@ StatsString:str = "Work Statistics"
 StatsString += "Total Words: " + str(TotalWords)
 
 
+# Now Generate Info
+Info = Writer.StoryInfo.GetStoryInfo(Client, Messages)
+Title = Info['Title']
+Summary = Info['Summary']
+Tags = Info['Tags']
+
+print("---------------------------------------------")
+print(f"Story Title: {Title}")
+print(f"Summary: {Summary}")
+print(f"Tags: {Tags}")
+print("---------------------------------------------")
+
+
 # Save The Story To Disk
 Writer.PrintUtils.PrintBanner("Saving Story To Disk", "yellow")
-with open("Story.txt", "w") as F:
+FName = f"Stories/Story_{Title.replace(' ', '_')}.md"
+with open(FName, "w") as F:
     Out = StatsString + "\n\n\n==============\n\n\n"
     Out += Outline + "\n\n\n==============\n\n\n"
     Out += StoryBodyText

@@ -15,7 +15,7 @@ def ReviseOutline(_Client, _Outline, _Feedback, _History:list = []):
     Writer.PrintUtils.PrintBanner("Revising Outline", "green")
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(RevisionPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.REVISION_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.WRITER_MODEL)
     SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     Writer.PrintUtils.PrintBanner("Done Revising Outline", "green")
 
