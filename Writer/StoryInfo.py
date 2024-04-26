@@ -14,7 +14,7 @@ Note that a computer is parsing this JSON so it must be correct.
 Base your answers on the story written in previous messages.
 
 "Title": (a short title that's three to eight words)
-"Summary": (a paragraph that summarizes the story)
+"Summary": (a paragraph or two that summarizes the story from start to finish)
 "Tags": (a string of tags separated by commas that describe the story)
 "OverallRating": (your overall score for the story from 0-100)
 

@@ -70,14 +70,6 @@ for i in range(1, NumChapters + 1):
 
 
 
-# Calculate Total Words
-TotalWords:int = Writer.Statistics.GetWordCount(StoryBodyText)
-Writer.PrintUtils.PrintBanner(f"Story Total Word Count: {TotalWords}", "blue")
-
-StatsString:str = "Work Statistics"
-StatsString += "Total Words: " + str(TotalWords)
-
-
 # Now Generate Info
 Info = Writer.StoryInfo.GetStoryInfo(Client, Messages)
 Title = Info['Title']
@@ -89,6 +81,19 @@ print(f"Story Title: {Title}")
 print(f"Summary: {Summary}")
 print(f"Tags: {Tags}")
 print("---------------------------------------------")
+
+
+# Calculate Total Words
+TotalWords:int = Writer.Statistics.GetWordCount(StoryBodyText)
+Writer.PrintUtils.PrintBanner(f"Story Total Word Count: {TotalWords}", "blue")
+
+StatsString:str = "Work Statistics\n"
+StatsString += "Total Words: " + str(TotalWords)
+StatsString += f"Title: {Title}"
+StatsString += f"Summary: {Summary}"
+StatsString += f"Tags: {Tags}"
+
+
 
 
 # Save The Story To Disk
