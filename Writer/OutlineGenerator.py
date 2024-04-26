@@ -26,6 +26,7 @@ def GenerateOutline(_Client, _OutlinePrompt, _QualityThreshold:int = 85):
 
     Prompt = "Please write a markdown formatted outline based on the following prompt:\n\n"
     Prompt += _OutlinePrompt
+    Prompt += "\nRemember to use actual numbers for chapter numbers, e.g. 1 not one."
 
     # Generate Initial Outline
     Writer.PrintUtils.PrintBanner("Generating Initial Outline", "green")
@@ -39,9 +40,12 @@ def GenerateOutline(_Client, _OutlinePrompt, _QualityThreshold:int = 85):
     FeedbackHistory = []
     WritingHistory = Messages
     Rating:int = 0
-    while Rating < _QualityThreshold:
+    while True:
         Feedback, FeedbackHistory = Writer.LLMEditor.GetFeedbackOnOutline(_Client, Outline, FeedbackHistory)
         Rating, FeedbackHistory = Writer.LLMEditor.GetOutlineRating(_Client, Outline, FeedbackHistory)
+
+        if (Rating >= _QualityThreshold):
+            break
 
         Outline, WritingHistory = ReviseOutline(_Client, Outline, Feedback, WritingHistory)
 
