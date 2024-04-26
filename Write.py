@@ -61,7 +61,7 @@ Writer.PrintUtils.PrintBanner("Starting Chapter Writing", "yellow")
 StoryBodyText:str = ""
 for i in range(1, NumChapters + 1):
 
-    Chapter = Writer.OutlineGenerator.GenerateChapter(Client, i, Outline, Messages, Writer.Config.OUTLINE_QUALITY)
+    Chapter = Writer.OutlineGenerator.GenerateChapter(Client, i, NumChapters + 1, Outline, Messages, Writer.Config.OUTLINE_QUALITY)
 
     Messages.append(Writer.OllamaInterface.BuildUserQuery(Chapter))
     StoryBodyText += Chapter + "\n\n\n"

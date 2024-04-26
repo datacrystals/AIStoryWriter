@@ -28,16 +28,16 @@ def GetOutlineRating(_Client, _Outline:str, _History:list = []):
     Writer.PrintUtils.PrintBanner("Prompting LLM To Get Review JSON", "green")
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(StartingPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.REVISION_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.EVAL_MODEL)
     Writer.PrintUtils.PrintBanner("Finished Getting Review JSON", "green")
 
 
     while True:
         
         RawResponse = Writer.OllamaInterface.GetLastMessageText(Messages)
-        RawResponse.replace("`", "")
-        RawResponse.replace("json", "")
-        
+        RawResponse = RawResponse.replace("`", "")
+        RawResponse = RawResponse.replace("json", "")
+
         try:
             Rating = json.loads(RawResponse)["OverallRating"]
             Writer.PrintUtils.PrintBanner(f"Editor Reviewed Outline At {Rating}/100", "green")
@@ -47,7 +47,7 @@ def GetOutlineRating(_Client, _Outline:str, _History:list = []):
             EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
             Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
             Writer.PrintUtils.PrintBanner("Asking LLM TO Revise", "red")
-            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.REVISION_MODEL)
+            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.EVAL_MODEL)
             Writer.PrintUtils.PrintBanner("Done Asking LLM TO Revise", "red")
 
 
@@ -91,15 +91,15 @@ def GetChapterRating(_Client, _Chapter:str, _History:list = []):
     Writer.PrintUtils.PrintBanner("Prompting LLM To Get Review JSON", "green")
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(StartingPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.REVISION_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.EVAL_MODEL)
     Writer.PrintUtils.PrintBanner("Finished Getting Review JSON", "green")
 
 
     while True:
         
         RawResponse = Writer.OllamaInterface.GetLastMessageText(Messages)
-        RawResponse.replace("`", "")
-        RawResponse.replace("json", "")
+        RawResponse = RawResponse.replace("`", "")
+        RawResponse = RawResponse.replace("json", "")
         
         try:
             Rating = json.loads(RawResponse)["OverallRating"]
@@ -110,5 +110,5 @@ def GetChapterRating(_Client, _Chapter:str, _History:list = []):
             EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
             Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
             Writer.PrintUtils.PrintBanner("Asking LLM TO Revise", "red")
-            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.REVISION_MODEL)
+            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.EVAL_MODEL)
             Writer.PrintUtils.PrintBanner("Done Asking LLM TO Revise", "red")

@@ -75,7 +75,7 @@ Based on the following feedback:
 
 
 
-def GenerateChapter(_Client, _ChapterNum:int, _Outline:str, _History:list = [], _QualityThreshold:int = 85):
+def GenerateChapter(_Client, _ChapterNum:int, _TotalChapters:int, _Outline:str, _History:list = [], _QualityThreshold:int = 85):
 
     Prompt = f"""
 Please write chapter {_ChapterNum} based on the outline.
@@ -89,7 +89,7 @@ As a reminder, here is the outline:
 """
 
     # Generate Initial Chapter
-    Writer.PrintUtils.PrintBanner("Generating Initial Chapter", "green")
+    Writer.PrintUtils.PrintBanner(f"Generating Initial Chapter {_ChapterNum}/{_TotalChapters}", "green")
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
@@ -99,10 +99,10 @@ As a reminder, here is the outline:
 
     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.WRITER_MODEL)
     Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
-    Writer.PrintUtils.PrintBanner("Done Generating Initial Chapter", "green")
+    Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter {_ChapterNum}/{_TotalChapters}", "green")
 
 
-    Writer.PrintUtils.PrintBanner("Entering Feedback/Revision Loop", "yellow")
+    Writer.PrintUtils.PrintBanner(f"Entering Feedback/Revision Loop For Chapter {_ChapterNum}/{_TotalChapters}", "yellow")
     FeedbackHistory = []
     WritingHistory = Messages
     Rating:int = 0
@@ -114,6 +114,6 @@ As a reminder, here is the outline:
             break
         Chapter, WritingHistory = ReviseChapter(_Client, Chapter, Feedback, WritingHistory)
 
-    Writer.PrintUtils.PrintBanner("Quality Standard Met, Exiting Feedback/Revision Loop", "yellow")
+    Writer.PrintUtils.PrintBanner(f"Quality Standard Met, Exiting Feedback/Revision Loop For Chapter {_ChapterNum}/{_TotalChapters}", "yellow")
 
     return Chapter
