@@ -80,6 +80,8 @@ def GenerateChapter(_Client, _ChapterNum:int, _Outline:str, _History:list = [], 
     Prompt = f"""
 Please write chapter {_ChapterNum} based on the outline.
 
+Only write this chapter (we will get to the rest later), and make it as long and juicy as possible.
+
 As a reminder, here is the outline:
 ---
 {_Outline}

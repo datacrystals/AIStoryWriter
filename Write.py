@@ -1,3 +1,4 @@
+import Writer.Config
 import Writer.OllamaInterface
 import Writer.PrintUtils
 import Writer.ChapterDetector
@@ -24,10 +25,24 @@ Please write a piece of fanfiction about Kaveh/Alhaitham, focusing on the Hanaha
 Make a markdown formatted outline, with a numbered list for each chapter and bullet points for each part of what it contains. Do not use ranges for chapters, write them out individually.
 '''
 
+StartingPrompt = '''
+Title: "Echoes of Eternity"
+
+Prompt:
+In the bustling city of Mondstadt, amidst the swirling winds and melodies of freedom, two unlikely souls find themselves drawn together by fate's intricate design. 
+
+Kaeya Alberich, the charismatic Cavalry Captain of the Knights of Favonius, carries secrets as deep as the abyss, hidden beneath his charming facade. Despite his reputation as a flirtatious rogue, his heart is burdened by the weight of his past, leaving him longing for a connection that transcends the shadows.
+
+Meanwhile, Diluc Ragnvindr, the enigmatic owner of the Dawn Winery and Darknight Hero of Mondstadt, is a beacon of strength and resolve, his fiery determination matched only by the flames of his burning vendetta. Yet beneath his stoic demeanor lies a vulnerability born from the loss of family and betrayal, a wound that refuses to heal.
+
+As their paths intertwine amidst the chaos of elemental powers and ancient mysteries, Kaeya and Diluc find themselves entangled in a dance of conflicting emotions. Their rivalry blurs the lines between animosity and attraction, each encounter sparking a wildfire of longing that threatens to consume them both.
+
+Caught between duty and desire, honor and heartache, they must navigate the treacherous waters of their pasts while forging a future fraught with uncertainty. In a world where alliances are tested and betrayals run deep, will they find solace in each other's arms, or will their love be but a fleeting whisper in the winds of time?
+'''
 
 
 # Generate the Outline
-Outline = Writer.OutlineGenerator.GenerateOutline(Client, StartingPrompt)
+Outline = Writer.OutlineGenerator.GenerateOutline(Client, StartingPrompt, Writer.Config.OUTLINE_QUALITY)
 
 
 Prompt = "Here is an outline that you will use to build your award winning novel from. Remember to spell the character's names correctly.\n\n"
@@ -46,19 +61,12 @@ Writer.PrintUtils.PrintBanner("Starting Chapter Writing", "yellow")
 StoryBodyText:str = ""
 for i in range(1, NumChapters + 1):
 
-    Chapter = Writer.OutlineGenerator.GenerateChapter(Client, i, Outline, Messages)
-
-    # PromptStr:str = f"Please write Chapter {Chapter + 1}"
-    # Writer.PrintUtils.PrintBanner(f"Prompting: {PromptStr}", "green")
+    Chapter = Writer.OutlineGenerator.GenerateChapter(Client, i, Outline, Messages, Writer.Config.OUTLINE_QUALITY)
 
     Messages.append(Writer.OllamaInterface.BuildUserQuery(Chapter))
-    # Messages = Writer.OllamaInterface.ChatAndStreamResponse(Client, Messages)
-
-    # ChapterText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     StoryBodyText += Chapter + "\n\n\n"
     ChapterWordCount = Writer.Statistics.GetWordCount(Chapter)
     Writer.PrintUtils.PrintBanner(f"Chapter Word Count: {ChapterWordCount}", "blue")
-
 
 
 
