@@ -33,7 +33,9 @@ Again, remember to make your response JSON formatted with no extra words. It wil
     while True:
         
         RawResponse = Writer.OllamaInterface.GetLastMessageText(Messages)
-        
+        RawResponse.replace("`", "")
+        RawResponse.replace("json", "")
+
         try:
             Dict = json.loads(RawResponse)
             return Dict

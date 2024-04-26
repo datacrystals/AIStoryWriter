@@ -35,6 +35,8 @@ def GetOutlineRating(_Client, _Outline:str, _History:list = []):
     while True:
         
         RawResponse = Writer.OllamaInterface.GetLastMessageText(Messages)
+        RawResponse.replace("`", "")
+        RawResponse.replace("json", "")
         
         try:
             Rating = json.loads(RawResponse)["OverallRating"]
@@ -96,6 +98,8 @@ def GetChapterRating(_Client, _Chapter:str, _History:list = []):
     while True:
         
         RawResponse = Writer.OllamaInterface.GetLastMessageText(Messages)
+        RawResponse.replace("`", "")
+        RawResponse.replace("json", "")
         
         try:
             Rating = json.loads(RawResponse)["OverallRating"]
