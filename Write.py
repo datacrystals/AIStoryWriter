@@ -11,7 +11,7 @@ Client = Writer.OllamaInterface.InitClient("http://10.1.65.4:11434")
 Writer.PrintUtils.PrintBanner("Spinning Up Model For first Inference")
 
 StartingPrompt:str = '''
-Please outline a 10k word novel about the following prompt. Make 5 chapters.
+Please outline a 3k word novel about the following prompt. Make 5 chapters.
 
 Alhaitham and Kaveh are both playable characters. They are frequently mentioned throughout character voicelines and Sumeru bulletin boards. The two first met in the House of Daena, and Kaveh had taken interest in his outstanding junior. The two were best friends before walking separate paths after a major quarrel during a large research project. Both Kaveh and Alhaitham graduated from Sumeru Akademiya, Kaveh graduating from the Kshahrewar Darshan while Alhaitham from the Haravatat Darshan. Alhaitham is still a member of this Darshan, and is responsible for documenting their findings and drafting ordinances. Kaveh is a renowned architect and independent contractor who occasionally serves as a visiting professor at the Akademiya and receives subsidies as a result. Despite being a Kshahrewar alumnus, Kaveh is still identified as the Darshan's representative and touts his association with them, which leads to him introducing himself and being introduced as someone that is from the Akademiya. As well, when referring to the Kshahrewar, he at times will use "we." In official media, he is occasionally seen at the Akademiya with what appear to be his students. When Kaveh is a visiting professor at the Akademiya, Alhaitham and Kaveh can be considered coworkers.
 After Kaveh sold his family house and went bankrupt because of his dedication to completing his magnum opus, Alhaitham offered him residence. According to the Sumeru bulletin boards, Alhaitham sometimes handles Kaveh's additional fees, such as alcohol fees.
@@ -46,15 +46,17 @@ Writer.PrintUtils.PrintBanner("Starting Chapter Writing", "yellow")
 StoryBodyText:str = ""
 for Chapter in range(NumChapters):
 
-    PromptStr:str = f"Please write Chapter {Chapter + 1}"
-    Writer.PrintUtils.PrintBanner(f"Prompting: {PromptStr}", "green")
+    Chapter = Writer.OutlineGenerator.GenerateChapter(Client, Chapter, Messages)
 
-    Messages.append(Writer.OllamaInterface.BuildUserQuery(PromptStr))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(Client, Messages)
+    # PromptStr:str = f"Please write Chapter {Chapter + 1}"
+    # Writer.PrintUtils.PrintBanner(f"Prompting: {PromptStr}", "green")
 
-    ChapterText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
-    StoryBodyText += ChapterText + "\n\n\n"
-    ChapterWordCount = Writer.Statistics.GetWordCount(ChapterText)
+    Messages.append(Writer.OllamaInterface.BuildUserQuery(Chapter))
+    # Messages = Writer.OllamaInterface.ChatAndStreamResponse(Client, Messages)
+
+    # ChapterText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
+    # StoryBodyText += ChapterText + "\n\n\n"
+    ChapterWordCount = Writer.Statistics.GetWordCount(Chapter)
     Writer.PrintUtils.PrintBanner(f"Chapter Word Count: {ChapterWordCount}", "blue")
 
 
@@ -70,7 +72,7 @@ StatsString += "Total Words: " + str(TotalWords)
 
 # Save The Story To Disk
 Writer.PrintUtils.PrintBanner("Saving Story To Disk", "yellow")
-with open("Story_L.txt", "w") as F:
+with open("Story.txt", "w") as F:
     Out = StatsString + "\n\n\n==============\n\n\n"
     Out += Outline + "\n\n\n==============\n\n\n"
     Out += StoryBodyText
