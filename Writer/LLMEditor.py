@@ -55,19 +55,20 @@ def GetOutlineRating(_Client, _Outline:str, _History:list = []):
 def GetFeedbackOnChapter(_Client, _Chapter:str, _Outline:str, _History:list = []):
 
     StartingPrompt:str = f"""
-You are a professional editor.
-Please critique the following chapter, and suggest improvements for clarity and substance.
-Make sure the chapter follows the outline.
-
 Chapter:
----
+```
 {_Chapter}
----
+```
 
 Outline:
----
+```
 {_Outline}
----
+```
+
+You are a professional editor.
+Please critique the previously mentioned chapter, and suggest improvements for clarity and substance.
+Make sure the chapter follows the outline so that the story stays on track!
+
 """
 
     Writer.PrintUtils.PrintBanner("Prompting LLM To Critique Chapter", "green")
