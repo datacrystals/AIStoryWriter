@@ -1,14 +1,17 @@
-WRITER_MODEL="vanilj/midnight-miqu-70b-v1.5"
-REVISION_MODEL="llama3:70b"
-EVAL_MODEL="llama3:70b"
-INFO_MODEL="llama3:70b"
+WRITER_MODEL="vanilj/midnight-miqu-70b-v1.5" # Note this value is overridden by the argparser
+REVISION_MODEL="llama3:70b" # Note this value is overridden by the argparser
+EVAL_MODEL="llama3:70b" # Note this value is overridden by the argparser
+INFO_MODEL="llama3:70b" # Note this value is overridden by the argparser
 
-SEED=12
+SEED=12 # Note this value is overridden by the argparser
 
-OUTLINE_QUALITY=87
-CHAPTER_NO_REVISIONS=True # disables all revision checks for the chapter, overriding any other chapter quality/revision settings
-CHAPTER_QUALITY=85
-CHAPTER_MIN_REVISIONS=1
+OUTLINE_QUALITY=87 # Note this value is overridden by the argparser
+OUTLINE_MIN_REVISIONS=0 # Note this value is overridden by the argparser
+OUTLINE_MAX_REVISIONS=3 # Note this value is overridden by the argparser
+CHAPTER_NO_REVISIONS=True # Note this value is overridden by the argparser # disables all revision checks for the chapter, overriding any other chapter quality/revision settings
+CHAPTER_QUALITY=85 # Note this value is overridden by the argparser
+CHAPTER_MIN_REVISIONS=1 # Note this value is overridden by the argparser
+CHAPTER_MAX_REVISIONS=3 # Note this value is overridden by the argparser
 
 # We also have
 "llama3"

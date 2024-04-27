@@ -22,6 +22,12 @@ Parser.add_argument("-RevisionModel", default="llama3:70b", type=str, help="Mode
 Parser.add_argument("-EvalModel", default="llama3:70b", type=str, help="Model to use for evaluating the rating out of 100")
 Parser.add_argument("-InfoModel", default="llama3:70b", type=str, help="Model to use when generating summary/info at the end")
 Parser.add_argument("-Seed", default=12, type=int, help="Used to seed models.")
+Parser.add_argument("-OutlineQuality", default=85, type=int, help="Rating out of 100 that the outline must be given by the EvalModel before proceeding to be written")
+Parser.add_argument("-OutlineMinRevisions", default=0, type=int, help="Number of minimum revisions that the outline must be given prior to proceeding")
+Parser.add_argument("-OutlineMaxRevisions", default=3, type=int, help="Max number of revisions that the outline may have")
+Parser.add_argument("-ChapterQuality", default=85, type=int, help="Rating out of 100 that the chapter must be given by the EvalModel before proceeding to be written")
+Parser.add_argument("-ChapterMinRevisions", default=0, type=int, help="Number of minimum revisions that the chapter must be given prior to proceeding")
+Parser.add_argument("-ChapterMaxRevisions", default=3, type=int, help="Max number of revisions that the chapter may have")
 Parser.add_argument("-NoChapterRevision", action="store_true", help="Disables Chapter Revisions")
 Args = Parser.parse_args()
 
@@ -29,12 +35,20 @@ Args = Parser.parse_args()
 
 # Setup Config
 Writer.Config.SEED = Args.Seed
-Writer.Config.CHAPTER_NO_REVISIONS = Args.NoChapterRevision
+
 Writer.Config.WRITER_MODEL = Args.WriterModel
 Writer.Config.EVAL_MODEL = Args.EvalModel
 Writer.Config.REVISION_MODEL = Args.RevisionModel
 Writer.Config.INFO_MODEL = Args.InfoModel
 
+Writer.Config.OUTLINE_QUALITY = Args.OutlineQuality
+Writer.Config.OUTLINE_MIN_REVISIONS = Args.OutlineMinRevisions
+Writer.Config.OUTLINE_MAX_REVISIONS = Args.OutlineMaxRevisions
+
+Writer.Config.CHAPTER_QUALITY = Args.ChapterQuality
+Writer.Config.CHAPTER_MIN_REVISIONS = Args.ChapterMinRevisions
+Writer.Config.CHAPTER_MAX_REVISIONS = Args.ChapterMaxRevisions
+Writer.Config.CHAPTER_NO_REVISIONS = Args.NoChapterRevision
 
 
 

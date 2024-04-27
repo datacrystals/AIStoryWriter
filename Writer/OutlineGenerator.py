@@ -39,11 +39,15 @@ def GenerateOutline(_Client, _OutlinePrompt, _QualityThreshold:int = 85):
     FeedbackHistory = []
     WritingHistory = Messages
     Rating:int = 0
+    Iterations:int = 0
     while True:
+        Iterations += 1
         Feedback, FeedbackHistory = Writer.LLMEditor.GetFeedbackOnOutline(_Client, Outline, FeedbackHistory)
         Rating, FeedbackHistory = Writer.LLMEditor.GetOutlineRating(_Client, Outline, FeedbackHistory)
 
-        if (Rating >= _QualityThreshold):
+        if (Iterations > Writer.Config.OUTLINE_MAX_REVISIONS):
+            break
+        if ((Iterations > Writer.Config.OUTLINE_MIN_REVISIONS) and (Rating >= _QualityThreshold)):
             break
 
         Outline, WritingHistory = ReviseOutline(_Client, Outline, Feedback, WritingHistory)
@@ -116,6 +120,8 @@ As a reminder, here is the outline:
         Feedback, FeedbackHistory = Writer.LLMEditor.GetFeedbackOnChapter(_Client, Chapter, _Outline, FeedbackHistory)
         Rating, FeedbackHistory = Writer.LLMEditor.GetChapterRating(_Client, Chapter, FeedbackHistory)
 
+        if (Iterations > Writer.Config.CHAPTER_MAX_REVISIONS):
+            break
         if ((Iterations > Writer.Config.CHAPTER_MIN_REVISIONS) and (Rating >= _QualityThreshold)):
             break
         Chapter, WritingHistory = ReviseChapter(_Client, Chapter, Feedback, WritingHistory)
