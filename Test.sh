@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python3 Write.py
+python3 Write.py $1

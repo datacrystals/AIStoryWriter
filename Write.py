@@ -5,6 +5,7 @@ import Writer.ChapterDetector
 import Writer.Statistics
 import Writer.OutlineGenerator
 import Writer.StoryInfo
+import Writer.NovelEditor
 
 import argparse
 
@@ -37,16 +38,22 @@ Writer.PrintUtils.PrintBanner(f"Found {NumChapters} Chapter(s)", "yellow")
 
 # Write the chapters
 Writer.PrintUtils.PrintBanner("Starting Chapter Writing", "yellow")
-StoryBodyText:str = ""
+Chapters = []
 for i in range(1, NumChapters + 1):
 
     Chapter = Writer.OutlineGenerator.GenerateChapter(Client, i, NumChapters, Outline, Messages, Writer.Config.OUTLINE_QUALITY)
 
     Messages.append(Writer.OllamaInterface.BuildUserQuery(Chapter))
-    StoryBodyText += Chapter + "\n\n\n"
+    Chapters.append(Chapter)
     ChapterWordCount = Writer.Statistics.GetWordCount(Chapter)
     Writer.PrintUtils.PrintBanner(f"Chapter Word Count: {ChapterWordCount}", "blue")
 
+
+# Now edit the whole thing together
+StoryBodyText:str = ""
+NewChapters = Writer.NovelEditor.EditNovel(Client, Chapters, Outline, NumChapters)
+for Chapter in NewChapters:
+    StoryBodyText += Chapter + "\n\n\n"
 
 
 # Now Generate Info
@@ -66,13 +73,14 @@ print("---------------------------------------------")
 TotalWords:int = Writer.Statistics.GetWordCount(StoryBodyText)
 Writer.PrintUtils.PrintBanner(f"Story Total Word Count: {TotalWords}", "blue")
 
-StatsString:str = "Work Statistics\n"
-StatsString += "Total Words: " + str(TotalWords)
-StatsString += f"Title: {Title}"
-StatsString += f"Summary: {Summary}"
-StatsString += f"Tags: {Tags}"
+StatsString:str = "Work Statistics:\n"
+StatsString += " - Total Words: " + str(TotalWords) + "\n"
+StatsString += f" - Title: {Title}\n"
+StatsString += f" - Summary: {Summary}\n"
+StatsString += f" - Tags: {Tags}\n"
 
-
+StatsString += "\n\nUser Settings:\n"
+StatsString += f" - Base Prompt: {Prompt}\n"
 
 
 # Save The Story To Disk
