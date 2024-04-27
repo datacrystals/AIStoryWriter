@@ -18,7 +18,10 @@ Writer.PrintUtils.PrintBanner("Created OLLAMA Client", "red")
 Client = Writer.OllamaInterface.InitClient(Args.Host)
 
 # Generate the Outline
-Outline = Writer.OutlineGenerator.GenerateOutline(Client, Args.Prompt, Writer.Config.OUTLINE_QUALITY)
+Prompt:str = ""
+with open(Args.Prompt, "r") as f:
+    Prompt = f.read()
+Outline = Writer.OutlineGenerator.GenerateOutline(Client, Prompt, Writer.Config.OUTLINE_QUALITY)
 
 
 Prompt = "Here is an outline that you will use to build your award winning novel from. Remember to spell the character's names correctly.\n\n"
