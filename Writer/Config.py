@@ -17,3 +17,4 @@ CHAPTER_QUALITY=85
 "command-r"
 "qwen:72b"
 "command-r-plus"
+"dbrx"
