@@ -106,11 +106,13 @@ As a reminder, here is the outline:
     FeedbackHistory = []
     WritingHistory = Messages
     Rating:int = 0
+    Iterations:int = 0
     while True:
+        Iterations += 1
         Feedback, FeedbackHistory = Writer.LLMEditor.GetFeedbackOnChapter(_Client, Chapter, _Outline, FeedbackHistory)
         Rating, FeedbackHistory = Writer.LLMEditor.GetChapterRating(_Client, Chapter, FeedbackHistory)
 
-        if (Rating >= _QualityThreshold):
+        if ((Iterations > Writer.Config.CHAPTER_MIN_REVISIONS) and (Rating >= _QualityThreshold)):
             break
         Chapter, WritingHistory = ReviseChapter(_Client, Chapter, Feedback, WritingHistory)
 
