@@ -51,7 +51,8 @@ for i in range(1, NumChapters + 1):
 
 # Now edit the whole thing together
 StoryBodyText:str = ""
-NewChapters = Writer.NovelEditor.EditNovel(Client, Chapters, Outline, NumChapters)
+# NewChapters = Writer.NovelEditor.EditNovel(Client, Chapters, Outline, NumChapters)
+NewChapters = Chapters
 for Chapter in NewChapters:
     StoryBodyText += Chapter + "\n\n\n"
 
