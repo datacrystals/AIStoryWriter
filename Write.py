@@ -1,3 +1,8 @@
+#!/bin/python3
+
+import argparse
+
+
 import Writer.Config
 import Writer.OllamaInterface
 import Writer.PrintUtils
@@ -7,12 +12,31 @@ import Writer.OutlineGenerator
 import Writer.StoryInfo
 import Writer.NovelEditor
 
-import argparse
 
+# Setup Argparser
 Parser = argparse.ArgumentParser()
 Parser.add_argument("-Prompt", help="Path to file containing the prompt")
 Parser.add_argument("-Host", default="http://10.1.65.4:11434", type=str, help="HTTP URL to ollama instance")
+Parser.add_argument("-WriterModel", default="vanilj/midnight-miqu-70b-v1.5", type=str, help="Model to use for writing the base content")
+Parser.add_argument("-RevisionModel", default="llama3:70b", type=str, help="Model to use for generating constructive criticism")
+Parser.add_argument("-EvalModel", default="llama3:70b", type=str, help="Model to use for evaluating the rating out of 100")
+Parser.add_argument("-InfoModel", default="llama3:70b", type=str, help="Model to use when generating summary/info at the end")
+Parser.add_argument("-Seed", default=12, type=int, help="Used to seed models.")
+Parser.add_argument("-NoChapterRevision", action="store_true", help="Disables Chapter Revisions")
 Args = Parser.parse_args()
+
+
+
+# Setup Config
+Writer.Config.SEED = Args.Seed
+Writer.Config.CHAPTER_NO_REVISIONS = Args.NoChapterRevision
+Writer.Config.WRITER_MODEL = Args.WriterModel
+Writer.Config.EVAL_MODEL = Args.EvalModel
+Writer.Config.REVISION_MODEL = Args.RevisionModel
+Writer.Config.INFO_MODEL = Args.InfoModel
+
+
+
 
 # Initialize Client
 Writer.PrintUtils.PrintBanner("Created OLLAMA Client", "red")
