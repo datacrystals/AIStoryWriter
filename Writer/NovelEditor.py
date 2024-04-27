@@ -31,7 +31,7 @@ Given the above novel and outline, please edit chapter {i} so that it fits toget
         Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.WRITER_MODEL)
         Writer.PrintUtils.PrintBanner(f"Finished Chapter {i} Second Pass In-Place Edit", "green")
 
-        NewChapter = Writer.OllamaInterface.GetLastMessageText(Messages), Messages
+        NewChapter = Writer.OllamaInterface.GetLastMessageText(Messages)
         EditedChapters[i] = NewChapter
         ChapterWordCount = Writer.Statistics.GetWordCount(NewChapter)
         Writer.PrintUtils.PrintBanner(f"New Chapter Word Count: {ChapterWordCount}", "blue")
