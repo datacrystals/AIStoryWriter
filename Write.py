@@ -10,8 +10,8 @@ import Writer.NovelEditor
 import argparse
 
 Parser = argparse.ArgumentParser()
-Parser.add_argument("Prompt", help="Path to file containing the prompt")
-Parser.add_argument("Host", default="http://10.1.65.4:11434", help="HTTP URL to ollama instance")
+Parser.add_argument("-Prompt", help="Path to file containing the prompt")
+Parser.add_argument("-Host", default="http://10.1.65.4:11434", type=str, help="HTTP URL to ollama instance")
 Args = Parser.parse_args()
 
 # Initialize Client
