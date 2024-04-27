@@ -6,6 +6,7 @@ INFO_MODEL="llama3:70b"
 SEED=12
 
 OUTLINE_QUALITY=87
+CHAPTER_NO_REVISIONS=True # disables all revision checks for the chapter, overriding any other chapter quality/revision settings
 CHAPTER_QUALITY=85
 CHAPTER_MIN_REVISIONS=1
 

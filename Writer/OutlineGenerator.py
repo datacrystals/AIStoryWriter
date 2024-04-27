@@ -101,6 +101,10 @@ As a reminder, here is the outline:
     Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter {_ChapterNum}/{_TotalChapters}", "green")
 
+    if (Writer.Config.CHAPTER_NO_REVISIONS):
+        Writer.PrintUtils.PrintBanner(f"Chapter Revision Disabled In Config, Exiting Now", "green")
+        return Chapter
+
 
     Writer.PrintUtils.PrintBanner(f"Entering Feedback/Revision Loop For Chapter {_ChapterNum}/{_TotalChapters}", "yellow")
     FeedbackHistory = []

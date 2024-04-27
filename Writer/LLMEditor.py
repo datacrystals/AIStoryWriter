@@ -103,7 +103,7 @@ def GetChapterRating(_Client, _Chapter:str, _History:list = []):
         
         try:
             Rating = json.loads(RawResponse)["OverallRating"]
-            Writer.PrintUtils.PrintBanner(f"Editor Reviewed Outline At {Rating}/100", "green")
+            Writer.PrintUtils.PrintBanner(f"Editor Reviewed Chapter At {Rating}/100", "green")
             return Rating, Messages
         except Exception as E:
             Writer.PrintUtils.PrintBanner("Error Parsing JSON Written By LLM, Asking For Edits", "red")
