@@ -137,6 +137,23 @@ StatsString += f" - Tags: {Tags}\n"
 StatsString += "\n\nUser Settings:\n"
 StatsString += f" - Base Prompt: {Prompt}\n"
 
+StatsString += "\n\nGeneration Settings:\n"
+StatsString += f" - Generator: Datacrystals_StoryGenerator_2024-04-27\n"
+StatsString += f" - Writer Model: {Writer.Config.WRITER_MODEL}\n"
+StatsString += f" - Revision Model: {Writer.Config.REVISION_MODEL}\n"
+StatsString += f" - Eval Model: {Writer.Config.EVAL_MODEL}\n"
+StatsString += f" - Info Model: {Writer.Config.INFO_MODEL}\n"
+StatsString += f" - Scrub Model: {Writer.Config.SCRUB_MODEL}\n"
+StatsString += f" - Seed: {Writer.Config.SEED}\n"
+StatsString += f" - Outline Quality: {Writer.Config.OUTLINE_QUALITY}\n"
+StatsString += f" - Outline Min Revisions: {Writer.Config.OUTLINE_MIN_REVISIONS}\n"
+StatsString += f" - Outline Max Revisions: {Writer.Config.OUTLINE_MAX_REVISIONS}\n"
+StatsString += f" - Chapter Quality: {Writer.Config.CHAPTER_QUALITY}\n"
+StatsString += f" - Chapter Min Revisions: {Writer.Config.CHAPTER_MIN_REVISIONS}\n"
+StatsString += f" - Chapter Max Revisions: {Writer.Config.CHAPTER_MAX_REVISIONS}\n"
+StatsString += f" - Chapter Disable Revisions: {Writer.Config.CHAPTER_NO_REVISIONS}\n"
+StatsString += f" - Disable Scrubbing: {Writer.Config.SCRUB_NO_SCRUB}\n"
+
 
 # Save The Story To Disk
 Writer.PrintUtils.PrintBanner("Saving Story To Disk", "yellow")
