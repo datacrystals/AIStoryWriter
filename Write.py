@@ -7,6 +7,7 @@ import Writer.Config
 import Writer.OllamaInterface
 import Writer.PrintUtils
 import Writer.ChapterDetector
+import Writer.Scrubber
 import Writer.Statistics
 import Writer.OutlineGenerator
 import Writer.StoryInfo
@@ -21,6 +22,7 @@ Parser.add_argument("-WriterModel", default="vanilj/midnight-miqu-70b-v1.5", typ
 Parser.add_argument("-RevisionModel", default="llama3:70b", type=str, help="Model to use for generating constructive criticism")
 Parser.add_argument("-EvalModel", default="llama3:70b", type=str, help="Model to use for evaluating the rating out of 100")
 Parser.add_argument("-InfoModel", default="llama3:70b", type=str, help="Model to use when generating summary/info at the end")
+Parser.add_argument("-ScrubModel", default="llama3:70b", type=str, help="Model to use when scrubbing the story at the end")
 Parser.add_argument("-Seed", default=12, type=int, help="Used to seed models.")
 Parser.add_argument("-OutlineQuality", default=85, type=int, help="Rating out of 100 that the outline must be given by the EvalModel before proceeding to be written")
 Parser.add_argument("-OutlineMinRevisions", default=0, type=int, help="Number of minimum revisions that the outline must be given prior to proceeding")
@@ -29,6 +31,7 @@ Parser.add_argument("-ChapterQuality", default=85, type=int, help="Rating out of
 Parser.add_argument("-ChapterMinRevisions", default=0, type=int, help="Number of minimum revisions that the chapter must be given prior to proceeding")
 Parser.add_argument("-ChapterMaxRevisions", default=3, type=int, help="Max number of revisions that the chapter may have")
 Parser.add_argument("-NoChapterRevision", action="store_true", help="Disables Chapter Revisions")
+Parser.add_argument("-NoScrubChapters", action="store_true", help="Disables a final pass over the story to remove prompt leftovers/outline tidbits.")
 Args = Parser.parse_args()
 
 
@@ -40,6 +43,7 @@ Writer.Config.WRITER_MODEL = Args.WriterModel
 Writer.Config.EVAL_MODEL = Args.EvalModel
 Writer.Config.REVISION_MODEL = Args.RevisionModel
 Writer.Config.INFO_MODEL = Args.InfoModel
+Writer.Config.SCRUB_MODEL = Args.ScrubModel
 
 Writer.Config.OUTLINE_QUALITY = Args.OutlineQuality
 Writer.Config.OUTLINE_MIN_REVISIONS = Args.OutlineMinRevisions
@@ -49,6 +53,8 @@ Writer.Config.CHAPTER_QUALITY = Args.ChapterQuality
 Writer.Config.CHAPTER_MIN_REVISIONS = Args.ChapterMinRevisions
 Writer.Config.CHAPTER_MAX_REVISIONS = Args.ChapterMaxRevisions
 Writer.Config.CHAPTER_NO_REVISIONS = Args.NoChapterRevision
+
+Writer.Config.SCRUB_NO_SCRUB = Args.NoScrubChapters
 
 
 
@@ -91,8 +97,18 @@ for i in range(1, NumChapters + 1):
 StoryBodyText:str = ""
 # NewChapters = Writer.NovelEditor.EditNovel(Client, Chapters, Outline, NumChapters)
 NewChapters = Chapters
+
+# Now scrub it (if enabled)
+if (not Writer.Config.SCRUB_NO_SCRUB):
+    NewChapters = Writer.Scrubber.ScrubNovel(Client, NewChapters, NumChapters)
+else:
+    Writer.PrintUtils.PrintBanner(f"Skipping Scrubbing Due To Config", "yellow")
+
+
+# Compile The Story
 for Chapter in NewChapters:
     StoryBodyText += Chapter + "\n\n\n"
+
 
 
 # Now Generate Info
@@ -126,7 +142,7 @@ StatsString += f" - Base Prompt: {Prompt}\n"
 Writer.PrintUtils.PrintBanner("Saving Story To Disk", "yellow")
 FName = f"Stories/Story_{Title.replace(' ', '_')}.md"
 with open(FName, "w") as F:
-    Out = StatsString + "\n\n\n==============\n\n\n"
-    Out += Outline + "\n\n\n==============\n\n\n"
-    Out += StoryBodyText
+    Out = StatsString + "\n\n\n---\n\n\n"
+    Out += StoryBodyText + "\n\n\n---\n\n\n"
+    Out += Outline + "\n\n\n---\n\n\n"
     F.write(Out)

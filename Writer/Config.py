@@ -2,6 +2,7 @@ WRITER_MODEL="vanilj/midnight-miqu-70b-v1.5" # Note this value is overridden by 
 REVISION_MODEL="llama3:70b" # Note this value is overridden by the argparser
 EVAL_MODEL="llama3:70b" # Note this value is overridden by the argparser
 INFO_MODEL="llama3:70b" # Note this value is overridden by the argparser
+SCRUB_MODEL="llama3:70b" # Note this value is overridden by the argparser
 
 SEED=12 # Note this value is overridden by the argparser
 
@@ -12,6 +13,8 @@ CHAPTER_NO_REVISIONS=True # Note this value is overridden by the argparser # dis
 CHAPTER_QUALITY=85 # Note this value is overridden by the argparser
 CHAPTER_MIN_REVISIONS=1 # Note this value is overridden by the argparser
 CHAPTER_MAX_REVISIONS=3 # Note this value is overridden by the argparser
+
+SCRUB_NO_SCRUB=False # Note this value is overridden by the argparser
 
 # Tested models:
 "llama3:70b" # works as editor model, DO NOT use as writer model, it sucks
