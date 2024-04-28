@@ -21,6 +21,7 @@ def ReviseOutline(_Client, _Outline, _Feedback, _History:list = []):
 
     return SummaryText, Messages
 
+
 def GenerateOutline(_Client, _OutlinePrompt, _QualityThreshold:int = 85):
 
     Prompt = "Please write a markdown formatted outline based on the following prompt:\n\n"

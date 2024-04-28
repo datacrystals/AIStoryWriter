@@ -70,7 +70,7 @@ Messages = [Writer.OllamaInterface.BuildUserQuery(Prompt)]
 
 # Detect the number of chapters
 Writer.PrintUtils.PrintBanner("Detecting Chapters", "yellow")
-NumChapters:int = Writer.ChapterDetector.CountChapters(Writer.OllamaInterface.GetLastMessageText(Messages))
+NumChapters:int = Writer.ChapterDetector.LLMCountChapters(Client, Writer.OllamaInterface.GetLastMessageText(Messages))
 Writer.PrintUtils.PrintBanner(f"Found {NumChapters} Chapter(s)", "yellow")
 
 

@@ -13,13 +13,11 @@ CHAPTER_QUALITY=85 # Note this value is overridden by the argparser
 CHAPTER_MIN_REVISIONS=1 # Note this value is overridden by the argparser
 CHAPTER_MAX_REVISIONS=3 # Note this value is overridden by the argparser
 
-# We also have
-"llama3"
-"llama3:70b"
-"vanilj/midnight-miqu-70b-v1.5"
-"mixtral:8x22b"
-"nous-hermes2"
+# Tested models:
+"llama3:70b" # works as editor model, DO NOT use as writer model, it sucks
+"vanilj/midnight-miqu-70b-v1.5" # works rather well as the writer, not well as anything else
 "command-r"
 "qwen:72b"
 "command-r-plus"
-"dbrx"
+"nous-hermes2" # not big enough to really do a good job - do not use
+"dbrx" # sucks - do not use
