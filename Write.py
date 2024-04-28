@@ -1,7 +1,8 @@
 #!/bin/python3
 
 import argparse
-
+import time
+import datetime
 
 import Writer.Config
 import Writer.OllamaInterface
@@ -34,6 +35,9 @@ Parser.add_argument("-NoChapterRevision", action="store_true", help="Disables Ch
 Parser.add_argument("-NoScrubChapters", action="store_true", help="Disables a final pass over the story to remove prompt leftovers/outline tidbits.")
 Args = Parser.parse_args()
 
+
+# Measure Generation Time
+StartTime = time.time()
 
 
 # Setup Config
@@ -123,6 +127,8 @@ print(f"Summary: {Summary}")
 print(f"Tags: {Tags}")
 print("---------------------------------------------")
 
+ElapsedTime = time.time() - StartTime
+
 
 # Calculate Total Words
 TotalWords:int = Writer.Statistics.GetWordCount(StoryBodyText)
@@ -133,6 +139,9 @@ StatsString += " - Total Words: " + str(TotalWords) + "\n"
 StatsString += f" - Title: {Title}\n"
 StatsString += f" - Summary: {Summary}\n"
 StatsString += f" - Tags: {Tags}\n"
+StatsString += f" - Generation Start Date: {datetime.date.today().strftime("%Y/%m/%d %H:%M:%S")}\n"
+StatsString += f" - Generation Total Time: {ElapsedTime}s\n"
+StatsString += f" - Generation Average WPM: {60 * (TotalWords/ElapsedTime)}\n"
 
 StatsString += "\n\nUser Settings:\n"
 StatsString += f" - Base Prompt: {Prompt}\n"
@@ -153,6 +162,7 @@ StatsString += f" - Chapter Min Revisions: {Writer.Config.CHAPTER_MIN_REVISIONS}
 StatsString += f" - Chapter Max Revisions: {Writer.Config.CHAPTER_MAX_REVISIONS}\n"
 StatsString += f" - Chapter Disable Revisions: {Writer.Config.CHAPTER_NO_REVISIONS}\n"
 StatsString += f" - Disable Scrubbing: {Writer.Config.SCRUB_NO_SCRUB}\n"
+
 
 
 # Save The Story To Disk
