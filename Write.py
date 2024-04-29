@@ -139,7 +139,7 @@ StatsString += " - Total Words: " + str(TotalWords) + "\n"
 StatsString += f" - Title: {Title}\n"
 StatsString += f" - Summary: {Summary}\n"
 StatsString += f" - Tags: {Tags}\n"
-StatsString += f" - Generation Start Date: {datetime.date.today().strftime("%Y/%m/%d %H:%M:%S")}\n"
+StatsString += f" - Generation Start Date: {datetime.date.today().strftime('%Y/%m/%d %H:%M:%S')}\n"
 StatsString += f" - Generation Total Time: {ElapsedTime}s\n"
 StatsString += f" - Generation Average WPM: {60 * (TotalWords/ElapsedTime)}\n"
 
