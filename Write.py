@@ -71,7 +71,7 @@ Prompt:str = ""
 with open(Args.Prompt, "r") as f:
     Prompt = f.read()
 Outline = Writer.OutlineGenerator.GenerateOutline(Client, Prompt, Writer.Config.OUTLINE_QUALITY)
-
+BasePrompt = Prompt
 
 Prompt = "Here is an outline that you will use to build your award winning novel from. Remember to spell the character's names correctly.\n\n"
 Prompt += Outline
@@ -139,15 +139,15 @@ StatsString += " - Total Words: " + str(TotalWords) + "\n"
 StatsString += f" - Title: {Title}\n"
 StatsString += f" - Summary: {Summary}\n"
 StatsString += f" - Tags: {Tags}\n"
-StatsString += f" - Generation Start Date: {datetime.date.today().strftime('%Y/%m/%d %H:%M:%S')}\n"
+StatsString += f" - Generation Start Date: {datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')}\n"
 StatsString += f" - Generation Total Time: {ElapsedTime}s\n"
 StatsString += f" - Generation Average WPM: {60 * (TotalWords/ElapsedTime)}\n"
 
 StatsString += "\n\nUser Settings:\n"
-StatsString += f" - Base Prompt: {Prompt}\n"
+StatsString += f" - Base Prompt: {BasePrompt}\n"
 
 StatsString += "\n\nGeneration Settings:\n"
-StatsString += f" - Generator: Datacrystals_StoryGenerator_2024-04-27\n"
+StatsString += f" - Generator: Datacrystals_StoryGenerator_2024-04-28\n"
 StatsString += f" - Writer Model: {Writer.Config.WRITER_MODEL}\n"
 StatsString += f" - Revision Model: {Writer.Config.REVISION_MODEL}\n"
 StatsString += f" - Eval Model: {Writer.Config.EVAL_MODEL}\n"
@@ -169,7 +169,23 @@ StatsString += f" - Disable Scrubbing: {Writer.Config.SCRUB_NO_SCRUB}\n"
 Writer.PrintUtils.PrintBanner("Saving Story To Disk", "yellow")
 FName = f"Stories/Story_{Title.replace(' ', '_')}.md"
 with open(FName, "w") as F:
-    Out = StatsString + "\n\n\n---\n\n\n"
-    Out += StoryBodyText + "\n\n\n---\n\n\n"
-    Out += Outline + "\n\n\n---\n\n\n"
+    Out = f"""
+{StatsString}
+
+---
+
+Note: An outline of the story is available at the bottom of this document.
+Please scroll to the bottom if you wish to read that.
+
+---
+# {Title}
+
+{StoryBodyText}
+
+
+---
+# Outline
+
+{Outline}
+"""
     F.write(Out)
