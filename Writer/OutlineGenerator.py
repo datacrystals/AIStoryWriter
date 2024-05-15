@@ -6,11 +6,19 @@ import Writer.Config
 
 def ReviseOutline(_Client, _Outline, _Feedback, _History:list = []):
 
-    RevisionPrompt = "Please revise the following outline:\n\n"
-    RevisionPrompt += _Outline
-    RevisionPrompt += "\n\nBased on the following feedback:\n\n"
-    RevisionPrompt += _Feedback
-    RevisionPrompt += "\n\nRemember to expand upon your outline and add content to make it as best as it can be!"
+    RevisionPrompt:str = f"""
+Please revise the following outline:
+---
+{_Outline}
+---
+
+Based on the following feedback:
+---
+{_Feedback}
+---
+
+Remember to expand upon your outline and add content to make it as best as it can be!
+    """
 
     Writer.PrintUtils.PrintBanner("Revising Outline", "green")
     Messages = _History
@@ -24,9 +32,12 @@ def ReviseOutline(_Client, _Outline, _Feedback, _History:list = []):
 
 def GenerateOutline(_Client, _OutlinePrompt, _QualityThreshold:int = 85):
 
-    Prompt = "Please write a markdown formatted outline based on the following prompt:\n\n"
-    Prompt += _OutlinePrompt
-    Prompt += "\nRemember to use actual numbers for chapter numbers, e.g. 1 not one."
+    Prompt:str = f"""
+Please write a markdown formatted outline based on the following prompt:
+---
+{_OutlinePrompt}
+---
+    """
 
     # Generate Initial Outline
     Writer.PrintUtils.PrintBanner("Generating Initial Outline", "green")
