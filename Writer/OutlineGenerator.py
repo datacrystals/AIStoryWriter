@@ -30,6 +30,23 @@ Remember to expand upon your outline and add content to make it as best as it ca
     return SummaryText, Messages
 
 
+def GeneratePerChapterOutline(_Client, _Chapter, _History:list = []):
+
+    RevisionPrompt:str = f"""
+Please generate an outline for chapter {_Chapter} from the previous outline.
+    """
+
+    Writer.PrintUtils.PrintBanner("Generating Outline For Chapter " + str(_Chapter), "green")
+    Messages = _History
+    Messages.append(Writer.OllamaInterface.BuildUserQuery(RevisionPrompt))
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.WRITER_MODEL)
+    SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
+    Writer.PrintUtils.PrintBanner("Done Generating Outline For Chapter " + str(_Chapter), "green")
+
+    return SummaryText, Messages
+
+
+
 def GenerateOutline(_Client, _OutlinePrompt, _QualityThreshold:int = 85):
 
     Prompt:str = f"""
@@ -108,10 +125,6 @@ As a reminder, here is the outline:
     Writer.PrintUtils.PrintBanner(f"Generating Initial Chapter {_ChapterNum}/{_TotalChapters}", "green")
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
-
-    # print(f"\n\n\n\n\n\n\n\n\n\n---------------------------")
-    # Writer.PrintUtils.PrintMessageHistory(Messages)
-    # print(f"---------------------------\n\n\n\n\n\n\n\n\n\n\n")
 
     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.WRITER_MODEL)
     Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)

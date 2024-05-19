@@ -33,6 +33,8 @@ Parser.add_argument("-ChapterMinRevisions", default=0, type=int, help="Number of
 Parser.add_argument("-ChapterMaxRevisions", default=3, type=int, help="Max number of revisions that the chapter may have")
 Parser.add_argument("-NoChapterRevision", action="store_true", help="Disables Chapter Revisions")
 Parser.add_argument("-NoScrubChapters", action="store_true", help="Disables a final pass over the story to remove prompt leftovers/outline tidbits.")
+Parser.add_argument("-NoExpandOutline", action="store_true", help="Disables the system from expanding the outline for the story chapter by chapter prior to writing the story's chapter content.")
+Parser.add_argument("-EnableFinalEditPass", action="store_true", help="Enable a final edit pass of the whole story prior to scrubbing.")
 Args = Parser.parse_args()
 
 
@@ -59,6 +61,8 @@ Writer.Config.CHAPTER_MAX_REVISIONS = Args.ChapterMaxRevisions
 Writer.Config.CHAPTER_NO_REVISIONS = Args.NoChapterRevision
 
 Writer.Config.SCRUB_NO_SCRUB = Args.NoScrubChapters
+Writer.Config.NO_EXPAND_OUTLINE = Args.NoExpandOutline
+Writer.Config.ENABLE_FINAL_EDIT_PASS = Args.EnableFinalEditPass
 
 
 
@@ -84,6 +88,12 @@ NumChapters:int = Writer.ChapterDetector.LLMCountChapters(Client, Writer.OllamaI
 Writer.PrintUtils.PrintBanner(f"Found {NumChapters} Chapter(s)", "yellow")
 
 
+# Write Chapter Outlines
+if (not Writer.Config.NO_EXPAND_OUTLINE):
+    for Chapter in range(1, NumChapters + 1):
+        _, Messages = Writer.OutlineGenerator.GeneratePerChapterOutline(Client, Chapter, Messages)
+    
+
 # Write the chapters
 Writer.PrintUtils.PrintBanner("Starting Chapter Writing", "yellow")
 Chapters = []
@@ -99,7 +109,8 @@ for i in range(1, NumChapters + 1):
 
 # Now edit the whole thing together
 StoryBodyText:str = ""
-# NewChapters = Writer.NovelEditor.EditNovel(Client, Chapters, Outline, NumChapters)
+if Writer.Config.ENABLE_FINAL_EDIT_PASS:
+    NewChapters = Writer.NovelEditor.EditNovel(Client, Chapters, Outline, NumChapters)
 NewChapters = Chapters
 
 # Now scrub it (if enabled)
