@@ -19,7 +19,7 @@ import Writer.NovelEditor
 Parser = argparse.ArgumentParser()
 Parser.add_argument("-Prompt", help="Path to file containing the prompt")
 Parser.add_argument("-Host", default="http://10.1.65.4:11434", type=str, help="HTTP URL to ollama instance")
-Parser.add_argument("-WriterModel", default="vanilj/midnight-miqu-70b-v1.5", type=str, help="Model to use for writing the base content")
+Parser.add_argument("-WriterModel", default="emm9625/miqu-1-103b:latest", type=str, help="Model to use for writing the base content")
 Parser.add_argument("-RevisionModel", default="llama3:70b", type=str, help="Model to use for generating constructive criticism")
 Parser.add_argument("-EvalModel", default="llama3:70b", type=str, help="Model to use for evaluating the rating out of 100")
 Parser.add_argument("-InfoModel", default="llama3:70b", type=str, help="Model to use when generating summary/info at the end")
@@ -134,34 +134,34 @@ ElapsedTime = time.time() - StartTime
 TotalWords:int = Writer.Statistics.GetWordCount(StoryBodyText)
 Writer.PrintUtils.PrintBanner(f"Story Total Word Count: {TotalWords}", "blue")
 
-StatsString:str = "Work Statistics:\n"
-StatsString += " - Total Words: " + str(TotalWords) + "\n"
-StatsString += f" - Title: {Title}\n"
-StatsString += f" - Summary: {Summary}\n"
-StatsString += f" - Tags: {Tags}\n"
-StatsString += f" - Generation Start Date: {datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')}\n"
-StatsString += f" - Generation Total Time: {ElapsedTime}s\n"
-StatsString += f" - Generation Average WPM: {60 * (TotalWords/ElapsedTime)}\n"
+StatsString:str = "Work Statistics:  \n"
+StatsString += " - Total Words: " + str(TotalWords) + "  \n"
+StatsString += f" - Title: {Title}  \n"
+StatsString += f" - Summary: {Summary}  \n"
+StatsString += f" - Tags: {Tags}  \n"
+StatsString += f" - Generation Start Date: {datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')}  \n"
+StatsString += f" - Generation Total Time: {ElapsedTime}s  \n"
+StatsString += f" - Generation Average WPM: {60 * (TotalWords/ElapsedTime)}  \n"
 
-StatsString += "\n\nUser Settings:\n"
-StatsString += f" - Base Prompt: {BasePrompt}\n"
+StatsString += "\n\nUser Settings:  \n"
+StatsString += f" - Base Prompt: {BasePrompt}  \n"
 
-StatsString += "\n\nGeneration Settings:\n"
-StatsString += f" - Generator: Datacrystals_StoryGenerator_2024-04-28\n"
-StatsString += f" - Writer Model: {Writer.Config.WRITER_MODEL}\n"
-StatsString += f" - Revision Model: {Writer.Config.REVISION_MODEL}\n"
-StatsString += f" - Eval Model: {Writer.Config.EVAL_MODEL}\n"
-StatsString += f" - Info Model: {Writer.Config.INFO_MODEL}\n"
-StatsString += f" - Scrub Model: {Writer.Config.SCRUB_MODEL}\n"
-StatsString += f" - Seed: {Writer.Config.SEED}\n"
-StatsString += f" - Outline Quality: {Writer.Config.OUTLINE_QUALITY}\n"
-StatsString += f" - Outline Min Revisions: {Writer.Config.OUTLINE_MIN_REVISIONS}\n"
-StatsString += f" - Outline Max Revisions: {Writer.Config.OUTLINE_MAX_REVISIONS}\n"
-StatsString += f" - Chapter Quality: {Writer.Config.CHAPTER_QUALITY}\n"
-StatsString += f" - Chapter Min Revisions: {Writer.Config.CHAPTER_MIN_REVISIONS}\n"
-StatsString += f" - Chapter Max Revisions: {Writer.Config.CHAPTER_MAX_REVISIONS}\n"
-StatsString += f" - Chapter Disable Revisions: {Writer.Config.CHAPTER_NO_REVISIONS}\n"
-StatsString += f" - Disable Scrubbing: {Writer.Config.SCRUB_NO_SCRUB}\n"
+StatsString += "\n\nGeneration Settings:  \n"
+StatsString += f" - Generator: Datacrystals_StoryGenerator_2024-05-14  \n"
+StatsString += f" - Writer Model: {Writer.Config.WRITER_MODEL}  \n"
+StatsString += f" - Revision Model: {Writer.Config.REVISION_MODEL}  \n"
+StatsString += f" - Eval Model: {Writer.Config.EVAL_MODEL}  \n"
+StatsString += f" - Info Model: {Writer.Config.INFO_MODEL}  \n"
+StatsString += f" - Scrub Model: {Writer.Config.SCRUB_MODEL}  \n"
+StatsString += f" - Seed: {Writer.Config.SEED}  \n"
+StatsString += f" - Outline Quality: {Writer.Config.OUTLINE_QUALITY}  \n"
+StatsString += f" - Outline Min Revisions: {Writer.Config.OUTLINE_MIN_REVISIONS}  \n"
+StatsString += f" - Outline Max Revisions: {Writer.Config.OUTLINE_MAX_REVISIONS}  \n"
+StatsString += f" - Chapter Quality: {Writer.Config.CHAPTER_QUALITY}  \n"
+StatsString += f" - Chapter Min Revisions: {Writer.Config.CHAPTER_MIN_REVISIONS}  \n"
+StatsString += f" - Chapter Max Revisions: {Writer.Config.CHAPTER_MAX_REVISIONS}  \n"
+StatsString += f" - Chapter Disable Revisions: {Writer.Config.CHAPTER_NO_REVISIONS}  \n"
+StatsString += f" - Disable Scrubbing: {Writer.Config.SCRUB_NO_SCRUB}  \n"
 
 
 

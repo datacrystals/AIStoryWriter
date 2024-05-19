@@ -1,4 +1,4 @@
-WRITER_MODEL="vanilj/midnight-miqu-70b-v1.5" # Note this value is overridden by the argparser
+WRITER_MODEL="emm9625/miqu-1-103b:latest" # Note this value is overridden by the argparser
 REVISION_MODEL="llama3:70b" # Note this value is overridden by the argparser
 EVAL_MODEL="llama3:70b" # Note this value is overridden by the argparser
 INFO_MODEL="llama3:70b" # Note this value is overridden by the argparser
