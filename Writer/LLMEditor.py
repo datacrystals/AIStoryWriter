@@ -36,8 +36,13 @@ def GetOutlineRating(_Client, _Outline:str, _History:list = []):
 {_Outline}
 
 ---
+This outline meets all of the following criteria (true or false):
+    - Pacing: Is the story rushing over certain plot points and excessively focusing on others?
+    - Details: How are things described? Is it repetitive? Is the word choice appropriate for the scene? Are we describing things too much or too little?
+    - Flow: Does each chapter flow into the next? Does the plot make logical sense to the reader? Does it have a specific narrative structure at play? Is the narrative structure consistent throughout the story?
+    - Genre: What is the genre? What language is appropriate for that genre? Do the scenes support the genre?
 
-Review the above outline honestly, and give a json formatted response, containing the string \"OverallRating\", followed by an integer from 1-100.
+Give a JSON formatted response, containing the string \"IsComplete\", followed by an boolean True/False.
 Please do not include any other text, just the JSON as your response will be parsed by a computer.
 """
 
@@ -55,8 +60,8 @@ Please do not include any other text, just the JSON as your response will be par
         RawResponse = RawResponse.replace("json", "")
 
         try:
-            Rating = json.loads(RawResponse)["OverallRating"]
-            Writer.PrintUtils.PrintBanner(f"Editor Reviewed Outline At {Rating}/100", "green")
+            Rating = json.loads(RawResponse)["IsComplete"]
+            Writer.PrintUtils.PrintBanner(f"Editor Determined IsComplete: {Rating}", "green")
             return Rating, Messages
         except Exception as E:
             Writer.PrintUtils.PrintBanner("Error Parsing JSON Written By LLM, Asking For Edits", "red")
@@ -72,20 +77,18 @@ Please do not include any other text, just the JSON as your response will be par
 
 def GetFeedbackOnChapter(_Client, _Chapter:str, _Outline:str, _History:list = []):
 
+    # Disabled seeing the outline too.
     StartingPrompt:str = f"""
 Chapter:
 ```
 {_Chapter}
 ```
 
-Outline:
-```
-{_Outline}
-```
-
-You are a professional editor.
-Please critique the previously mentioned chapter, and suggest improvements for clarity and substance.
-Make sure the chapter follows the outline so that the story stays on track!
+Please give feedback on the above chapter based on the following criteria:
+    - Pacing: Is the story rushing over certain plot points and excessively focusing on others?
+    - Details: How are things described? Is it repetitive? Is the word choice appropriate for the scene? Are we describing things too much or too little?
+    - Flow: Does each chapter flow into the next? Does the plot make logical sense to the reader? Does it have a specific narrative structure at play? Is the narrative structure consistent throughout the story?
+    - Genre: What is the genre? What language is appropriate for that genre? Do the scenes support the genre?
 
 """
 
@@ -98,13 +101,20 @@ Make sure the chapter follows the outline so that the story stays on track!
     return Writer.OllamaInterface.GetLastMessageText(Messages), Messages
 
 
+# Switch this to iscomplete true/false (similar to outline)
 def GetChapterRating(_Client, _Chapter:str, _History:list = []):
 
     StartingPrompt:str = f"""
 {_Chapter}
 
 ---
-Review the above chapter honestly, and give a json formatted response, containing the string \"OverallRating\", followed by an integer from 1-100.
+This chapter meets all of the following criteria (true or false):
+    - Pacing: Is the story rushing over certain plot points and excessively focusing on others?
+    - Details: How are things described? Is it repetitive? Is the word choice appropriate for the scene? Are we describing things too much or too little?
+    - Flow: Does each chapter flow into the next? Does the plot make logical sense to the reader? Does it have a specific narrative structure at play? Is the narrative structure consistent throughout the story?
+    - Genre: What is the genre? What language is appropriate for that genre? Do the scenes support the genre?
+
+Give a JSON formatted response, containing the string \"IsComplete\", followed by an boolean True/False.
 Please do not include any other text, just the JSON as your response will be parsed by a computer.
 """
 
@@ -122,8 +132,8 @@ Please do not include any other text, just the JSON as your response will be par
         RawResponse = RawResponse.replace("json", "")
         
         try:
-            Rating = json.loads(RawResponse)["OverallRating"]
-            Writer.PrintUtils.PrintBanner(f"Editor Reviewed Chapter At {Rating}/100", "green")
+            Rating = json.loads(RawResponse)["IsComplete"]
+            Writer.PrintUtils.PrintBanner(f"Editor Determined IsComplete: {Rating}", "green")
             return Rating, Messages
         except Exception as E:
             Writer.PrintUtils.PrintBanner("Error Parsing JSON Written By LLM, Asking For Edits", "red")

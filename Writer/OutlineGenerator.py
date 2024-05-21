@@ -18,6 +18,16 @@ Based on the following feedback:
 ---
 
 Remember to expand upon your outline and add content to make it as best as it can be!
+
+
+As you write, keep the following in mind:
+    - What is the conflict?
+    - Who are the characters (at least two characters)?
+    - What do the characters mean to each other?
+    - Where are we located?
+    - What are the stakes (is it high, is it low, what is at stake here)?
+    - What is the goal or solution to the conflict?
+
     """
 
     Writer.PrintUtils.PrintBanner("Revising Outline", "green")
@@ -34,6 +44,16 @@ def GeneratePerChapterOutline(_Client, _Chapter, _History:list = []):
 
     RevisionPrompt:str = f"""
 Please generate an outline for chapter {_Chapter} from the previous outline.
+
+As you write, keep the following in mind:
+    - What is the conflict?
+    - Who are the characters (at least two characters)?
+    - What do the characters mean to each other?
+    - Where are we located?
+    - What are the stakes (is it high, is it low, what is at stake here)?
+    - What is the goal or solution to the conflict?
+
+
     """
 
     Writer.PrintUtils.PrintBanner("Generating Outline For Chapter " + str(_Chapter), "green")
@@ -81,10 +101,11 @@ As you write, remember to ask yourself the following questions:
         Iterations += 1
         Feedback, FeedbackHistory = Writer.LLMEditor.GetFeedbackOnOutline(_Client, Outline, FeedbackHistory)
         Rating, FeedbackHistory = Writer.LLMEditor.GetOutlineRating(_Client, Outline, FeedbackHistory)
+        # Rating has been changed from a 0-100 int, to does it meet the standards (yes/no)?
 
         if (Iterations > Writer.Config.OUTLINE_MAX_REVISIONS):
             break
-        if ((Iterations > Writer.Config.OUTLINE_MIN_REVISIONS) and (Rating >= _QualityThreshold)):
+        if ((Iterations > Writer.Config.OUTLINE_MIN_REVISIONS) and (Rating == True)):
             break
 
         Outline, WritingHistory = ReviseOutline(_Client, Outline, Feedback, WritingHistory)
@@ -119,14 +140,18 @@ Based on the following feedback:
 def GenerateChapter(_Client, _ChapterNum:int, _TotalChapters:int, _Outline:str, _History:list = [], _QualityThreshold:int = 85):
 
     Prompt = f"""
-Please write chapter {_ChapterNum} based on the outline.
+Please write chapter {_ChapterNum} based on the following outline.
 
-Only write this chapter (we will get to the rest later), and make it as long and juicy as possible.
-
-As a reminder, here is the outline:
 ---
 {_Outline}
 ---
+
+As a reminder to keep the following criteria in mind:
+    - Pacing: Is the story rushing over certain plot points and excessively focusing on others?
+    - Details: How are things described? Is it repetitive? Is the word choice appropriate for the scene? Are we describing things too much or too little?
+    - Flow: Does each chapter flow into the next? Does the plot make logical sense to the reader? Does it have a specific narrative structure at play? Is the narrative structure consistent throughout the story?
+    - Genre: What is the genre? What language is appropriate for that genre? Do the scenes support the genre?
+
 """
 
     # Generate Initial Chapter
@@ -155,7 +180,7 @@ As a reminder, here is the outline:
 
         if (Iterations > Writer.Config.CHAPTER_MAX_REVISIONS):
             break
-        if ((Iterations > Writer.Config.CHAPTER_MIN_REVISIONS) and (Rating >= _QualityThreshold)):
+        if ((Iterations > Writer.Config.CHAPTER_MIN_REVISIONS) and (Rating == True)):
             break
         Chapter, WritingHistory = ReviseChapter(_Client, Chapter, Feedback, WritingHistory)
 

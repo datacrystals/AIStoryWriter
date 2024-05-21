@@ -25,10 +25,10 @@ Parser.add_argument("-EvalModel", default="llama3:70b", type=str, help="Model to
 Parser.add_argument("-InfoModel", default="llama3:70b", type=str, help="Model to use when generating summary/info at the end")
 Parser.add_argument("-ScrubModel", default="llama3:70b", type=str, help="Model to use when scrubbing the story at the end")
 Parser.add_argument("-Seed", default=12, type=int, help="Used to seed models.")
-Parser.add_argument("-OutlineQuality", default=85, type=int, help="Rating out of 100 that the outline must be given by the EvalModel before proceeding to be written")
+# Parser.add_argument("-OutlineQuality", default=85, type=int, help="Rating out of 100 that the outline must be given by the EvalModel before proceeding to be written")
 Parser.add_argument("-OutlineMinRevisions", default=0, type=int, help="Number of minimum revisions that the outline must be given prior to proceeding")
 Parser.add_argument("-OutlineMaxRevisions", default=3, type=int, help="Max number of revisions that the outline may have")
-Parser.add_argument("-ChapterQuality", default=85, type=int, help="Rating out of 100 that the chapter must be given by the EvalModel before proceeding to be written")
+# Parser.add_argument("-ChapterQuality", default=85, type=int, help="Rating out of 100 that the chapter must be given by the EvalModel before proceeding to be written")
 Parser.add_argument("-ChapterMinRevisions", default=0, type=int, help="Number of minimum revisions that the chapter must be given prior to proceeding")
 Parser.add_argument("-ChapterMaxRevisions", default=3, type=int, help="Max number of revisions that the chapter may have")
 Parser.add_argument("-NoChapterRevision", action="store_true", help="Disables Chapter Revisions")
@@ -77,8 +77,22 @@ with open(Args.Prompt, "r") as f:
 Outline = Writer.OutlineGenerator.GenerateOutline(Client, Prompt, Writer.Config.OUTLINE_QUALITY)
 BasePrompt = Prompt
 
-Prompt = "Here is an outline that you will use to build your award winning novel from. Remember to spell the character's names correctly.\n\n"
-Prompt += Outline
+
+## Setup Base Prompt For Chapter-Outline Generation
+Prompt = f"""
+Please write an engaging and well-paced fictional novel based on the following outline:
+
+---
+{Outline}
+---
+
+Remember to keep the following criteria in mind:
+    - Pacing: Is the story rushing over certain plot points and excessively focusing on others?
+    - Details: How are things described? Is it repetitive? Is the word choice appropriate for the scene? Are we describing things too much or too little?
+    - Flow: Does each chapter flow into the next? Does the plot make logical sense to the reader? Does it have a specific narrative structure at play? Is the narrative structure consistent throughout the story?
+    - Genre: What is the genre? What language is appropriate for that genre? Do the scenes support the genre?
+
+"""
 Messages = [Writer.OllamaInterface.BuildUserQuery(Prompt)]
 
 
@@ -89,10 +103,43 @@ Writer.PrintUtils.PrintBanner(f"Found {NumChapters} Chapter(s)", "yellow")
 
 
 # Write Chapter Outlines
+ChapterOutlines:list = []
 if (not Writer.Config.NO_EXPAND_OUTLINE):
     for Chapter in range(1, NumChapters + 1):
-        _, Messages = Writer.OutlineGenerator.GeneratePerChapterOutline(Client, Chapter, Messages)
-    
+        ChapterOutline, Messages = Writer.OutlineGenerator.GeneratePerChapterOutline(Client, Chapter, Messages)
+        ChapterOutlines.append(ChapterOutline)
+
+# Create MegaOutline
+DetailedOutline:str = ""
+for Chapter in ChapterOutlines:
+    DetailedOutline += Chapter
+MegaOutline:str = f"""
+
+# Base Outline
+{Outline}
+
+# Detailed Outline
+{DetailedOutline}
+
+"""
+
+# Setup Base Prompt For Per-Chapter Generation
+Prompt = f"""
+Please write an engaging and well-paced fictional novel based on the following outline:
+
+---
+{MegaOutline}
+---
+
+Remember to keep the following criteria in mind:
+    - Pacing: Is the story rushing over certain plot points and excessively focusing on others?
+    - Details: How are things described? Is it repetitive? Is the word choice appropriate for the scene? Are we describing things too much or too little?
+    - Flow: Does each chapter flow into the next? Does the plot make logical sense to the reader? Does it have a specific narrative structure at play? Is the narrative structure consistent throughout the story?
+    - Genre: What is the genre? What language is appropriate for that genre? Do the scenes support the genre?
+
+"""
+Messages = [Writer.OllamaInterface.BuildUserQuery(Prompt)]
+
 
 # Write the chapters
 Writer.PrintUtils.PrintBanner("Starting Chapter Writing", "yellow")
