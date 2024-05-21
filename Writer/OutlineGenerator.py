@@ -54,6 +54,14 @@ Please write a markdown formatted outline based on the following prompt:
 ---
 {_OutlinePrompt}
 ---
+As you write, remember to ask yourself the following questions:
+    - What is the conflict?
+    - Who are the characters (at least two characters)?
+    - What do the characters mean to each other?
+    - Where are we located?
+    - What are the stakes (is it high, is it low, what is at stake here)?
+    - What is the goal or solution to the conflict?
+
     """
 
     # Generate Initial Outline

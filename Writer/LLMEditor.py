@@ -8,9 +8,17 @@ def GetFeedbackOnOutline(_Client, _Outline:str, _History:list = []):
 
     StartingPrompt:str = f"""
 Please critique the following outline - make sure to provide constructive criticism on how it can be improved and point out any problems with it.
-Remember to check if the characters' names are spelled correctly.
+
 ---
 {_Outline}
+---
+
+As you revise, consider the following criteria:
+    - Pacing: Is the story rushing over certain plot points and excessively focusing on others?
+    - Details: How are things described? Is it repetitive? Is the word choice appropriate for the scene? Are we describing things too much or too little?
+    - Flow: Does each chapter flow into the next? Does the plot make logical sense to the reader? Does it have a specific narrative structure at play? Is the narrative structure consistent throughout the story?
+    - Genre: What is the genre? What language is appropriate for that genre? Do the scenes support the genre?
+
     """
 
     Writer.PrintUtils.PrintBanner("Prompting LLM To Critique Outline", "green")
