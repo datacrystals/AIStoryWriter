@@ -51,11 +51,11 @@ Writer.Config.REVISION_MODEL = Args.RevisionModel
 Writer.Config.INFO_MODEL = Args.InfoModel
 Writer.Config.SCRUB_MODEL = Args.ScrubModel
 
-Writer.Config.OUTLINE_QUALITY = Args.OutlineQuality
+# Writer.Config.OUTLINE_QUALITY = Args.OutlineQuality
 Writer.Config.OUTLINE_MIN_REVISIONS = Args.OutlineMinRevisions
 Writer.Config.OUTLINE_MAX_REVISIONS = Args.OutlineMaxRevisions
 
-Writer.Config.CHAPTER_QUALITY = Args.ChapterQuality
+# Writer.Config.CHAPTER_QUALITY = Args.ChapterQuality
 Writer.Config.CHAPTER_MIN_REVISIONS = Args.ChapterMinRevisions
 Writer.Config.CHAPTER_MAX_REVISIONS = Args.ChapterMaxRevisions
 Writer.Config.CHAPTER_NO_REVISIONS = Args.NoChapterRevision
