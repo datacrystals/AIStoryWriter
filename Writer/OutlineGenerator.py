@@ -20,7 +20,9 @@ As you write, remember to ask yourself the following questions:
     - What are the stakes (is it high, is it low, what is at stake here)?
     - What is the goal or solution to the conflict?
 
-Don't answer these questions directly, instead make your writing implicitly answer them. (Show, don't tell)
+Don't answer these questions directly, instead make your outline implicitly answer them. (Show, don't tell)
+
+Again, remmeber - you're writing an outline for the story.
     
     """
 
