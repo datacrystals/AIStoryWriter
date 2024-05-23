@@ -28,7 +28,7 @@ Given the above novel and outline, please edit chapter {i} so that it fits toget
         Writer.PrintUtils.PrintBanner(f"Prompting LLM To Perform Chapter {i} Second Pass In-Place Edit", "green")
         Messages = []
         Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
-        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.WRITER_MODEL)
+        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_WRITER_MODEL)
         Writer.PrintUtils.PrintBanner(f"Finished Chapter {i} Second Pass In-Place Edit", "green")
 
         NewChapter = Writer.OllamaInterface.GetLastMessageText(Messages)

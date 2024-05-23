@@ -19,7 +19,9 @@ import Writer.NovelEditor
 Parser = argparse.ArgumentParser()
 Parser.add_argument("-Prompt", help="Path to file containing the prompt")
 Parser.add_argument("-Host", default="http://10.1.65.4:11434", type=str, help="HTTP URL to ollama instance")
-Parser.add_argument("-WriterModel", default="emm9625/miqu-1-103b:latest", type=str, help="Model to use for writing the base content")
+Parser.add_argument("-InitialOutlineModel", default="emm9625/miqu-1-103b:latest", type=str, help="Model to use for writing the base outline content")
+Parser.add_argument("-ChapterOutlineModel", default="emm9625/miqu-1-103b:latest", type=str, help="Model to use for writing the per-chapter outline content")
+Parser.add_argument("-ChapterModel", default="emm9625/miqu-1-103b:latest", type=str, help="Model to use for writing the chapters themselves")
 Parser.add_argument("-RevisionModel", default="llama3:70b", type=str, help="Model to use for generating constructive criticism")
 Parser.add_argument("-EvalModel", default="llama3:70b", type=str, help="Model to use for evaluating the rating out of 100")
 Parser.add_argument("-InfoModel", default="llama3:70b", type=str, help="Model to use when generating summary/info at the end")
@@ -45,7 +47,9 @@ StartTime = time.time()
 # Setup Config
 Writer.Config.SEED = Args.Seed
 
-Writer.Config.WRITER_MODEL = Args.WriterModel
+Writer.Config.INITIAL_OUTLINE_WRITER_MODEL = Args.InitialOutlineModel
+Writer.Config.CHAPTER_OUTLINE_WRITER_MODEL = Args.ChapterOutlineModel
+Writer.Config.CHAPTER_WRITER_MODEL = Args.ChapterModel
 Writer.Config.EVAL_MODEL = Args.EvalModel
 Writer.Config.REVISION_MODEL = Args.RevisionModel
 Writer.Config.INFO_MODEL = Args.InfoModel
@@ -206,7 +210,9 @@ StatsString += f" - Base Prompt: {BasePrompt}  \n"
 
 StatsString += "\n\nGeneration Settings:  \n"
 StatsString += f" - Generator: Datacrystals_StoryGenerator_2024-05-14  \n"
-StatsString += f" - Writer Model: {Writer.Config.WRITER_MODEL}  \n"
+StatsString += f" - Base Outline Writer Model: {Writer.Config.INITIAL_OUTLINE_WRITER_MODEL}  \n"
+StatsString += f" - Chapter Outline Writer Model: {Writer.Config.CHAPTER_OUTLINE_WRITER_MODEL}  \n"
+StatsString += f" - Chapter Writer Model: {Writer.Config.CHAPTER_WRITER_MODEL}  \n"
 StatsString += f" - Revision Model: {Writer.Config.REVISION_MODEL}  \n"
 StatsString += f" - Eval Model: {Writer.Config.EVAL_MODEL}  \n"
 StatsString += f" - Info Model: {Writer.Config.INFO_MODEL}  \n"

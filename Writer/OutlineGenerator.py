@@ -33,7 +33,7 @@ As you write, keep the following in mind:
     Writer.PrintUtils.PrintBanner("Revising Outline", "green")
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(RevisionPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.WRITER_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL)
     SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     Writer.PrintUtils.PrintBanner("Done Revising Outline", "green")
 
@@ -60,7 +60,7 @@ Remember to follow the provided outline when creating your chapter.
     Writer.PrintUtils.PrintBanner("Generating Outline For Chapter " + str(_Chapter), "green")
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(RevisionPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.WRITER_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_OUTLINE_WRITER_MODEL)
     SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     Writer.PrintUtils.PrintBanner("Done Generating Outline For Chapter " + str(_Chapter), "green")
 
@@ -88,7 +88,7 @@ As you write, remember to ask yourself the following questions:
     # Generate Initial Outline
     Writer.PrintUtils.PrintBanner("Generating Initial Outline", "green")
     Messages = [Writer.OllamaInterface.BuildUserQuery(Prompt)]
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.WRITER_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL)
     Outline:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     Writer.PrintUtils.PrintBanner("Done Generating Initial Outline", "green")
 
@@ -130,7 +130,7 @@ Based on the following feedback:
     Writer.PrintUtils.PrintBanner("Revising Chapter", "green")
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(RevisionPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.WRITER_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_WRITER_MODEL)
     SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     Writer.PrintUtils.PrintBanner("Done Revising Chapter", "green")
 
@@ -153,7 +153,9 @@ As a reminder to keep the following criteria in mind:
     - Flow: Does each chapter flow into the next? Does the plot make logical sense to the reader? Does it have a specific narrative structure at play? Is the narrative structure consistent throughout the story?
     - Genre: What is the genre? What language is appropriate for that genre? Do the scenes support the genre?
 
-Remember - you are the author of this story so don't just answer the above questions, ask them to yourself as you write the story itself.    
+Remember - you are the author of this story so don't just answer the above questions, ask them to yourself as you write the story itself.  
+
+Do not write any other chapter than the one specified above.  
 
 """
 
@@ -162,7 +164,7 @@ Remember - you are the author of this story so don't just answer the above quest
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.WRITER_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_WRITER_MODEL)
     Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter {_ChapterNum}/{_TotalChapters}", "green")
 
