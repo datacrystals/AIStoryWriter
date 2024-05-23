@@ -17,3 +17,5 @@
 # Add grading scale (if IsComplete true/false does not work)
 # potentially have it update the outline after writing each chapter, that way it can be flexible and change as it starts to write it
 # have it check if the whole story follows the outline at the end and suggest edits of the entire thing rather than chapter by chapter
+
+make use of system prompts!!

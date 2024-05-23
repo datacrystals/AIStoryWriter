@@ -55,6 +55,8 @@ As you write, keep the following in mind:
 
 Remember to follow the provided outline when creating your chapter.
 
+Make sure to name your chapter!
+
     """
 
     Writer.PrintUtils.PrintBanner("Generating Outline For Chapter " + str(_Chapter), "green")
