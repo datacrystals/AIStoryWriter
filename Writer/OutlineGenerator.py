@@ -53,6 +53,7 @@ As you write, keep the following in mind:
     - What are the stakes (is it high, is it low, what is at stake here)?
     - What is the goal or solution to the conflict?
 
+Remember to follow the provided outline when creating your chapter.
 
     """
 
@@ -151,6 +152,8 @@ As a reminder to keep the following criteria in mind:
     - Details: How are things described? Is it repetitive? Is the word choice appropriate for the scene? Are we describing things too much or too little?
     - Flow: Does each chapter flow into the next? Does the plot make logical sense to the reader? Does it have a specific narrative structure at play? Is the narrative structure consistent throughout the story?
     - Genre: What is the genre? What language is appropriate for that genre? Do the scenes support the genre?
+
+Remember - you are the author of this story so don't just answer the above questions, ask them to yourself as you write the story itself.    
 
 """
 
