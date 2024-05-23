@@ -34,6 +34,12 @@ def StreamResponse(_Stream):
 def BuildUserQuery(_Query:str):
     return {'role': 'user', 'content': _Query}
 
+def BuildSystemQuery(_Query:str):
+    return {'role': 'system', 'content': _Query}
+
+def BuildAssistantQuery(_Query:str):
+    return {'role': 'assistant', 'content': _Query}
+
 def GetLastMessageText(_Messages:list):
     return _Messages[-1]["content"]
 
