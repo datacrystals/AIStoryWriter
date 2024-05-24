@@ -22,7 +22,7 @@ def ChatAndStreamResponse(_Client, _Messages, _Model:str="llama3"):
         ThisMessage:str = StreamResponse(Stream)
 
         # Check if it's empty
-        if not ThisMessage.isspace():
+        if not ThisMessage["content"].isspace():
             _Messages.append(ThisMessage)
             return _Messages
         else:
