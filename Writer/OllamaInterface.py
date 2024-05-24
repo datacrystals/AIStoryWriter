@@ -9,16 +9,25 @@ def InitClient(_ClientHost:str = "http://10.1.65.4:11434"):
 
 
 def ChatAndStreamResponse(_Client, _Messages, _Model:str="llama3"):
-    Stream = _Client.chat(
-        model=_Model,
-        messages=_Messages,
-        stream=True,
-        options=dict(seed=Writer.Config.SEED)
-    )
-    print(f"DEBUG: Using Model {_Model}")
-    _Messages.append(StreamResponse(Stream))
 
-    return _Messages
+    # Disallow empty garbage responses
+    while True:
+        Stream = _Client.chat(
+            model=_Model,
+            messages=_Messages,
+            stream=True,
+            options=dict(seed=Writer.Config.SEED)
+        )
+        print(f"DEBUG: Using Model {_Model}")
+        ThisMessage:str = StreamResponse(Stream)
+
+        # Check if it's empty
+        if not ThisMessage.isspace():
+            _Messages.append(ThisMessage)
+            return _Messages
+        else:
+            print("WARNING: LLM RETURNED ONLY WHITESPACE!")
+            _Messages.append(BuildUserQuery("Sorry, but you returned an empty string, please try again!"))
 
 def StreamResponse(_Stream):
   

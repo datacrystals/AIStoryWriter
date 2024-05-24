@@ -37,6 +37,8 @@ Don't answer these questions directly, instead make your writing implicitly answ
 
 Do not write any other chapter than the one specified above.  
 
+Make sure not to gloss over days or weeks of content, write those out for the user!
+
 Remember, have fun and be creative!!
 """
 
@@ -147,7 +149,7 @@ Remember to remove any author notes or non-chapter text, as this is the version 
 
     Writer.PrintUtils.PrintBanner(f"Entering Feedback/Revision Loop (Stage 5) For Chapter {_ChapterNum}/{_TotalChapters}", "yellow")
     FeedbackHistory = []
-    WritingHistory = Messages
+    WritingHistory = MesssageHistory.copy()
     Rating:int = 0
     Iterations:int = 0
     while True:
