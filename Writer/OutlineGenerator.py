@@ -22,7 +22,7 @@ As you write, remember to ask yourself the following questions:
 
 Don't answer these questions directly, instead make your outline implicitly answer them. (Show, don't tell)
 
-Again, remmeber - you're writing an outline for the story.
+Again, remember - you're writing an outline for the story.
     
     """
 
