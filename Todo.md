@@ -69,3 +69,12 @@ for chapter in chapters:
 give the chapter generators the outline every time
 make sure they also keep the text so it flows between chapters
 tell them to read the previous chapters andm ensure that their writing flows from each chapter to the next one so it's not a disjointed piece of crap
+
+
+--
+
+# iterative generation idea
+
+Generate the story - then create an outline chpater by chapter
+then add detail to the outline
+generate it all again?
