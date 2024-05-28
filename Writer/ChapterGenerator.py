@@ -56,6 +56,8 @@ Remember, have fun and be creative!!
     Prompt = f"""
 Please edit the following chapter based on the following criteria and any previous chapters (if there are any yet).
 
+Don't take away content, instead expand upon it to make a longer and more detailed output.
+
 ---
 {Stage1Chapter}
 ---
@@ -83,6 +85,8 @@ Remember, have fun, be creative, and improve the character development!
     #### STAGE 3: Add Dialogue
     Prompt = f"""
 Please edit the following chapter based on the following criteria and any previous chapters (if there are any yet).
+
+Don't take away content, instead expand upon it to make a longer and more detailed output.
 
 ---
 {Stage2Chapter}
@@ -112,6 +116,9 @@ Remember, have fun, be creative, and add dialogue to the chapter!
     Prompt = f"""
 Please provide a final edit the following chapter based on the following criteria and any previous chapters (if there are any yet).
 
+Don't take away content, instead expand upon it to make a longer and more detailed output.
+
+
 ---
 {Stage3Chapter}
 ---
@@ -120,9 +127,9 @@ As a reminder to keep the following criteria in mind:
     - Pacing
     - Characters
     - Flow
-    - Details
+    - Details: Is the output too flowery?
     - Dialogue
-    - Development
+    - Development: Is there a clear development from scene to scene, chapter to chapter?
     - Genre
     - Disruptions/conflict
 

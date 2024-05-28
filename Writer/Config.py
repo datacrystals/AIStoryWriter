@@ -21,8 +21,10 @@ CHAPTER_MIN_REVISIONS=1 # Note this value is overridden by the argparser
 CHAPTER_MAX_REVISIONS=3 # Note this value is overridden by the argparser
 
 SCRUB_NO_SCRUB=False # Note this value is overridden by the argparser
-NO_EXPAND_OUTLINE=False # Note this value is overridden by the argparser
+EXPAND_OUTLINE=False # Note this value is overridden by the argparser
 ENABLE_FINAL_EDIT_PASS=False # Note this value is overridden by the argparser
+
+OPTIONAL_OUTPUT_NAME=""
 
 # Tested models:
 "llama3:70b" # works as editor model, DO NOT use as writer model, it sucks

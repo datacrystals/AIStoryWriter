@@ -62,3 +62,10 @@ for chapter in chapters:
     and revise all at once
 
 # Maybe put in definitions for the terms used if that's a problem
+
+# TRY REPLACING --- with ``` FORMATTING
+# check for nested ``` blocks, by having a helper function that removes them prior to wrapping it in a nested set of ``` blocks
+
+give the chapter generators the outline every time
+make sure they also keep the text so it flows between chapters
+tell them to read the previous chapters andm ensure that their writing flows from each chapter to the next one so it's not a disjointed piece of crap
