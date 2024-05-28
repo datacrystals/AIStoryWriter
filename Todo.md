@@ -78,3 +78,8 @@ tell them to read the previous chapters andm ensure that their writing flows fro
 Generate the story - then create an outline chpater by chapter
 then add detail to the outline
 generate it all again?
+
+
+# include the user prompt in all generation contexts?
+- would probably reuslt in better more usable output, but might also be not good
+test it i guess
