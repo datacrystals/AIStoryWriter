@@ -135,13 +135,11 @@ if (Writer.Config.EXPAND_OUTLINE):
 
 # Write the chapters
 Writer.PrintUtils.PrintBanner("Starting Chapter Writing", "yellow")
-Messages = []
 Chapters = []
 for i in range(1, NumChapters + 1):
 
     Chapter = Writer.ChapterGenerator.GenerateChapter(Client, i, NumChapters, Outline, Chapters, Writer.Config.OUTLINE_QUALITY)
 
-    Messages.append(Writer.OllamaInterface.BuildUserQuery(Chapter))
     Chapters.append(Chapter)
     ChapterWordCount = Writer.Statistics.GetWordCount(Chapter)
     Writer.PrintUtils.PrintBanner(f"Chapter Word Count: {ChapterWordCount}", "blue")
@@ -167,6 +165,8 @@ for Chapter in NewChapters:
 
 
 # Now Generate Info
+Messages = []
+Messages.append(Writer.OllamaInterface.BuildUserQuery(Outline))
 Info = Writer.StoryInfo.GetStoryInfo(Client, Messages)
 Title = Info['Title']
 Summary = Info['Summary']
