@@ -21,14 +21,18 @@ def GenerateChapter(_Client, _ChapterNum:int, _TotalChapters:int, _Outline:str, 
 
     #### STAGE 1: Create Initial Plot
     Prompt = f"""
-Please write chapter {_ChapterNum} of {_TotalChapters} based on the following outline and any previous chapters (if there are any yet).
+Please write chapter {_ChapterNum} of {_TotalChapters} based on the following outline and any previous chapters.
+Do not summarize any previous chapters, make your chapter connect seamlessly with previous ones.
+
 
 ---
 {_Outline}
 ---
 
 As a reminder to keep the following criteria in mind:
-    - Pacing: Is the story rushing over certain plot points and excessively focusing on others?
+    - Pacing: 
+      - Are you skipping days at a time? Summarizing events? Don't do that, add scenes to detail them.
+      - Is the story rushing over certain plot points and excessively focusing on others?
     - Details: How are things described? Is it repetitive? Is the word choice appropriate for the scene? Are we describing things too much or too little?
     - Flow: Does each chapter flow into the next? Does the plot make logical sense to the reader? Does it have a specific narrative structure at play? Is the narrative structure consistent throughout the story?
     - Genre: What is the genre? What language is appropriate for that genre? Do the scenes support the genre?
@@ -54,7 +58,8 @@ Remember, have fun and be creative!!
 
     #### STAGE 2: Add Character Development
     Prompt = f"""
-Please edit the following chapter based on the following criteria and any previous chapters (if there are any yet).
+Please edit the following chapter based on the following criteria and any previous chapters.
+Do not summarize any previous chapters, make your chapter connect seamlessly with previous ones.
 
 Don't take away content, instead expand upon it to make a longer and more detailed output.
 
@@ -84,7 +89,8 @@ Remember, have fun, be creative, and improve the character development!
 
     #### STAGE 3: Add Dialogue
     Prompt = f"""
-Please edit the following chapter based on the following criteria and any previous chapters (if there are any yet).
+Please edit the following chapter based on the following criteria and any previous chapters.
+Do not summarize any previous chapters, make your chapter connect seamlessly with previous ones.
 
 Don't take away content, instead expand upon it to make a longer and more detailed output.
 
@@ -114,7 +120,8 @@ Remember, have fun, be creative, and add dialogue to the chapter!
 
     #### STAGE 4: Final-Pre-Revision Edit Pass
     Prompt = f"""
-Please provide a final edit the following chapter based on the following criteria and any previous chapters (if there are any yet).
+Please provide a final edit the following chapter based on the following criteria and any previous chapters.
+Do not summarize any previous chapters, make your chapter connect seamlessly with previous ones.
 
 Don't take away content, instead expand upon it to make a longer and more detailed output.
 
@@ -124,7 +131,9 @@ Don't take away content, instead expand upon it to make a longer and more detail
 ---
 
 As a reminder to keep the following criteria in mind:
-    - Pacing
+    - Pacing: 
+      - Are you skipping days at a time? Summarizing events? Don't do that, add scenes to detail them.
+      - Is the story rushing over certain plot points and excessively focusing on others?
     - Characters
     - Flow
     - Details: Is the output too flowery?
