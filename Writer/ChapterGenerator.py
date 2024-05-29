@@ -21,25 +21,25 @@ def GenerateChapter(_Client, _ChapterNum:int, _TotalChapters:int, _Outline:str, 
 
     #### STAGE 1: Create Initial Plot
     Prompt = f"""
-Please write chapter {_ChapterNum} of {_TotalChapters} based on the following outline and any previous chapters.
+Please write the plot for chapter {_ChapterNum} of {_TotalChapters} based on the following outline and any previous chapters.
 Do not summarize any previous chapters, make your chapter connect seamlessly with previous ones.
 
 
----
+```
 {_Outline}
----
+```
 
 As a reminder to keep the following criteria in mind:
     - Pacing: 
       - Are you skipping days at a time? Summarizing events? Don't do that, add scenes to detail them.
       - Is the story rushing over certain plot points and excessively focusing on others?
-    - Details: How are things described? Is it repetitive? Is the word choice appropriate for the scene? Are we describing things too much or too little?
     - Flow: Does each chapter flow into the next? Does the plot make logical sense to the reader? Does it have a specific narrative structure at play? Is the narrative structure consistent throughout the story?
     - Genre: What is the genre? What language is appropriate for that genre? Do the scenes support the genre?
 
 Don't answer these questions directly, instead make your writing implicitly answer them. (Show, don't tell)
 
 Do not write any other chapter than the one specified above.  
+DO NOT skip ahead in the story, or muddle it together. ONLY write what is in chapter {_ChapterNum}.
 
 Make sure not to gloss over days or weeks of content, write those out for the user!
 
@@ -58,18 +58,25 @@ Remember, have fun and be creative!!
 
     #### STAGE 2: Add Character Development
     Prompt = f"""
-Please edit the following chapter based on the following criteria and any previous chapters.
+Please write character development for the following chapter {_ChapterNum} of {_TotalChapters} based on the following criteria and any previous chapters.
 Do not summarize any previous chapters, make your chapter connect seamlessly with previous ones.
 
 Don't take away content, instead expand upon it to make a longer and more detailed output.
 
----
+For your reference, here is the outline:
+```
+{_Outline}
+```
+
+And here is the chapter's plot:
+```
 {Stage1Chapter}
----
+```
 
 As a reminder to keep the following criteria in mind as you expand upon the above work:
     - Characters: Who are the characters in this chapter? What do they mean to each other? What is the situation between them? Is it a conflict? Is there tension? Is there a reason that the characters have been brought together?
     - Development: What are the goals of each character, and do they meet those goals? Do the characters change and exhibit growth? Do the goals of each character change over the story?
+    - Details: How are things described? Is it repetitive? Is the word choice appropriate for the scene? Are we describing things too much or too little?
 
 Don't answer these questions directly, instead make your writing implicitly answer them. (Show, don't tell)
 
@@ -89,14 +96,14 @@ Remember, have fun, be creative, and improve the character development!
 
     #### STAGE 3: Add Dialogue
     Prompt = f"""
-Please edit the following chapter based on the following criteria and any previous chapters.
+Please add dialogue the following chapter {_ChapterNum} of {_TotalChapters} based on the following criteria and any previous chapters.
 Do not summarize any previous chapters, make your chapter connect seamlessly with previous ones.
 
 Don't take away content, instead expand upon it to make a longer and more detailed output.
 
----
+```
 {Stage2Chapter}
----
+```
 
 As a reminder to keep the following criteria in mind:
     - Dialogue: Does the dialogue make sense? Is it appropriate given the situation? Does the pacing make sense for the scene E.g: (Is it fast-paced because they're running, or slow-paced because they're having a romantic dinner)? 
@@ -125,10 +132,15 @@ Do not summarize any previous chapters, make your chapter connect seamlessly wit
 
 Don't take away content, instead expand upon it to make a longer and more detailed output.
 
+For your reference, here is the outline:
+```
+{_Outline}
+```
 
----
+And here is the chapter to tweak and improve:
+```
 {Stage3Chapter}
----
+```
 
 As a reminder to keep the following criteria in mind:
     - Pacing: 
