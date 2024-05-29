@@ -140,6 +140,7 @@ for i in range(1, NumChapters + 1):
 
     Chapter = Writer.ChapterGenerator.GenerateChapter(Client, i, NumChapters, Outline, Chapters, Writer.Config.OUTLINE_QUALITY)
 
+    Chapter = f"### Chapter {i}\n\n{Chapter}"
     Chapters.append(Chapter)
     ChapterWordCount = Writer.Statistics.GetWordCount(Chapter)
     Writer.PrintUtils.PrintBanner(f"Chapter Word Count: {ChapterWordCount}", "blue")
