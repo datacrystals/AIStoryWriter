@@ -9,9 +9,11 @@ def GenerateOutline(_Client, _OutlinePrompt, _QualityThreshold:int = 85):
 
     Prompt:str = f"""
 Please write a markdown formatted outline based on the following prompt:
----
+
+```
 {_OutlinePrompt}
----
+```
+
 As you write, remember to ask yourself the following questions:
     - What is the conflict?
     - Who are the characters (at least two characters)?
@@ -61,14 +63,14 @@ def ReviseOutline(_Client, _Outline, _Feedback, _History:list = []):
 
     RevisionPrompt:str = f"""
 Please revise the following outline:
----
+```
 {_Outline}
----
+```
 
 Based on the following feedback:
----
+```
 {_Feedback}
----
+```
 
 Remember to expand upon your outline and add content to make it as best as it can be!
 

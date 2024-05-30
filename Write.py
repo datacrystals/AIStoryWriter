@@ -102,9 +102,9 @@ Writer.PrintUtils.PrintBanner(f"Found {NumChapters} Chapter(s)", "yellow")
 Prompt = f"""
 Please help me expand upon the following outline, chapter by chapter.
 
----
+```
 {Outline}
----
+```
     
 """
 Messages = [Writer.OllamaInterface.BuildUserQuery(Prompt)]

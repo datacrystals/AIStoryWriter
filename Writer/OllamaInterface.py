@@ -13,7 +13,10 @@ def ChatAndStreamResponse(_Client, _Messages, _Model:str="llama3"):
     # Disallow empty garbage responses
     if (Writer.Config.DEBUG):
         print("--------- Message History START ---------")
-        print(_Messages)
+        print("[")
+        for Message in _Messages:
+            print(f"{Message},\n----\n")
+        print("]")
         print("--------- Message History END --------")
 
     while True:
