@@ -41,6 +41,7 @@ Parser.add_argument("-NoChapterRevision", action="store_true", help="Disables Ch
 Parser.add_argument("-NoScrubChapters", action="store_true", help="Disables a final pass over the story to remove prompt leftovers/outline tidbits")
 Parser.add_argument("-ExpandOutline", action="store_true", help="Disables the system from expanding the outline for the story chapter by chapter prior to writing the story's chapter content")
 Parser.add_argument("-EnableFinalEditPass", action="store_true", help="Enable a final edit pass of the whole story prior to scrubbing")
+Parser.add_argument("-Debug", action="store_true", help="Print system prompts to stdout during generation")
 Args = Parser.parse_args()
 
 
@@ -75,6 +76,7 @@ Writer.Config.EXPAND_OUTLINE = Args.ExpandOutline
 Writer.Config.ENABLE_FINAL_EDIT_PASS = Args.EnableFinalEditPass
 
 Writer.Config.OPTIONAL_OUTPUT_NAME = Args.Output
+Writer.Config.DEBUG = Args.Debug
 
 
 # Initialize Client

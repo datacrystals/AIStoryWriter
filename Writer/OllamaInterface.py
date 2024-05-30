@@ -11,6 +11,11 @@ def InitClient(_ClientHost:str = "http://10.1.65.4:11434"):
 def ChatAndStreamResponse(_Client, _Messages, _Model:str="llama3"):
 
     # Disallow empty garbage responses
+    if (Writer.Config.DEBUG):
+        print("--------- Message History START ---------")
+        print(_Messages)
+        print("--------- Message History END --------")
+
     while True:
         Stream = _Client.chat(
             model=_Model,

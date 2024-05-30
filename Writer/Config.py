@@ -26,6 +26,8 @@ ENABLE_FINAL_EDIT_PASS=False # Note this value is overridden by the argparser
 
 OPTIONAL_OUTPUT_NAME=""
 
+DEBUG=False
+
 # Tested models:
 "llama3:70b" # works as editor model, DO NOT use as writer model, it sucks
 "vanilj/midnight-miqu-70b-v1.5" # works rather well as the writer, not well as anything else
