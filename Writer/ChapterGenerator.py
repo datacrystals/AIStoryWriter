@@ -12,24 +12,67 @@ def GenerateChapter(_Client, _ChapterNum:int, _TotalChapters:int, _Outline:str, 
 
     #### Stage 0: Create base language chain
     MesssageHistory:list = []
-    MesssageHistory.append(Writer.OllamaInterface.BuildSystemQuery(f"You are a great fiction writer, and you're working on a great new story. You're working on a new novel, and you want to produce a quality output. Here is your outline: ```{_Outline}```"))
+    MesssageHistory.append(Writer.OllamaInterface.BuildSystemQuery(f"You are a great fiction writer, and you're working on a great new story. You're working on a new novel, and you want to produce a quality output. Here is your outline: \n<OUTLINE>\n{_Outline}\n</OUTLINE>"))
     
     
+    ContextHistoryInsert:str = ""
     
     if (len(_Chapters) > 0):
-        MesssageHistory.append(Writer.OllamaInterface.BuildUserQuery("Here is the novel so far."))
 
         ChapterSuperlist:str = ""
         for Chapter in _Chapters:
             ChapterSuperlist += f"{Chapter}\n"
-        MesssageHistory.append(Writer.OllamaInterface.BuildUserQuery(ChapterSuperlist))
-        MesssageHistory.append(Writer.OllamaInterface.BuildSystemQuery("Make sure to pay attention to the content that has happened in these previous chapters. It's okay to deviate from the outline a little in order to ensure you continue the same story from previous chapters."))
+
+        ContextHistoryInsert += f"""
+Please help me write my novel.
+
+I'm basing my work on this outline:
+
+<OUTLINE>
+{_Outline}
+</OUTLINE>
+
+And here is what I've written so far:
+<PREVIOUS_CHAPTERS>
+{ChapterSuperlist}
+</PREVIOUS_CHAPTERS>
+
+"""
+#         
+# MesssageHistory.append(Writer.OllamaInterface.BuildUserQuery(f"""
+# Here is the novel so far.
+# """))
+        # MesssageHistory.append(Writer.OllamaInterface.BuildUserQuery(ChapterSuperlist))
+        # MesssageHistory.append(Writer.OllamaInterface.BuildSystemQuery("Make sure to pay attention to the content that has happened in these previous chapters. It's okay to deviate from the outline a little in order to ensure you continue the same story from previous chapters."))
+
+
+    # Now, extract the this-chapter-outline segment
+    ThisChapterSegment:str = ""
+    ChapterSegmentMessages = []
+    ChapterSegmentMessages.append(Writer.OllamaInterface.BuildSystemQuery(f"You are a helpful AI Assistant. Answer the user's prompts to the best of your abilities."))
+    ChapterSegmentMessages.append(Writer.OllamaInterface.BuildUserQuery(f"""
+Please help me extract the part of this outline that is just for chapter {_ChapterNum}.
+
+<OUTLINE>
+{_Outline}
+</OUTLINE>
+
+Do not include anything else in your response except just the content for chapter {_ChapterNum}.
+"""))
+    ChapterSegmentMessages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, ChapterSegmentMessages, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
+    ThisChapterOutline:str = Writer.OllamaInterface.GetLastMessageText(ChapterSegmentMessages)
+
 
 
     #### STAGE 1: Create Initial Plot
     Prompt = f"""
-Please write the plot for chapter {_ChapterNum} of {_TotalChapters} based on the following outline and any previous chapters.
+Please write the plot for chapter {_ChapterNum} of {_TotalChapters} based on the following chapter outline and any previous chapters.
 Pay attention to the previous chapters, and make sure you both continue seamlessly from them, It's okay to deviate from the outline a bit if needed, just make sure to somewhat follow it (take creative liberties).
+
+Here is my outline for this chapter:
+<CHAPTER_OUTLINE>
+{ThisChapterOutline}
+</CHAPTER_OUTLINE>
 
 As you write your work, please use the following suggestions to help you write:
     - Pacing: 
@@ -57,15 +100,15 @@ Pay attention to the previous chapters, and make sure you both continue seamless
 
 Don't take away content, instead expand upon it to make a longer and more detailed output.
 
-For your reference, here is the outline:
-```
-{_Outline}
-```
+For your reference, here is my outline for this chapter:
+<CHAPTER_OUTLINE>
+{ThisChapterOutline}
+</CHAPTER_OUTLINE>
 
-And here is the chapter's plot:
-```
+And here is what I have for the current chapter's plot:
+<CHAPTER_PLOT>
 {Stage1Chapter}
-```
+</CHAPTER_PLOT>
 
 As a reminder to keep the following criteria in mind as you expand upon the above work:
     - Characters: Who are the characters in this chapter? What do they mean to each other? What is the situation between them? Is it a conflict? Is there tension? Is there a reason that the characters have been brought together?
@@ -97,9 +140,10 @@ Pay attention to the previous chapters, and make sure you both continue seamless
 
 Don't take away content, instead expand upon it to make a longer and more detailed output.
 
-```
+Here's what I have so far for this chapter:
+<CHAPTER_CONTENT>
 {Stage2Chapter}
-```
+</CHAPTER_CONTENT
 
 As a reminder to keep the following criteria in mind:
     - Dialogue: Does the dialogue make sense? Is it appropriate given the situation? Does the pacing make sense for the scene E.g: (Is it fast-paced because they're running, or slow-paced because they're having a romantic dinner)? 
@@ -201,13 +245,15 @@ def ReviseChapter(_Client, _Chapter, _Feedback, _History:list = []):
 
     RevisionPrompt = f"""
 Please revise the following chapter:
----
+
+<CHAPTER_CONTENT>
 {_Chapter}
----
+</CHAPTER_CONTENT>
+
 Based on the following feedback:
----
+<FEEDBACK>
 {_Feedback}
----
+</FEEDBACK>
 Do not reflect on the revisions, just write the improved chapter that addresses the feedback and prompt criteria.  
 Remember not to include any author notes.  
 
