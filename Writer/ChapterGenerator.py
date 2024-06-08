@@ -66,6 +66,8 @@ Do not include anything else in your response except just the content for chapte
 
     #### STAGE 1: Create Initial Plot
     Prompt = f"""
+{ContextHistoryInsert}
+
 Please write the plot for chapter {_ChapterNum} of {_TotalChapters} based on the following chapter outline and any previous chapters.
 Pay attention to the previous chapters, and make sure you both continue seamlessly from them, It's okay to deviate from the outline a bit if needed, just make sure to somewhat follow it (take creative liberties).
 
@@ -95,6 +97,9 @@ As you write your work, please use the following suggestions to help you write:
 
     #### STAGE 2: Add Character Development
     Prompt = f"""
+{ContextHistoryInsert}
+
+
 Please write character development for the following chapter {_ChapterNum} of {_TotalChapters} based on the following criteria and any previous chapters.
 Pay attention to the previous chapters, and make sure you both continue seamlessly from them, It's okay to deviate from the outline a bit if needed, just make sure to somewhat follow it (take creative liberties).
 
@@ -135,6 +140,9 @@ Remember, have fun, be creative, and improve the character development of chapte
 
     #### STAGE 3: Add Dialogue
     Prompt = f"""
+{ContextHistoryInsert}
+
+
 Please add dialogue the following chapter {_ChapterNum} of {_TotalChapters} based on the following criteria and any previous chapters.
 Pay attention to the previous chapters, and make sure you both continue seamlessly from them, It's okay to deviate from the outline a bit if needed, just make sure to somewhat follow it (take creative liberties).
 
@@ -155,6 +163,8 @@ As a reminder to keep the following criteria in mind:
 Don't answer these questions directly, instead make your writing implicitly answer them. (Show, don't tell)
 
 Make sure that your chapter flows into the next and from the previous (if applicable).
+
+Also, please remove any headings from the outline that may still be present in the chapter.
 
 Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum}!
 
