@@ -19,6 +19,9 @@ As you revise, consider the following criteria:
     - Flow: Does each chapter flow into the next? Does the plot make logical sense to the reader? Does it have a specific narrative structure at play? Is the narrative structure consistent throughout the story?
     - Genre: What is the genre? What language is appropriate for that genre? Do the scenes support the genre?
 
+Also, please check if the outline is written chapter-by-chapter, not in sections spanning multiple chapters or subsections.
+It should be very clear which chapter is which, and the content in each chapter.
+
     """
 
     Writer.PrintUtils.PrintBanner("Prompting LLM To Critique Outline", "green")

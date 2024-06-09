@@ -24,6 +24,9 @@ As you write, remember to ask yourself the following questions:
 
 Don't answer these questions directly, instead make your outline implicitly answer them. (Show, don't tell)
 
+Please keep your outline clear as to what content is in what chapter.
+Make sure to add lots of detail as you write.
+
 Again, remember - you're writing an outline for the story.
     
     """
@@ -82,6 +85,10 @@ As you write, keep the following in mind:
     - Where are we located?
     - What are the stakes (is it high, is it low, what is at stake here)?
     - What is the goal or solution to the conflict?
+
+
+Please keep your outline clear as to what content is in what chapter.
+Make sure to add lots of detail as you write.
 
 Don't answer these questions directly, instead make your writing implicitly answer them. (Show, don't tell)
 
