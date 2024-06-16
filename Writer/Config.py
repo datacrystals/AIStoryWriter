@@ -9,6 +9,7 @@ REVISION_MODEL="llama3:70b" # Note this value is overridden by the argparser
 EVAL_MODEL="llama3:70b" # Note this value is overridden by the argparser
 INFO_MODEL="llama3:70b" # Note this value is overridden by the argparser
 SCRUB_MODEL="llama3:70b" # Note this value is overridden by the argparser
+CHECKER_MODEL="llama3" # Model used to check results
 
 SEED=12 # Note this value is overridden by the argparser
 

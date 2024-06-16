@@ -1,7 +1,54 @@
+import json
+
 import Writer.LLMEditor
 import Writer.OllamaInterface
 import Writer.PrintUtils
 import Writer.Config
+
+
+def LLMDidWorkRight(_Client, _Messages:list):
+
+
+    Prompt:str = f"""
+Please write a JSON formatted response with no other content with the following keys.
+Note that a computer is parsing this JSON so it must be correct.
+
+Did the LLM answer the output from the previous generation?
+
+Please indicate if they did or did not by responding:
+
+"DidAddressPromptFully": true/false
+
+Again, remember to make your response JSON formatted with no extra words. It will be fed directly to a JSON parser.
+"""
+    
+    Writer.PrintUtils.PrintBanner("Prompting LLM To Generate Stats", "green")
+    Messages = _Messages
+    Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHECKER_MODEL)
+    Writer.PrintUtils.PrintBanner("Finished Getting Stats Feedback", "green")
+
+    Dict = json.loads(Writer.OllamaInterface.GetLastMessageText(Messages))
+
+
+    while True:
+        
+        RawResponse = Writer.OllamaInterface.GetLastMessageText(Messages)
+        RawResponse = RawResponse.replace("`", "")
+        RawResponse = RawResponse.replace("json", "")
+
+        try:
+            Dict = json.loads(RawResponse)
+            return Dict["DidAddressPromptFully"]
+        except Exception as E:
+            Writer.PrintUtils.PrintBanner("Error Parsing JSON Written By LLM, Asking For Edits", "red")
+            EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
+            Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
+            Writer.PrintUtils.PrintBanner("Asking LLM TO Revise", "red")
+            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHECKER_MODEL)
+            Writer.PrintUtils.PrintBanner("Done Asking LLM TO Revise", "red")
+
+
 
 
 def GenerateChapter(_Client, _ChapterNum:int, _TotalChapters:int, _Outline:str, _Chapters:list = [], _QualityThreshold:int = 85):
@@ -65,7 +112,9 @@ Do not include anything else in your response except just the content for chapte
 
 
     #### STAGE 1: Create Initial Plot
-    Prompt = f"""
+    Stage1Chapter = ""
+    while True:
+        Prompt = f"""
 {ContextHistoryInsert}
 
 Please write the plot for chapter {_ChapterNum} of {_TotalChapters} based on the following chapter outline and any previous chapters.
@@ -78,25 +127,32 @@ Here is my outline for this chapter:
 
 As you write your work, please use the following suggestions to help you write:
     - Pacing: 
-      - Are you skipping days at a time? Summarizing events? Don't do that, add scenes to detail them.
-      - Is the story rushing over certain plot points and excessively focusing on others?
+    - Are you skipping days at a time? Summarizing events? Don't do that, add scenes to detail them.
+    - Is the story rushing over certain plot points and excessively focusing on others?
     - Flow: Does each chapter flow into the next? Does the plot make logical sense to the reader? Does it have a specific narrative structure at play? Is the narrative structure consistent throughout the story?
     - Genre: What is the genre? What language is appropriate for that genre? Do the scenes support the genre?
 
-"""
+    """
 
-    # Generate Initial Chapter
-    Writer.PrintUtils.PrintBanner(f"Generating Initial Chapter (Stage 1: Plot) {_ChapterNum}/{_TotalChapters}", "green")
-    Messages = MesssageHistory.copy()
-    Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
+        # Generate Initial Chapter
+        Writer.PrintUtils.PrintBanner(f"Generating Initial Chapter (Stage 1: Plot) {_ChapterNum}/{_TotalChapters}", "green")
+        Messages = MesssageHistory.copy()
+        Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL)
-    Stage1Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
-    Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}", "green")
+        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL)
+        Stage1Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
+        Writer.PrintUtils.PrintBanner(f"Finished Initial Generation For Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}", "green")
+
+        # Check if LLM did the work
+        if (LLMDidWorkRight(_Client, Messages)):
+            Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}", "green")
+            break
 
 
     #### STAGE 2: Add Character Development
-    Prompt = f"""
+    Stage2Chapter = ""
+    while True:
+        Prompt = f"""
 {ContextHistoryInsert}
 
 
@@ -128,18 +184,27 @@ Remember, have fun, be creative, and improve the character development of chapte
 
 """
 
-    # Generate Initial Chapter
-    Writer.PrintUtils.PrintBanner(f"Generating Initial Chapter (Stage 2: Character Development) {_ChapterNum}/{_TotalChapters}", "green")
-    Messages = MesssageHistory.copy()
-    Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
+        # Generate Initial Chapter
+        Writer.PrintUtils.PrintBanner(f"Generating Initial Chapter (Stage 2: Character Development) {_ChapterNum}/{_TotalChapters}", "green")
+        Messages = MesssageHistory.copy()
+        Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_STAGE2_WRITER_MODEL)
-    Stage2Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
-    Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter (Stage 2: Character Development)  {_ChapterNum}/{_TotalChapters}", "green")
+        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_STAGE2_WRITER_MODEL)
+        Stage2Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
+        Writer.PrintUtils.PrintBanner(f"Finished Initial Generation For Initial Chapter (Stage 2: Character Development)  {_ChapterNum}/{_TotalChapters}", "green")
+
+
+        # Check if LLM did the work
+        if (LLMDidWorkRight(_Client, Messages)):
+            Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter (Stage 2: Character Development)  {_ChapterNum}/{_TotalChapters}", "green")
+            break
+
 
 
     #### STAGE 3: Add Dialogue
-    Prompt = f"""
+    Stage3Chapter = ""
+    while True:
+        Prompt = f"""
 {ContextHistoryInsert}
 
 
@@ -170,14 +235,19 @@ Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum}!
 
 """
 
-    # Generate Initial Chapter
-    Writer.PrintUtils.PrintBanner(f"Generating Initial Chapter (Stage 3: Dialogue) {_ChapterNum}/{_TotalChapters}", "green")
-    Messages = MesssageHistory.copy()
-    Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
+        # Generate Initial Chapter
+        Writer.PrintUtils.PrintBanner(f"Generating Initial Chapter (Stage 3: Dialogue) {_ChapterNum}/{_TotalChapters}", "green")
+        Messages = MesssageHistory.copy()
+        Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_STAGE3_WRITER_MODEL)
-    Stage3Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
-    Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter (Stage 3: Dialogue)  {_ChapterNum}/{_TotalChapters}", "green")
+        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_STAGE3_WRITER_MODEL)
+        Stage3Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
+        Writer.PrintUtils.PrintBanner(f"Finished Initial Generation For Initial Chapter (Stage 3: Dialogue)  {_ChapterNum}/{_TotalChapters}", "green")
+
+        # Check if LLM did the work
+        if (LLMDidWorkRight(_Client, Messages)):
+            Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter (Stage 3: Dialogue)  {_ChapterNum}/{_TotalChapters}", "green")
+            break
 
 
 #     #### STAGE 4: Final-Pre-Revision Edit Pass

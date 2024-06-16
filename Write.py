@@ -32,6 +32,7 @@ Parser.add_argument("-RevisionModel", default="llama3:70b", type=str, help="Mode
 Parser.add_argument("-EvalModel", default="llama3:70b", type=str, help="Model to use for evaluating the rating out of 100")
 Parser.add_argument("-InfoModel", default="llama3:70b", type=str, help="Model to use when generating summary/info at the end")
 Parser.add_argument("-ScrubModel", default="llama3:70b", type=str, help="Model to use when scrubbing the story at the end")
+Parser.add_argument("-CheckerModel", default="llama3", type=str, help="Model to use when checking if the LLM cheated or not")
 Parser.add_argument("-Seed", default=12, type=int, help="Used to seed models.")
 Parser.add_argument("-OutlineMinRevisions", default=0, type=int, help="Number of minimum revisions that the outline must be given prior to proceeding")
 Parser.add_argument("-OutlineMaxRevisions", default=3, type=int, help="Max number of revisions that the outline may have")
@@ -63,6 +64,7 @@ Writer.Config.EVAL_MODEL = Args.EvalModel
 Writer.Config.REVISION_MODEL = Args.RevisionModel
 Writer.Config.INFO_MODEL = Args.InfoModel
 Writer.Config.SCRUB_MODEL = Args.ScrubModel
+Writer.Config.CHECKER_MODEL = Args.CheckerModel
 
 Writer.Config.OUTLINE_MIN_REVISIONS = Args.OutlineMinRevisions
 Writer.Config.OUTLINE_MAX_REVISIONS = Args.OutlineMaxRevisions
@@ -201,7 +203,7 @@ StatsString += "\n\nUser Settings:  \n"
 StatsString += f" - Base Prompt: {BasePrompt}  \n"
 
 StatsString += "\n\nGeneration Settings:  \n"
-StatsString += f" - Generator: Datacrystals_StoryGenerator_2024-05-23  \n"
+StatsString += f" - Generator: Datacrystals_StoryGenerator_2024-06-15  \n"
 StatsString += f" - Base Outline Writer Model: {Writer.Config.INITIAL_OUTLINE_WRITER_MODEL}  \n"
 StatsString += f" - Chapter Outline Writer Model: {Writer.Config.CHAPTER_OUTLINE_WRITER_MODEL}  \n"
 StatsString += f" - Chapter Writer (Stage 1: Plot) Model: {Writer.Config.CHAPTER_STAGE1_WRITER_MODEL}  \n"
