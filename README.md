@@ -101,3 +101,9 @@ I've been developing on a machine with 3x NVIDIA TESLA P40 24GB GPUs, so all the
 
 For now, Linux is the only thing supported - I don't use or like Windows or Mac, so I've not tested either platform. It might work, it might not - feel free to try though!
 I run on a Debian distro, so that is what i'll write an installer script for, once the project matures enough to get there.
+
+
+
+## Contributing
+
+I welcome contributions, please either email me at `thomas.liao13 [at] gmail.com`, or open up a pull request (or both)!
