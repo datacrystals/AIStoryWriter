@@ -1,5 +1,6 @@
 #!/bin/bash
 
+cd ..
 ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \

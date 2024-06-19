@@ -1,9 +1,9 @@
 #!/bin/bash
-
+cd ..
 ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
--Prompt Prompts/SL/Hacking4.txt \
+-Prompt Prompts/HP/Tomarry.txt \
 -InitialOutlineModel datacrystals/miqulitz120b-v2:latest \
 -ChapterOutlineModel datacrystals/midnight-rose103b-v2:latest \
 -ChapterS1Model datacrystals/midnight-miqu70b-v1.5:latest \
