@@ -10,7 +10,7 @@ def LLMDidWorkRight(_Client, _Messages:list):
 
     # Firstly, check if the length of the response was at least 100 words.
     ResponseLength = Writer.OllamaInterface.GetLastMessageText(_Messages)
-    if (ResponseLength.split(" ") < 100):
+    if (len(ResponseLength.split(" ")) < 100):
         Writer.PrintUtils.PrintBanner("Previous response didn't meet the length requirement, so it probably tried to cheat around writing.", "red")
         return False
 
