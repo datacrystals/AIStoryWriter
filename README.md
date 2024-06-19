@@ -5,6 +5,14 @@ This project aims to be a LLM-based story generator which produces medium to ful
 So far, it's a work in progress, as I'm still focusing on getting the bugs worked out and improving the generated output quality.
 
 
+
+## Examples
+
+Examples coming soon!
+
+
+
+
 ## Usage
 
 This system will generate a story based on a user provided prompt. Simply create a file with your intended prompt in a text file, and pass the path to that as a parameter (use ./Write.py --help) to get a full list of parameters.
@@ -87,6 +95,8 @@ options:
 
 ```
 
+NOTE: due to the many LLMs used and the various edit/revision cycle loops, this project does not produce output quickly - on 3x TESLA P40 24GB GPUs, some stories take over 18 hours to generate. Faster hardware will of course result in lower generation time.
+
 
 
 ## Installation
@@ -101,7 +111,6 @@ I've been developing on a machine with 3x NVIDIA TESLA P40 24GB GPUs, so all the
 
 For now, Linux is the only thing supported - I don't use or like Windows or Mac, so I've not tested either platform. It might work, it might not - feel free to try though!
 I run on a Debian distro, so that is what i'll write an installer script for, once the project matures enough to get there.
-
 
 
 ## Contributing
