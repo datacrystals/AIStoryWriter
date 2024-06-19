@@ -8,7 +8,13 @@ import Writer.Config
 
 def LLMDidWorkRight(_Client, _Messages:list):
 
+    # Firstly, check if the length of the response was at least 100 words.
+    ResponseLength = Writer.OllamaInterface.GetLastMessageText(_Messages)
+    if (ResponseLength.split(" ") < 100):
+        Writer.PrintUtils.PrintBanner("Previous response didn't meet the length requirement, so it probably tried to cheat around writing.", "red")
+        return False
 
+    # If it passed that, then move on to the LLM check
     Prompt:str = f"""
 Please write a JSON formatted response with no other content with the following keys.
 Note that a computer is parsing this JSON so it must be correct.
