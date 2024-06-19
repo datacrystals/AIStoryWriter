@@ -107,3 +107,5 @@ I run on a Debian distro, so that is what i'll write an installer script for, on
 ## Contributing
 
 I welcome contributions, please either email me at `thomas.liao13 [at] gmail.com`, or open up a pull request (or both)!
+
+If you encounter issues, please feel free to also open up an issue - I'll do my best to help with those!
