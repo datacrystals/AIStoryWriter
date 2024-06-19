@@ -32,7 +32,7 @@ Parser.add_argument("-RevisionModel", default="llama3:70b", type=str, help="Mode
 Parser.add_argument("-EvalModel", default="llama3:70b", type=str, help="Model to use for evaluating the rating out of 100")
 Parser.add_argument("-InfoModel", default="llama3:70b", type=str, help="Model to use when generating summary/info at the end")
 Parser.add_argument("-ScrubModel", default="llama3:70b", type=str, help="Model to use when scrubbing the story at the end")
-Parser.add_argument("-CheckerModel", default="llama3", type=str, help="Model to use when checking if the LLM cheated or not")
+Parser.add_argument("-CheckerModel", default="llama3:70b", type=str, help="Model to use when checking if the LLM cheated or not")
 Parser.add_argument("-Seed", default=12, type=int, help="Used to seed models.")
 Parser.add_argument("-OutlineMinRevisions", default=0, type=int, help="Number of minimum revisions that the outline must be given prior to proceeding")
 Parser.add_argument("-OutlineMaxRevisions", default=3, type=int, help="Max number of revisions that the outline may have")

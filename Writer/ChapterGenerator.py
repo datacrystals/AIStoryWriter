@@ -13,11 +13,14 @@ def LLMDidWorkRight(_Client, _Messages:list):
 Please write a JSON formatted response with no other content with the following keys.
 Note that a computer is parsing this JSON so it must be correct.
 
-Did the LLM answer the output from the previous generation?
+Did the LLM mostly answer the output from the previous generation?
 
 Please indicate if they did or did not by responding:
 
 "DidAddressPromptFully": true/false
+
+For example, if the previous response was "Good luck!" or something similar that doesn't *actually* do what is needed by the system, that would be an automatic fail.
+Make sure to double check for things like that - sometimes the LLM is tricky and tries to sneak around doing what is needed.
 
 Again, remember to make your response JSON formatted with no extra words. It will be fed directly to a JSON parser.
 """
