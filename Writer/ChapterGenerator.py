@@ -119,6 +119,56 @@ Do not include anything else in your response except just the content for chapte
     ThisChapterOutline:str = Writer.OllamaInterface.GetLastMessageText(ChapterSegmentMessages)
 
 
+    # Generate Summary of Last Chapter If Applicable
+    FormattedLastChapterSummary:str = ""
+    if (len(_Chapters) > 0):
+        ChapterSummaryMessages = []
+        ChapterSummaryMessages.append(Writer.OllamaInterface.BuildSystemQuery(f"You are a helpful AI Assistant. Answer the user's prompts to the best of your abilities."))
+        ChapterSummaryMessages.append(Writer.OllamaInterface.BuildUserQuery(f"""
+I'm writing the next chapter in my novel (chapter {_ChapterNum}), and I have the following written so far.
+
+My outline:
+<OUTLINE>
+{_Outline}
+</OUTLINE>
+
+And what I've written in the last chapter:
+<PREVIOUS_CHAPTER>
+{_Chapters[-1]}
+</PREVIOUS_CHAPTER>
+
+Please create a list of important summary points from the last chapter so that I know what to keep in mind as I write this chapter.
+Also make sure to add a summary of the previous chapter, and focus on noting down any important plot points, and the state of the story as the chapter ends.
+That way, when I'm writing, I'll know where to pick up again.
+
+Here's some formatting guidelines:
+
+```
+Previous Chapter:
+    - Plot:
+        - Your bullet point summary here with as much detail as needed
+    - Setting:
+        - some stuff here
+    - Characters:
+        - character 1
+            - info about them, from that chapter
+            - if they changed, how so
+
+Things to keep in Mind:
+    - something that the previous chapter did to advance the plot, so we incorporate it into the next chapter
+    - something else that is important to remember when writing the next chapter
+    - another thing
+    - etc.
+```
+
+Thank you for helping me write my story! Please only include your summary and things to keep in mind, don't write anything else.
+    """))
+        ChapterSummaryMessages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, ChapterSummaryMessages, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
+        FormattedLastChapterSummary:str = Writer.OllamaInterface.GetLastMessageText(ChapterSummaryMessages)
+        
+
+
+
 
     #### STAGE 1: Create Initial Plot
     Stage1Chapter = ""
@@ -127,12 +177,14 @@ Do not include anything else in your response except just the content for chapte
 {ContextHistoryInsert}
 
 Please write the plot for chapter {_ChapterNum} of {_TotalChapters} based on the following chapter outline and any previous chapters.
-Pay attention to the previous chapters, and make sure you both continue seamlessly from them, It's okay to deviate from the outline a bit if needed, just make sure to somewhat follow it (take creative liberties).
+Pay attention to the previous chapters, and make sure you both continue seamlessly from them, It's imperative that your writing connects well with the previous chapter, and flows into the next (so try to follow the outline)!
 
 Here is my outline for this chapter:
 <CHAPTER_OUTLINE>
 {ThisChapterOutline}
 </CHAPTER_OUTLINE>
+
+{FormattedLastChapterSummary}
 
 As you write your work, please use the following suggestions to help you write:
     - Pacing: 
@@ -166,7 +218,7 @@ As you write your work, please use the following suggestions to help you write:
 
 
 Please write character development for the following chapter {_ChapterNum} of {_TotalChapters} based on the following criteria and any previous chapters.
-Pay attention to the previous chapters, and make sure you both continue seamlessly from them, It's okay to deviate from the outline a bit if needed, just make sure to somewhat follow it (take creative liberties).
+Pay attention to the previous chapters, and make sure you both continue seamlessly from them, It's imperative that your writing connects well with the previous chapter, and flows into the next (so try to follow the outline)!
 
 Don't take away content, instead expand upon it to make a longer and more detailed output.
 
@@ -174,6 +226,8 @@ For your reference, here is my outline for this chapter:
 <CHAPTER_OUTLINE>
 {ThisChapterOutline}
 </CHAPTER_OUTLINE>
+
+{FormattedLastChapterSummary}
 
 And here is what I have for the current chapter's plot:
 <CHAPTER_PLOT>
@@ -218,9 +272,12 @@ Remember, have fun, be creative, and improve the character development of chapte
 
 
 Please add dialogue the following chapter {_ChapterNum} of {_TotalChapters} based on the following criteria and any previous chapters.
-Pay attention to the previous chapters, and make sure you both continue seamlessly from them, It's okay to deviate from the outline a bit if needed, just make sure to somewhat follow it (take creative liberties).
+Pay attention to the previous chapters, and make sure you both continue seamlessly from them, It's imperative that your writing connects well with the previous chapter, and flows into the next (so try to follow the outline)!
 
 Don't take away content, instead expand upon it to make a longer and more detailed output.
+
+
+{FormattedLastChapterSummary}
 
 Here's what I have so far for this chapter:
 <CHAPTER_CONTENT>
