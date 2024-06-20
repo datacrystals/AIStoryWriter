@@ -27,6 +27,11 @@ Don't answer these questions directly, instead make your outline implicitly answ
 Please keep your outline clear as to what content is in what chapter.
 Make sure to add lots of detail as you write.
 
+Also include information about the different characters, and how they change over the course of the story.
+We want to have rich and complex character development!
+
+Break up your outline into chapters, and those chapters into scenes so it's clear how they are structured, and how they flow together.
+
 Again, remember - you're writing an outline for the story.
     
     """

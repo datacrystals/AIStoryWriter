@@ -16,5 +16,4 @@ cd ..
 -EvalModel llama3:70b \
 -InfoModel llama3:70b \
 -NoScrubChapters \
--Debug \
--NoChapterRevision
+-Debug
