@@ -60,8 +60,8 @@ Did it write the correct chapter? Sometimes it'll get confused and write the wro
 
 Again, remember to make your response JSON formatted with no extra words. It will be fed directly to a JSON parser.
 """))
-    ComparisonLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, ComparisonLangchain, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
-    Dict = json.loads(Writer.OllamaInterface.GetLastMessageText(ComparisonLangchain))
+    ComparisonLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, ComparisonLangchain, Writer.Config.REVISION_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
+    # Dict = json.loads(Writer.OllamaInterface.GetLastMessageText(ComparisonLangchain))
 
 
     while True:
@@ -80,61 +80,6 @@ Again, remember to make your response JSON formatted with no extra words. It wil
             Writer.PrintUtils.PrintBanner("Asking LLM TO Revise", "red")
             Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, ComparisonLangchain, Writer.Config.CHECKER_MODEL)
             Writer.PrintUtils.PrintBanner("Done Asking LLM TO Revise", "red")
-
-
-
-def LLMDidWorkRight(_Client, _Messages:list):
-
-    # Firstly, check if the length of the response was at least 100 words.
-    ResponseLength = Writer.OllamaInterface.GetLastMessageText(_Messages)
-    if (len(ResponseLength.split(" ")) < 100):
-        Writer.PrintUtils.PrintBanner("Previous response didn't meet the length requirement, so it probably tried to cheat around writing.", "red")
-        return False
-
-    # If it passed that, then move on to the LLM check
-    Prompt:str = f"""
-Please write a JSON formatted response with no other content with the following keys.
-Note that a computer is parsing this JSON so it must be correct.
-
-Did the LLM mostly answer the output from the previous generation?
-
-Please indicate if they did or did not by responding:
-
-"DidAddressPromptFully": true/false
-
-For example, if the previous response was "Good luck!" or something similar that doesn't *actually* do what is needed by the system, that would be an automatic fail.
-Make sure to double check for things like that - sometimes the LLM is tricky and tries to sneak around doing what is needed.
-Did it write the correct chapter? Sometimes it'll get confused and write the wrong chapter (usually one more than the current one).
-
-Again, remember to make your response JSON formatted with no extra words. It will be fed directly to a JSON parser.
-"""
-    
-    Writer.PrintUtils.PrintBanner("Prompting LLM To Generate Stats", "green")
-    Messages = _Messages
-    Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHECKER_MODEL)
-    Writer.PrintUtils.PrintBanner("Finished Getting Stats Feedback", "green")
-
-    Dict = json.loads(Writer.OllamaInterface.GetLastMessageText(Messages))
-
-
-    while True:
-        
-        RawResponse = Writer.OllamaInterface.GetLastMessageText(Messages)
-        RawResponse = RawResponse.replace("`", "")
-        RawResponse = RawResponse.replace("json", "")
-
-        try:
-            Dict = json.loads(RawResponse)
-            return Dict["DidAddressPromptFully"]
-        except Exception as E:
-            Writer.PrintUtils.PrintBanner("Error Parsing JSON Written By LLM, Asking For Edits", "red")
-            EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
-            Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
-            Writer.PrintUtils.PrintBanner("Asking LLM TO Revise", "red")
-            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHECKER_MODEL)
-            Writer.PrintUtils.PrintBanner("Done Asking LLM TO Revise", "red")
-
 
 
 

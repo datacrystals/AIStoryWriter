@@ -1,7 +1,4 @@
-## New LLM Check
- Summarize the chapter
- Get Outline chapter Summary
+## Improved Chapter Coherency  
 
- Create new langchain
-
- Prompt if the two summaries are related?
+Perhaps have the author of chapter n produce some advice/key points for the next chapter writer to keep in mind
+Might improve the coherency of the chapter
