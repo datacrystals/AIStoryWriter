@@ -6,6 +6,83 @@ import Writer.PrintUtils
 import Writer.Config
 
 
+def LLMSummaryCheck(_Client, _RefSummary:str , _Work:str):
+    '''
+    Generates a summary of the work provided, and compares that to the reference summary, asking if they answered the prompt correctly.
+    '''
+
+    # LLM Length Check - Firstly, check if the length of the response was at least 100 words.
+    if (len(_Work.split(" ")) < 100):
+        Writer.PrintUtils.PrintBanner("Previous response didn't meet the length requirement, so it probably tried to cheat around writing.", "red")
+        return False
+
+    # Build Summariziation Langchain
+    SummaryLangchain:list = []
+    SummaryLangchain.append(Writer.OllamaInterface.BuildSystemQuery(f"You are a helpful AI Assistant. Answer the user's prompts to the best of your abilities."))
+    SummaryLangchain.append(Writer.OllamaInterface.BuildUserQuery(f"""
+Please summarize the following chapter:
+                                                                  
+<CHAPTER>
+{_Work}
+</CHAPTER>
+
+Do not include anything in your response except the summary.
+
+"""))
+    SummaryLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, SummaryLangchain, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
+    WorkSummary:str = Writer.OllamaInterface.GetLastMessageText(SummaryLangchain)
+
+
+    # Now, generate a comparison JSON value.
+    ComparisonLangchain:list = []
+    ComparisonLangchain.append(Writer.OllamaInterface.BuildSystemQuery(f"You are a helpful AI Assistant. Answer the user's prompts to the best of your abilities."))
+    ComparisonLangchain.append(Writer.OllamaInterface.BuildUserQuery(f"""
+Please compare the provided summary of a chapter and the associated outline, and indicate if the provided content matches the outline.
+                                                                     
+Please write a JSON formatted response with no other content with the following keys.
+Note that a computer is parsing this JSON so it must be correct.
+
+<CHAPTER_SUMMARY>
+{WorkSummary}
+</CHAPTER_SUMMARY>
+                                                                     
+<OUTLINE>
+{_RefSummary}
+</OUTLINE>
+
+Please indicate if they did or did not by responding:
+
+"DidFollowOutline": true/false
+
+For example, if the previous response was "Good luck!" or something similar that doesn't *actually* do what is needed by the system, that would be an automatic fail.
+Make sure to double check for things like that - sometimes the LLM is tricky and tries to sneak around doing what is needed.
+Did it write the correct chapter? Sometimes it'll get confused and write the wrong chapter (usually one more than the current one).
+
+Again, remember to make your response JSON formatted with no extra words. It will be fed directly to a JSON parser.
+"""))
+    ComparisonLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, ComparisonLangchain, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
+    Dict = json.loads(Writer.OllamaInterface.GetLastMessageText(ComparisonLangchain))
+
+
+    while True:
+        
+        RawResponse = Writer.OllamaInterface.GetLastMessageText(ComparisonLangchain)
+        RawResponse = RawResponse.replace("`", "")
+        RawResponse = RawResponse.replace("json", "")
+
+        try:
+            Dict = json.loads(RawResponse)
+            return Dict["DidFollowOutline"]
+        except Exception as E:
+            Writer.PrintUtils.PrintBanner("Error Parsing JSON Written By LLM, Asking For Edits", "red")
+            EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
+            Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
+            Writer.PrintUtils.PrintBanner("Asking LLM TO Revise", "red")
+            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, ComparisonLangchain, Writer.Config.CHECKER_MODEL)
+            Writer.PrintUtils.PrintBanner("Done Asking LLM TO Revise", "red")
+
+
+
 def LLMDidWorkRight(_Client, _Messages:list):
 
     # Firstly, check if the length of the response was at least 100 words.
@@ -206,7 +283,7 @@ As you write your work, please use the following suggestions to help you write c
         Writer.PrintUtils.PrintBanner(f"Finished Initial Generation For Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}", "green")
 
         # Check if LLM did the work
-        if (LLMDidWorkRight(_Client, Messages)):
+        if (LLMSummaryCheck(_Client, FormattedLastChapterSummary, Stage1Chapter)):
             Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}", "green")
             break
 
@@ -259,7 +336,7 @@ Remember, have fun, be creative, and improve the character development of chapte
 
 
         # Check if LLM did the work
-        if (LLMDidWorkRight(_Client, Messages)):
+        if (LLMSummaryCheck(_Client, FormattedLastChapterSummary, Stage2Chapter)):
             Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter (Stage 2: Character Development)  {_ChapterNum}/{_TotalChapters}", "green")
             break
 
@@ -312,7 +389,7 @@ Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make
         Writer.PrintUtils.PrintBanner(f"Finished Initial Generation For Initial Chapter (Stage 3: Dialogue)  {_ChapterNum}/{_TotalChapters}", "green")
 
         # Check if LLM did the work
-        if (LLMDidWorkRight(_Client, Messages)):
+        if (LLMSummaryCheck(_Client, FormattedLastChapterSummary, Stage3Chapter)):
             Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter (Stage 3: Dialogue)  {_ChapterNum}/{_TotalChapters}", "green")
             break
 
