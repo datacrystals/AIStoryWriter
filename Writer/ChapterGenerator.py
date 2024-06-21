@@ -27,6 +27,7 @@ Please indicate if they did or did not by responding:
 
 For example, if the previous response was "Good luck!" or something similar that doesn't *actually* do what is needed by the system, that would be an automatic fail.
 Make sure to double check for things like that - sometimes the LLM is tricky and tries to sneak around doing what is needed.
+Did it write the correct chapter? Sometimes it'll get confused and write the wrong chapter (usually one more than the current one).
 
 Again, remember to make your response JSON formatted with no extra words. It will be fed directly to a JSON parser.
 """
@@ -186,7 +187,7 @@ Here is my outline for this chapter:
 
 {FormattedLastChapterSummary}
 
-As you write your work, please use the following suggestions to help you write:
+As you write your work, please use the following suggestions to help you write chapter {_ChapterNum} (make sure you only write this one):
     - Pacing: 
     - Are you skipping days at a time? Summarizing events? Don't do that, add scenes to detail them.
     - Is the story rushing over certain plot points and excessively focusing on others?
@@ -243,7 +244,7 @@ Don't answer these questions directly, instead make your writing implicitly answ
 
 Make sure that your chapter flows into the next and from the previous (if applicable).
 
-Remember, have fun, be creative, and improve the character development of chapter {_ChapterNum}!
+Remember, have fun, be creative, and improve the character development of chapter {_ChapterNum} (make sure you only write this one)!
 
 """
 
@@ -297,7 +298,7 @@ Make sure that your chapter flows into the next and from the previous (if applic
 
 Also, please remove any headings from the outline that may still be present in the chapter.
 
-Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum}!
+Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make sure you only write this one)!
 
 """
 
