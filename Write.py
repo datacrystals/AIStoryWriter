@@ -203,7 +203,7 @@ StatsString += "\n\nUser Settings:  \n"
 StatsString += f" - Base Prompt: {BasePrompt}  \n"
 
 StatsString += "\n\nGeneration Settings:  \n"
-StatsString += f" - Generator: Datacrystals_StoryGenerator_2024-06-15  \n"
+StatsString += f" - Generator: AIStoryGenerator_2024-06-21  \n"
 StatsString += f" - Base Outline Writer Model: {Writer.Config.INITIAL_OUTLINE_WRITER_MODEL}  \n"
 StatsString += f" - Chapter Outline Writer Model: {Writer.Config.CHAPTER_OUTLINE_WRITER_MODEL}  \n"
 StatsString += f" - Chapter Writer (Stage 1: Plot) Model: {Writer.Config.CHAPTER_STAGE1_WRITER_MODEL}  \n"
