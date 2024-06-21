@@ -4,6 +4,11 @@ This project aims to be a LLM-based story generator which produces medium to ful
 
 So far, it's a work in progress, as I'm still focusing on getting the bugs worked out and improving the generated output quality.
 
+Here's what the (mostly up-to-date) process looks like as a block diagram. I'll try to keep this up-to-date but no promises.
+
+![Block Diagram](Docs/BlockDiagram.drawio.svg)
+
+
 
 ## Functionality 
 Here's what the system does well, and what it has limitations doing.
