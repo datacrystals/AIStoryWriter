@@ -181,7 +181,7 @@ And here is what I've written so far:
 
 
     # Now, extract the this-chapter-outline segment
-    ThisChapterSegment:str = ""
+    ThisChapterOutline:str = ""
     ChapterSegmentMessages = []
     ChapterSegmentMessages.append(Writer.OllamaInterface.BuildSystemQuery(f"You are a helpful AI Assistant. Answer the user's prompts to the best of your abilities."))
     ChapterSegmentMessages.append(Writer.OllamaInterface.BuildUserQuery(f"""
@@ -244,7 +244,9 @@ Thank you for helping me write my story! Please only include your summary and th
         ChapterSummaryMessages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, ChapterSummaryMessages, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
         FormattedLastChapterSummary:str = Writer.OllamaInterface.GetLastMessageText(ChapterSummaryMessages)
         
-
+    DetailedChapterOutline:str = ThisChapterOutline
+    if (FormattedLastChapterSummary != ""):
+        DetailedChapterOutline = ThisChapterOutline
 
 
 
@@ -283,7 +285,7 @@ As you write your work, please use the following suggestions to help you write c
         Writer.PrintUtils.PrintBanner(f"Finished Initial Generation For Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}", "green")
 
         # Check if LLM did the work
-        if (LLMSummaryCheck(_Client, FormattedLastChapterSummary, Stage1Chapter)):
+        if (LLMSummaryCheck(_Client, DetailedChapterOutline, Stage1Chapter)):
             Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}", "green")
             break
 
@@ -336,7 +338,7 @@ Remember, have fun, be creative, and improve the character development of chapte
 
 
         # Check if LLM did the work
-        if (LLMSummaryCheck(_Client, FormattedLastChapterSummary, Stage2Chapter)):
+        if (LLMSummaryCheck(_Client, DetailedChapterOutline, Stage2Chapter)):
             Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter (Stage 2: Character Development)  {_ChapterNum}/{_TotalChapters}", "green")
             break
 
@@ -389,7 +391,7 @@ Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make
         Writer.PrintUtils.PrintBanner(f"Finished Initial Generation For Initial Chapter (Stage 3: Dialogue)  {_ChapterNum}/{_TotalChapters}", "green")
 
         # Check if LLM did the work
-        if (LLMSummaryCheck(_Client, FormattedLastChapterSummary, Stage3Chapter)):
+        if (LLMSummaryCheck(_Client, DetailedChapterOutline, Stage3Chapter)):
             Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter (Stage 3: Dialogue)  {_ChapterNum}/{_TotalChapters}", "green")
             break
 
