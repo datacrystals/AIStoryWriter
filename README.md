@@ -5,10 +5,28 @@ This project aims to be a LLM-based story generator which produces medium to ful
 So far, it's a work in progress, as I'm still focusing on getting the bugs worked out and improving the generated output quality.
 
 
+## Functionality 
+Here's what the system does well, and what it has limitations doing.
+
+### What works well
+- Length - usually the system will generate a decent length story, although this has been shorter recently. Should be easy to fix though, as you can specify the num chapters you want in your prompt.
+- Characters - most of the time, the LLMs will understand what character is what and write appropriately.
+- Outlines - for the most part, the outlines the system generates are actually pretty good, and seem very interesting. If nothing else, this project generates good outlines.
+
+### What doesn't work well
+- Tends to use a few token phrases "the tension was palpable", etc. More of an LLM issue though.
+- System sometimes writes chapters that don't flow together - they tend to feel disjointed. This has been my current area of focus, and they feel at least somewhat connected now (at least initially).
+- Pacing issues - frequently the language models don't understand what to focus their writing on, and often skip over the juicy parts of a story.
+- Generation speed is slow, at least on my limited hardware - this leads to 5+ hour generation times, making debugging tricky.
 
 ## Examples
 
-Examples coming soon!
+Here's an example as of 2024-06-21 - note that there are still some major issues that I'm working on fixing (see limitations section).
+
+- [Prompt](ExamplePrompts/Example1/Prompt.txt)
+- [Output (2024-06-20 Version)](ExamplePrompts/Example1/Output_2024-06-20.md)
+
+Again, please note that this is still a WIP, so there's still quite a bit to fix here. 
 
 
 
