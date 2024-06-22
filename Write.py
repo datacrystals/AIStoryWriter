@@ -175,7 +175,7 @@ else:
 
 # If enabled, translate the novel
 if (Writer.Config.TRANSLATE_LANGUAGE != ""):
-    NewChapters = Writer.Scrubber.TranslateNovel(Client, SysLogger, NewChapters, NumChapters, Writer.Config.TRANSLATE_LANGUAGE)
+    NewChapters = Writer.Translator.TranslateNovel(Client, SysLogger, NewChapters, NumChapters, Writer.Config.TRANSLATE_LANGUAGE)
 else:
     SysLogger.Log(f"No Novel Translation Requested, Skipping Translation Step", 4)
 

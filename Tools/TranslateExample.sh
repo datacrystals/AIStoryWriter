@@ -7,7 +7,7 @@ echo "Running tests with smallest and fastest model"
 ./Write.py \
 -Host localhost:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1/Prompt.txt \
+-Prompt ExamplePrompts/ShortDebuggingStory/Prompt.txt \
 -InitialOutlineModel mistral \
 -ChapterOutlineModel mistral \
 -ChapterS1Model mistral \
