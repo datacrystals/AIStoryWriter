@@ -8,7 +8,12 @@ def InitClient(_ClientHost:str = "http://10.1.65.4:11434"):
     return ollama.Client(host=_ClientHost)
 
 
-def ChatAndStreamResponse(_Client, _Logger, _Messages, _Model:str="llama3"):
+def ChatAndStreamResponse(_Client, _Logger, _Messages, _Model:str="llama3", _SeedOverride:int=-1):
+
+    # Calculate Seed Information
+    Seed = Writer.Config.SEED
+    if (_SeedOverride != -1):
+        Seed = _SeedOverride
 
     # Disallow empty garbage responses
     if (Writer.Config.DEBUG):
@@ -36,7 +41,7 @@ def ChatAndStreamResponse(_Client, _Logger, _Messages, _Model:str="llama3"):
             model=_Model,
             messages=_Messages,
             stream=True,
-            options=dict(seed=Writer.Config.SEED)
+            options=dict(seed=Seed)
         )
         ThisMessage:str = StreamResponse(Stream)
 

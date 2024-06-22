@@ -206,6 +206,7 @@ Thank you for helping me write my story! Please only include your summary and th
 
     #### STAGE 1: Create Initial Plot
     Stage1Chapter = ""
+    IterCounter:int = 0
     while True:
         Prompt = f"""
 {ContextHistoryInsert}
@@ -234,7 +235,8 @@ As you write your work, please use the following suggestions to help you write c
         Messages = MesssageHistory.copy()
         Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
-        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL)
+        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL, _SeedOverride=IterCounter + Writer.Config.SEED)
+        IterCounter += 1
         Stage1Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
         _Logger.Log(f"Finished Initial Generation For Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}", 5)
 
@@ -246,6 +248,7 @@ As you write your work, please use the following suggestions to help you write c
 
     #### STAGE 2: Add Character Development
     Stage2Chapter = ""
+    IterCounter:int = 0
     while True:
         Prompt = f"""
 {ContextHistoryInsert}
@@ -286,7 +289,8 @@ Remember, have fun, be creative, and improve the character development of chapte
         Messages = MesssageHistory.copy()
         Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
-        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.CHAPTER_STAGE2_WRITER_MODEL)
+        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.CHAPTER_STAGE2_WRITER_MODEL, _SeedOverride=IterCounter + Writer.Config.SEED)
+        IterCounter += 1
         Stage2Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
         _Logger.Log(f"Finished Initial Generation For Initial Chapter (Stage 2: Character Development)  {_ChapterNum}/{_TotalChapters}", 5)
 
@@ -297,9 +301,9 @@ Remember, have fun, be creative, and improve the character development of chapte
             break
 
 
-
     #### STAGE 3: Add Dialogue
     Stage3Chapter = ""
+    IterCounter:int = 0
     while True:
         Prompt = f"""
 {ContextHistoryInsert}
@@ -340,7 +344,8 @@ Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make
         Messages = MesssageHistory.copy()
         Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
-        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.CHAPTER_STAGE3_WRITER_MODEL)
+        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.CHAPTER_STAGE3_WRITER_MODEL, _SeedOverride=IterCounter + Writer.Config.SEED)
+        IterCounter += 1
         Stage3Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
         _Logger.Log(f"Finished Initial Generation For Initial Chapter (Stage 3: Dialogue)  {_ChapterNum}/{_TotalChapters}", 5)
 
