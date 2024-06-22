@@ -4,7 +4,7 @@ import Writer.PrintUtils
 import json
 
 
-def GetFeedbackOnOutline(_Client, _Outline:str, _History:list = []):
+def GetFeedbackOnOutline(_Client, _Logger, _Outline:str, _History:list = []):
 
     StartingPrompt:str = f"""
 Please critique the following outline - make sure to provide constructive criticism on how it can be improved and point out any problems with it.
@@ -24,16 +24,16 @@ It should be very clear which chapter is which, and the content in each chapter.
 
     """
 
-    Writer.PrintUtils.PrintBanner("Prompting LLM To Critique Outline", "green")
+    _Logger.Log("Prompting LLM To Critique Outline", 5)
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(StartingPrompt))
     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.REVISION_MODEL)
-    Writer.PrintUtils.PrintBanner("Finished Getting Outline Feedback", "green")
+    _Logger.Log("Finished Getting Outline Feedback", 5)
 
     return Writer.OllamaInterface.GetLastMessageText(Messages), Messages
 
 
-def GetOutlineRating(_Client, _Outline:str, _History:list = []):
+def GetOutlineRating(_Client, _Logger, _Outline:str, _History:list = []):
 
     StartingPrompt:str = f"""
 {_Outline}
@@ -49,11 +49,11 @@ Give a JSON formatted response, containing the string \"IsComplete\", followed b
 Please do not include any other text, just the JSON as your response will be parsed by a computer.
 """
 
-    Writer.PrintUtils.PrintBanner("Prompting LLM To Get Review JSON", "green")
+    _Logger.Log("Prompting LLM To Get Review JSON", 5)
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(StartingPrompt))
     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.EVAL_MODEL)
-    Writer.PrintUtils.PrintBanner("Finished Getting Review JSON", "green")
+    _Logger.Log("Finished Getting Review JSON", 5)
 
 
     while True:
@@ -64,21 +64,21 @@ Please do not include any other text, just the JSON as your response will be par
 
         try:
             Rating = json.loads(RawResponse)["IsComplete"]
-            Writer.PrintUtils.PrintBanner(f"Editor Determined IsComplete: {Rating}", "green")
+            _Logger.Log(f"Editor Determined IsComplete: {Rating}", 5)
             return Rating, Messages
         except Exception as E:
-            Writer.PrintUtils.PrintBanner("Error Parsing JSON Written By LLM, Asking For Edits", "red")
+            _Logger.Log("Error Parsing JSON Written By LLM, Asking For Edits", 7)
             EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
             Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
-            Writer.PrintUtils.PrintBanner("Asking LLM TO Revise", "red")
+            _Logger.Log("Asking LLM TO Revise", 7)
             Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.EVAL_MODEL)
-            Writer.PrintUtils.PrintBanner("Done Asking LLM TO Revise", "red")
+            _Logger.Log("Done Asking LLM TO Revise", 7)
 
 
 
 
 
-def GetFeedbackOnChapter(_Client, _Chapter:str, _Outline:str, _History:list = []):
+def GetFeedbackOnChapter(_Client, _Logger, _Chapter:str, _Outline:str, _History:list = []):
 
     # Disabled seeing the outline too.
     StartingPrompt:str = f"""
@@ -101,17 +101,17 @@ Please give feedback on the above chapter based on the following criteria:
 
 """
 
-    Writer.PrintUtils.PrintBanner("Prompting LLM To Critique Chapter", "green")
+    _Logger.Log("Prompting LLM To Critique Chapter", 5)
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(StartingPrompt))
     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.REVISION_MODEL)
-    Writer.PrintUtils.PrintBanner("Finished Getting Chapter Feedback", "green")
+    _Logger.Log("Finished Getting Chapter Feedback", 5)
 
     return Writer.OllamaInterface.GetLastMessageText(Messages), Messages
 
 
 # Switch this to iscomplete true/false (similar to outline)
-def GetChapterRating(_Client, _Chapter:str, _History:list = []):
+def GetChapterRating(_Client, _Logger, _Chapter:str, _History:list = []):
 
     StartingPrompt:str = f"""
 {_Chapter}
@@ -127,11 +127,11 @@ Give a JSON formatted response, containing the string \"IsComplete\", followed b
 Please do not include any other text, just the JSON as your response will be parsed by a computer.
 """
 
-    Writer.PrintUtils.PrintBanner("Prompting LLM To Get Review JSON", "green")
+    _Logger.Log("Prompting LLM To Get Review JSON", 5)
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(StartingPrompt))
     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.EVAL_MODEL)
-    Writer.PrintUtils.PrintBanner("Finished Getting Review JSON", "green")
+    _Logger.Log("Finished Getting Review JSON", 5)
 
 
     while True:
@@ -142,12 +142,12 @@ Please do not include any other text, just the JSON as your response will be par
         
         try:
             Rating = json.loads(RawResponse)["IsComplete"]
-            Writer.PrintUtils.PrintBanner(f"Editor Determined IsComplete: {Rating}", "green")
+            _Logger.Log(f"Editor Determined IsComplete: {Rating}", 5)
             return Rating, Messages
         except Exception as E:
-            Writer.PrintUtils.PrintBanner("Error Parsing JSON Written By LLM, Asking For Edits", "red")
+            _Logger.Log("Error Parsing JSON Written By LLM, Asking For Edits", 7)
             EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
             Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
-            Writer.PrintUtils.PrintBanner("Asking LLM TO Revise", "red")
+            _Logger.Log("Asking LLM TO Revise", 7)
             Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.EVAL_MODEL)
-            Writer.PrintUtils.PrintBanner("Done Asking LLM TO Revise", "red")
+            _Logger.Log("Done Asking LLM TO Revise", 7)

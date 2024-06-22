@@ -5,7 +5,7 @@ import Writer.Config
 
 
 
-def GenerateOutline(_Client, _OutlinePrompt, _QualityThreshold:int = 85):
+def GenerateOutline(_Client, _Logger, _OutlinePrompt, _QualityThreshold:int = 85):
 
     Prompt:str = f"""
 Please write a markdown formatted outline based on the following prompt:
@@ -37,22 +37,22 @@ Again, remember - you're writing an outline for the story.
     """
 
     # Generate Initial Outline
-    Writer.PrintUtils.PrintBanner("Generating Initial Outline", "green")
+    _Logger.Log(f"Generating Initial Outline", 4)
     Messages = [Writer.OllamaInterface.BuildUserQuery(Prompt)]
     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL)
     Outline:str = Writer.OllamaInterface.GetLastMessageText(Messages)
-    Writer.PrintUtils.PrintBanner("Done Generating Initial Outline", "green")
+    _Logger.Log(f"Done Generating Initial Outline", 4)
 
     
-    Writer.PrintUtils.PrintBanner("Entering Feedback/Revision Loop", "yellow")
+    _Logger.Log(f"Entering Feedback/Revision Loop", 3)
     FeedbackHistory = []
     WritingHistory = Messages
     Rating:int = 0
     Iterations:int = 0
     while True:
         Iterations += 1
-        Feedback, FeedbackHistory = Writer.LLMEditor.GetFeedbackOnOutline(_Client, Outline, FeedbackHistory)
-        Rating, FeedbackHistory = Writer.LLMEditor.GetOutlineRating(_Client, Outline, FeedbackHistory)
+        Feedback, FeedbackHistory = Writer.LLMEditor.GetFeedbackOnOutline(_Client, _Logger, Outline, FeedbackHistory)
+        Rating, FeedbackHistory = Writer.LLMEditor.GetOutlineRating(_Client, _Logger, Outline, FeedbackHistory)
         # Rating has been changed from a 0-100 int, to does it meet the standards (yes/no)?
 
         if (Iterations > Writer.Config.OUTLINE_MAX_REVISIONS):
@@ -60,14 +60,14 @@ Again, remember - you're writing an outline for the story.
         if ((Iterations > Writer.Config.OUTLINE_MIN_REVISIONS) and (Rating == True)):
             break
 
-        Outline, WritingHistory = ReviseOutline(_Client, Outline, Feedback, WritingHistory)
+        Outline, WritingHistory = ReviseOutline(_Client, _Logger, Outline, Feedback, WritingHistory)
 
-    Writer.PrintUtils.PrintBanner("Quality Standard Met, Exiting Feedback/Revision Loop", "yellow")
+    _Logger.Log(f"Quality Standard Met, Exiting Feedback/Revision Loop", 4)
 
     return Outline
 
 
-def ReviseOutline(_Client, _Outline, _Feedback, _History:list = []):
+def ReviseOutline(_Client, _Logger, _Outline, _Feedback, _History:list = []):
 
     RevisionPrompt:str = f"""
 Please revise the following outline:
@@ -99,17 +99,17 @@ Don't answer these questions directly, instead make your writing implicitly answ
 
     """
 
-    Writer.PrintUtils.PrintBanner("Revising Outline", "green")
+    _Logger.Log(f"Revising Outline", 2)
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(RevisionPrompt))
     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL)
     SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
-    Writer.PrintUtils.PrintBanner("Done Revising Outline", "green")
+    _Logger.Log(f"Done Revising Outline", 2)
 
     return SummaryText, Messages
 
 
-def GeneratePerChapterOutline(_Client, _Chapter, _History:list = []):
+def GeneratePerChapterOutline(_Client, _Logger, _Chapter, _History:list = []):
 
     RevisionPrompt:str = f"""
 Please generate an outline for chapter {_Chapter} from the previous outline.
@@ -131,13 +131,12 @@ Again, don't write the chapter itself, just create a detailed outline of the cha
 Make sure your chapter has a markdown-formatted name!
 
     """
-
-    Writer.PrintUtils.PrintBanner("Generating Outline For Chapter " + str(_Chapter), "green")
+    _Logger.Log("Generating Outline For Chapter " + str(_Chapter), 5)
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(RevisionPrompt))
     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_OUTLINE_WRITER_MODEL)
     SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
-    Writer.PrintUtils.PrintBanner("Done Generating Outline For Chapter " + str(_Chapter), "green")
+    _Logger.Log("Done Generating Outline For Chapter " + str(_Chapter), 5)
 
     return SummaryText, Messages
 

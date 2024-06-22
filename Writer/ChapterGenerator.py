@@ -6,14 +6,14 @@ import Writer.PrintUtils
 import Writer.Config
 
 
-def LLMSummaryCheck(_Client, _RefSummary:str , _Work:str):
+def LLMSummaryCheck(_Client, _Logger, _RefSummary:str , _Work:str):
     '''
     Generates a summary of the work provided, and compares that to the reference summary, asking if they answered the prompt correctly.
     '''
 
     # LLM Length Check - Firstly, check if the length of the response was at least 100 words.
     if (len(_Work.split(" ")) < 100):
-        Writer.PrintUtils.PrintBanner("Previous response didn't meet the length requirement, so it probably tried to cheat around writing.", "red")
+        _Logger.Log("Previous response didn't meet the length requirement, so it probably tried to cheat around writing.", "red")
         return False
 
     # Build Summariziation Langchain
@@ -74,22 +74,23 @@ Again, remember to make your response JSON formatted with no extra words. It wil
             Dict = json.loads(RawResponse)
             return Dict["DidFollowOutline"]
         except Exception as E:
-            Writer.PrintUtils.PrintBanner("Error Parsing JSON Written By LLM, Asking For Edits", "red")
+            _Logger.Log("Error Parsing JSON Written By LLM, Asking For Edits", "red")
             EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
             Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
-            Writer.PrintUtils.PrintBanner("Asking LLM TO Revise", "red")
+            _Logger.Log("Asking LLM TO Revise", "red")
             Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, ComparisonLangchain, Writer.Config.CHECKER_MODEL)
-            Writer.PrintUtils.PrintBanner("Done Asking LLM TO Revise", "red")
+            _Logger.Log("Done Asking LLM TO Revise", "red")
 
 
 
-def GenerateChapter(_Client, _ChapterNum:int, _TotalChapters:int, _Outline:str, _Chapters:list = [], _QualityThreshold:int = 85):
+def GenerateChapter(_Client, _Logger, _ChapterNum:int, _TotalChapters:int, _Outline:str, _Chapters:list = [], _QualityThreshold:int = 85):
 
 
     # Some important notes
     # We're going to remind the author model of the previous chapters here, so it knows what has been written before.
 
     #### Stage 0: Create base language chain
+    _Logger.Log(f"Creating Base Langchain For Chapter {_ChapterNum} Generation", 2)
     MesssageHistory:list = []
     MesssageHistory.append(Writer.OllamaInterface.BuildSystemQuery(f"You are a great fiction writer, and you're working on a great new story. You're working on a new novel, and you want to produce a quality output. Here is your outline: \n<OUTLINE>\n{_Outline}\n</OUTLINE>"))
     
@@ -125,7 +126,9 @@ And here is what I've written so far:
         # MesssageHistory.append(Writer.OllamaInterface.BuildSystemQuery("Make sure to pay attention to the content that has happened in these previous chapters. It's okay to deviate from the outline a little in order to ensure you continue the same story from previous chapters."))
 
 
+
     # Now, extract the this-chapter-outline segment
+    _Logger.Log(f"Creating Chapter Specific Outline", 4)
     ThisChapterOutline:str = ""
     ChapterSegmentMessages = []
     ChapterSegmentMessages.append(Writer.OllamaInterface.BuildSystemQuery(f"You are a helpful AI Assistant. Answer the user's prompts to the best of your abilities."))
@@ -140,11 +143,13 @@ Do not include anything else in your response except just the content for chapte
 """))
     ChapterSegmentMessages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, ChapterSegmentMessages, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
     ThisChapterOutline:str = Writer.OllamaInterface.GetLastMessageText(ChapterSegmentMessages)
+    _Logger.Log(f"Created Chapter Specific Outline", 4)
 
 
     # Generate Summary of Last Chapter If Applicable
     FormattedLastChapterSummary:str = ""
     if (len(_Chapters) > 0):
+        _Logger.Log(f"Creating Summary Of Last Chapter Info", 3)
         ChapterSummaryMessages = []
         ChapterSummaryMessages.append(Writer.OllamaInterface.BuildSystemQuery(f"You are a helpful AI Assistant. Answer the user's prompts to the best of your abilities."))
         ChapterSummaryMessages.append(Writer.OllamaInterface.BuildUserQuery(f"""
@@ -188,10 +193,14 @@ Thank you for helping me write my story! Please only include your summary and th
     """))
         ChapterSummaryMessages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, ChapterSummaryMessages, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
         FormattedLastChapterSummary:str = Writer.OllamaInterface.GetLastMessageText(ChapterSummaryMessages)
+        _Logger.Log(f"Created Summary Of Last Chapter Info", 3)
         
+
     DetailedChapterOutline:str = ThisChapterOutline
     if (FormattedLastChapterSummary != ""):
         DetailedChapterOutline = ThisChapterOutline
+
+    _Logger.Log(f"Done with base langchain setup", 2)
 
 
 
@@ -221,17 +230,17 @@ As you write your work, please use the following suggestions to help you write c
     """
 
         # Generate Initial Chapter
-        Writer.PrintUtils.PrintBanner(f"Generating Initial Chapter (Stage 1: Plot) {_ChapterNum}/{_TotalChapters}", "green")
+        _Logger.Log(f"Generating Initial Chapter (Stage 1: Plot) {_ChapterNum}/{_TotalChapters}", 5)
         Messages = MesssageHistory.copy()
         Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
         Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL)
         Stage1Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
-        Writer.PrintUtils.PrintBanner(f"Finished Initial Generation For Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}", "green")
+        _Logger.Log(f"Finished Initial Generation For Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}", 5)
 
         # Check if LLM did the work
-        if (LLMSummaryCheck(_Client, DetailedChapterOutline, Stage1Chapter)):
-            Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}", "green")
+        if (LLMSummaryCheck(_Client, _Logger, DetailedChapterOutline, Stage1Chapter)):
+            _Logger.Log(f"Done Generating Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}", 5)
             break
 
 
@@ -273,18 +282,18 @@ Remember, have fun, be creative, and improve the character development of chapte
 """
 
         # Generate Initial Chapter
-        Writer.PrintUtils.PrintBanner(f"Generating Initial Chapter (Stage 2: Character Development) {_ChapterNum}/{_TotalChapters}", "green")
+        _Logger.Log(f"Generating Initial Chapter (Stage 2: Character Development) {_ChapterNum}/{_TotalChapters}", 5)
         Messages = MesssageHistory.copy()
         Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
         Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_STAGE2_WRITER_MODEL)
         Stage2Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
-        Writer.PrintUtils.PrintBanner(f"Finished Initial Generation For Initial Chapter (Stage 2: Character Development)  {_ChapterNum}/{_TotalChapters}", "green")
+        _Logger.Log(f"Finished Initial Generation For Initial Chapter (Stage 2: Character Development)  {_ChapterNum}/{_TotalChapters}", 5)
 
 
         # Check if LLM did the work
-        if (LLMSummaryCheck(_Client, DetailedChapterOutline, Stage2Chapter)):
-            Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter (Stage 2: Character Development)  {_ChapterNum}/{_TotalChapters}", "green")
+        if (LLMSummaryCheck(_Client, _Logger, DetailedChapterOutline, Stage2Chapter)):
+            _Logger.Log(f"Done Generating Initial Chapter (Stage 2: Character Development)  {_ChapterNum}/{_TotalChapters}", 5)
             break
 
 
@@ -327,17 +336,17 @@ Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make
 """
 
         # Generate Initial Chapter
-        Writer.PrintUtils.PrintBanner(f"Generating Initial Chapter (Stage 3: Dialogue) {_ChapterNum}/{_TotalChapters}", "green")
+        _Logger.Log(f"Generating Initial Chapter (Stage 3: Dialogue) {_ChapterNum}/{_TotalChapters}", 5)
         Messages = MesssageHistory.copy()
         Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
         Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_STAGE3_WRITER_MODEL)
         Stage3Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
-        Writer.PrintUtils.PrintBanner(f"Finished Initial Generation For Initial Chapter (Stage 3: Dialogue)  {_ChapterNum}/{_TotalChapters}", "green")
+        _Logger.Log(f"Finished Initial Generation For Initial Chapter (Stage 3: Dialogue)  {_ChapterNum}/{_TotalChapters}", 5)
 
         # Check if LLM did the work
-        if (LLMSummaryCheck(_Client, DetailedChapterOutline, Stage3Chapter)):
-            Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter (Stage 3: Dialogue)  {_ChapterNum}/{_TotalChapters}", "green")
+        if (LLMSummaryCheck(_Client, _Logger, DetailedChapterOutline, Stage3Chapter)):
+            _Logger.Log(f"Done Generating Initial Chapter (Stage 3: Dialogue)  {_ChapterNum}/{_TotalChapters}", 5)
             break
 
 
@@ -375,23 +384,23 @@ Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make
 # """
 
 #     # Generate Initial Chapter
-#     Writer.PrintUtils.PrintBanner(f"Generating Initial Chapter (Stage 4: Final Pass) {_ChapterNum}/{_TotalChapters}", "green")
+#     _Logger.Log(f"Generating Initial Chapter (Stage 4: Final Pass) {_ChapterNum}/{_TotalChapters}", 5)
 #     Messages = MesssageHistory.copy()
 #     Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
 #     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_STAGE4_WRITER_MODEL)
 #     Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
-#     Writer.PrintUtils.PrintBanner(f"Done Generating Initial Chapter (Stage 4: Final Pass)  {_ChapterNum}/{_TotalChapters}", "green")
+#     _Logger.Log(f"Done Generating Initial Chapter (Stage 4: Final Pass)  {_ChapterNum}/{_TotalChapters}", 5)
     Chapter:str = Stage3Chapter
 
 
     #### Stage 5: Revision Cycle
     if (Writer.Config.CHAPTER_NO_REVISIONS):
-        Writer.PrintUtils.PrintBanner(f"Chapter Revision Disabled In Config, Exiting Now", "green")
+        _Logger.Log(f"Chapter Revision Disabled In Config, Exiting Now", 5)
         return Chapter
 
 
-    Writer.PrintUtils.PrintBanner(f"Entering Feedback/Revision Loop (Stage 5) For Chapter {_ChapterNum}/{_TotalChapters}", "yellow")
+    _Logger.Log(f"Entering Feedback/Revision Loop (Stage 5) For Chapter {_ChapterNum}/{_TotalChapters}", 4)
     FeedbackHistory = []
     WritingHistory = MesssageHistory.copy()
     Rating:int = 0
@@ -405,14 +414,14 @@ Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make
             break
         if ((Iterations > Writer.Config.CHAPTER_MIN_REVISIONS) and (Rating == True)):
             break
-        Chapter, WritingHistory = ReviseChapter(_Client, Chapter, Feedback, WritingHistory)
+        Chapter, WritingHistory = ReviseChapter(_Client, _Logger, Chapter, Feedback, WritingHistory)
 
-    Writer.PrintUtils.PrintBanner(f"Quality Standard Met, Exiting Feedback/Revision Loop (Stage 5) For Chapter {_ChapterNum}/{_TotalChapters}", "yellow")
+    _Logger.Log(f"Quality Standard Met, Exiting Feedback/Revision Loop (Stage 5) For Chapter {_ChapterNum}/{_TotalChapters}", 4)
 
     return Chapter
 
 
-def ReviseChapter(_Client, _Chapter, _Feedback, _History:list = []):
+def ReviseChapter(_Client, _Logger, _Chapter, _Feedback, _History:list = []):
 
     RevisionPrompt = f"""
 Please revise the following chapter:
@@ -430,12 +439,12 @@ Remember not to include any author notes.
 
 """
 
-    Writer.PrintUtils.PrintBanner("Revising Chapter", "green")
+    _Logger.Log("Revising Chapter", 5)
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(RevisionPrompt))
     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_REVISION_WRITER_MODEL)
     SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
-    Writer.PrintUtils.PrintBanner("Done Revising Chapter", "green")
+    _Logger.Log("Done Revising Chapter", 5)
 
     return SummaryText, Messages
 

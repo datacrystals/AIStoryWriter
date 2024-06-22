@@ -5,7 +5,7 @@ import json
 
 
 
-def GetStoryInfo(_Client, _Messages:list):
+def GetStoryInfo(_Client, _Logger, _Messages:list):
 
     Prompt:str = f"""
 Please write a JSON formatted response with no other content with the following keys.
@@ -21,11 +21,11 @@ Base your answers on the story written in previous messages.
 Again, remember to make your response JSON formatted with no extra words. It will be fed directly to a JSON parser.
 """
     
-    Writer.PrintUtils.PrintBanner("Prompting LLM To Generate Stats", "green")
+    _Logger.Log("Prompting LLM To Generate Stats", 5)
     Messages = _Messages
     Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.INFO_MODEL)
-    Writer.PrintUtils.PrintBanner("Finished Getting Stats Feedback", "green")
+    _Logger.Log("Finished Getting Stats Feedback", 5)
 
     Dict = json.loads(Writer.OllamaInterface.GetLastMessageText(Messages))
 
@@ -40,11 +40,11 @@ Again, remember to make your response JSON formatted with no extra words. It wil
             Dict = json.loads(RawResponse)
             return Dict
         except Exception as E:
-            Writer.PrintUtils.PrintBanner("Error Parsing JSON Written By LLM, Asking For Edits", "red")
+            _Logger.Log("Error Parsing JSON Written By LLM, Asking For Edits", 7)
             EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
             Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
-            Writer.PrintUtils.PrintBanner("Asking LLM TO Revise", "red")
+            _Logger.Log("Asking LLM TO Revise", 7)
             Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.INFO_MODEL)
-            Writer.PrintUtils.PrintBanner("Done Asking LLM TO Revise", "red")
+            _Logger.Log("Done Asking LLM TO Revise", 7)
 
 

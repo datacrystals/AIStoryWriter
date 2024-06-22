@@ -81,23 +81,26 @@ Writer.Config.OPTIONAL_OUTPUT_NAME = Args.Output
 Writer.Config.DEBUG = Args.Debug
 
 
+# Setup Logger
+SysLogger = Writer.PrintUtils.Logger()
+
 # Initialize Client
-Writer.PrintUtils.PrintBanner("Created OLLAMA Client", "red")
+SysLogger.Log("Created OLLAMA Client", 5)
 Client = Writer.OllamaInterface.InitClient(Args.Host)
 
 # Generate the Outline
 Prompt:str = ""
 with open(Args.Prompt, "r") as f:
     Prompt = f.read()
-Outline = Writer.OutlineGenerator.GenerateOutline(Client, Prompt, Writer.Config.OUTLINE_QUALITY)
+Outline = Writer.OutlineGenerator.GenerateOutline(Client, SysLogger, Prompt, Writer.Config.OUTLINE_QUALITY)
 BasePrompt = Prompt
 
 
 # Detect the number of chapters
-Writer.PrintUtils.PrintBanner("Detecting Chapters", "yellow")
+SysLogger.Log("Detecting Chapters", 5)
 Messages = [Writer.OllamaInterface.BuildUserQuery(Outline)]
-NumChapters:int = Writer.ChapterDetector.LLMCountChapters(Client, Writer.OllamaInterface.GetLastMessageText(Messages))
-Writer.PrintUtils.PrintBanner(f"Found {NumChapters} Chapter(s)", "yellow")
+NumChapters:int = Writer.ChapterDetector.LLMCountChapters(Client, SysLogger, Writer.OllamaInterface.GetLastMessageText(Messages))
+SysLogger.Log(f"Found {NumChapters} Chapter(s)", 5)
 
 
 ## Write Per-Chapter Outline
@@ -113,7 +116,7 @@ Messages = [Writer.OllamaInterface.BuildUserQuery(Prompt)]
 ChapterOutlines:list = []
 if (Writer.Config.EXPAND_OUTLINE):
     for Chapter in range(1, NumChapters + 1):
-        ChapterOutline, Messages = Writer.OutlineGenerator.GeneratePerChapterOutline(Client, Chapter, Messages)
+        ChapterOutline, Messages = Writer.OutlineGenerator.GeneratePerChapterOutline(Client, SysLogger, Chapter, Messages)
         ChapterOutlines.append(ChapterOutline)
 
 
@@ -138,29 +141,29 @@ if (Writer.Config.EXPAND_OUTLINE):
 
 
 # Write the chapters
-Writer.PrintUtils.PrintBanner("Starting Chapter Writing", "yellow")
+SysLogger.Log("Starting Chapter Writing", 5)
 Chapters = []
 for i in range(1, NumChapters + 1):
 
-    Chapter = Writer.ChapterGenerator.GenerateChapter(Client, i, NumChapters, Outline, Chapters, Writer.Config.OUTLINE_QUALITY)
+    Chapter = Writer.ChapterGenerator.GenerateChapter(Client, SysLogger, i, NumChapters, Outline, Chapters, Writer.Config.OUTLINE_QUALITY)
 
     Chapter = f"### Chapter {i}\n\n{Chapter}"
     Chapters.append(Chapter)
     ChapterWordCount = Writer.Statistics.GetWordCount(Chapter)
-    Writer.PrintUtils.PrintBanner(f"Chapter Word Count: {ChapterWordCount}", "blue")
+    SysLogger.Log(f"Chapter Word Count: {ChapterWordCount}", 2)
 
 
 # Now edit the whole thing together
 StoryBodyText:str = ""
 if Writer.Config.ENABLE_FINAL_EDIT_PASS:
-    NewChapters = Writer.NovelEditor.EditNovel(Client, Chapters, Outline, NumChapters)
+    NewChapters = Writer.NovelEditor.EditNovel(Client, SysLogger, Chapters, Outline, NumChapters)
 NewChapters = Chapters
 
 # Now scrub it (if enabled)
 if (not Writer.Config.SCRUB_NO_SCRUB):
-    NewChapters = Writer.Scrubber.ScrubNovel(Client, NewChapters, NumChapters)
+    NewChapters = Writer.Scrubber.ScrubNovel(Client, SysLogger, NewChapters, NumChapters)
 else:
-    Writer.PrintUtils.PrintBanner(f"Skipping Scrubbing Due To Config", "yellow")
+    SysLogger.Log(f"Skipping Scrubbing Due To Config", 4)
 
 
 # Compile The Story
@@ -172,7 +175,7 @@ for Chapter in NewChapters:
 # Now Generate Info
 Messages = []
 Messages.append(Writer.OllamaInterface.BuildUserQuery(Outline))
-Info = Writer.StoryInfo.GetStoryInfo(Client, Messages)
+Info = Writer.StoryInfo.GetStoryInfo(Client, SysLogger, Messages)
 Title = Info['Title']
 Summary = Info['Summary']
 Tags = Info['Tags']
@@ -188,7 +191,7 @@ ElapsedTime = time.time() - StartTime
 
 # Calculate Total Words
 TotalWords:int = Writer.Statistics.GetWordCount(StoryBodyText)
-Writer.PrintUtils.PrintBanner(f"Story Total Word Count: {TotalWords}", "blue")
+SysLogger.Log(f"Story Total Word Count: {TotalWords}", 4)
 
 StatsString:str = "Work Statistics:  \n"
 StatsString += " - Total Words: " + str(TotalWords) + "  \n"
@@ -228,7 +231,7 @@ StatsString += f" - Disable Scrubbing: {Writer.Config.SCRUB_NO_SCRUB}  \n"
 
 
 # Save The Story To Disk
-Writer.PrintUtils.PrintBanner("Saving Story To Disk", "yellow")
+SysLogger.Log("Saving Story To Disk", 3)
 FName = f"Stories/Story_{Title.replace(' ', '_')}.md"
 if (Writer.Config.OPTIONAL_OUTPUT_NAME != ""):
     FName = Writer.Config.OPTIONAL_OUTPUT_NAME
