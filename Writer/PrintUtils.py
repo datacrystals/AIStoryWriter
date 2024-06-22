@@ -15,7 +15,10 @@ class Logger:
     def __init__(self, _LogfilePrefix="Logs/"):
 
         # Make Paths For Log
-        os.makedirs(_LogfilePrefix)
+        try:
+            os.makedirs(_LogfilePrefix)
+        except FileExistsError:
+            pass
 
         self.LogPath = _LogfilePrefix + "Log_" + datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S') + ".log"
         self.File = open(self.LogPath, "a")
