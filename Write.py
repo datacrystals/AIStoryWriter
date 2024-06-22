@@ -15,6 +15,7 @@ import Writer.OutlineGenerator
 import Writer.ChapterGenerator
 import Writer.StoryInfo
 import Writer.NovelEditor
+import Writer.Translator
 
 
 # Setup Argparser
@@ -34,6 +35,8 @@ Parser.add_argument("-EvalModel", default="llama3:70b", type=str, help="Model to
 Parser.add_argument("-InfoModel", default="llama3:70b", type=str, help="Model to use when generating summary/info at the end")
 Parser.add_argument("-ScrubModel", default="llama3:70b", type=str, help="Model to use when scrubbing the story at the end")
 Parser.add_argument("-CheckerModel", default="llama3:70b", type=str, help="Model to use when checking if the LLM cheated or not")
+Parser.add_argument("-TranslatorModel", default="llama3:70b", type=str, help="Model to use if translation of the story is enabled")
+Parser.add_argument("-Translate", default="", type=str, help="Specify a language to translate the story to - will not translate by default. Ex: 'French'")
 Parser.add_argument("-Seed", default=12, type=int, help="Used to seed models.")
 Parser.add_argument("-OutlineMinRevisions", default=0, type=int, help="Number of minimum revisions that the outline must be given prior to proceeding")
 Parser.add_argument("-OutlineMaxRevisions", default=3, type=int, help="Max number of revisions that the outline may have")
@@ -66,6 +69,9 @@ Writer.Config.REVISION_MODEL = Args.RevisionModel
 Writer.Config.INFO_MODEL = Args.InfoModel
 Writer.Config.SCRUB_MODEL = Args.ScrubModel
 Writer.Config.CHECKER_MODEL = Args.CheckerModel
+Writer.Config.TRANSLATOR_MODEL = Args.TranslatorModel
+
+Writer.Config.TRANSLATE_LANGUAGE = Args.Translate
 
 Writer.Config.OUTLINE_MIN_REVISIONS = Args.OutlineMinRevisions
 Writer.Config.OUTLINE_MAX_REVISIONS = Args.OutlineMaxRevisions
@@ -165,6 +171,14 @@ if (not Writer.Config.SCRUB_NO_SCRUB):
     NewChapters = Writer.Scrubber.ScrubNovel(Client, SysLogger, NewChapters, NumChapters)
 else:
     SysLogger.Log(f"Skipping Scrubbing Due To Config", 4)
+
+
+# If enabled, translate the novel
+if (Writer.Config.TRANSLATE_LANGUAGE != ""):
+    NewChapters = Writer.Scrubber.TranslateNovel(Client, SysLogger, NewChapters, NumChapters, Writer.Config.TRANSLATE_LANGUAGE)
+else:
+    SysLogger.Log(f"No Novel Translation Requested, Skipping Translation Step", 4)
+
 
 
 # Compile The Story
