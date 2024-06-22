@@ -10,7 +10,7 @@ echo "Running tests with smaller models (~14b params, rather than the normal 70b
 -Prompt ExamplePrompts/Example/Prompt.txt \
 -InitialOutlineModel phi3:14b \
 -ChapterOutlineModel phi3:14b \
--ChapterS1Model aya:8b \
+-ChapterS1Model mistral \
 -ChapterS2Model phi3:14b \
 -ChapterS3Model aya:8b \
 -ChapterS4Model llava:13b \
