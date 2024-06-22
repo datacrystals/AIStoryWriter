@@ -31,6 +31,9 @@ Here's an example as of 2024-06-21 - note that there are still some major issues
 - [Prompt](ExamplePrompts/Example1/Prompt.txt)
 - [Output (2024-06-20 Version)](ExamplePrompts/Example1/Output_2024-06-20.md)
 
+I've made some changes since this version, and I'm regenerating the example, so this is a bit outdated.
+
+
 Again, please note that this is still a WIP, so there's still quite a bit to fix here. 
 
 
