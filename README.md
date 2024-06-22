@@ -95,6 +95,14 @@ Alternatively, this example should work for you if you have about 20GiB VRAM. Ag
 -NoScrubChapters
 ```
 
+### Translating
+
+This project supports translating the generated story into another language via the `-Translate` argument. Simply specify a language after the flag: `-Translate "French"`.
+
+If you want to use a specific model for translation, use the -TranslatorModel flag: `-TranslatorModel llama3:70b`
+
+Very simple example [here](ExamplePrompts/ShortDebuggingStory/TranslationExample.md) (note the story prompt here was intended to be as short as possible for fast debugging).
+
 
 ### Command Line Flags
 
@@ -103,8 +111,8 @@ Here's a full list of arguments as of 2024-06-22:
 ```
 usage: Write.py [-h] [-Prompt PROMPT] [-Output OUTPUT] [-Host HOST] [-InitialOutlineModel INITIALOUTLINEMODEL] [-ChapterOutlineModel CHAPTEROUTLINEMODEL] [-ChapterS1Model CHAPTERS1MODEL] [-ChapterS2Model CHAPTERS2MODEL]
                 [-ChapterS3Model CHAPTERS3MODEL] [-ChapterS4Model CHAPTERS4MODEL] [-ChapterRevisionModel CHAPTERREVISIONMODEL] [-RevisionModel REVISIONMODEL] [-EvalModel EVALMODEL] [-InfoModel INFOMODEL] [-ScrubModel SCRUBMODEL]
-                [-CheckerModel CHECKERMODEL] [-Seed SEED] [-OutlineMinRevisions OUTLINEMINREVISIONS] [-OutlineMaxRevisions OUTLINEMAXREVISIONS] [-ChapterMinRevisions CHAPTERMINREVISIONS]
-                [-ChapterMaxRevisions CHAPTERMAXREVISIONS] [-NoChapterRevision] [-NoScrubChapters] [-ExpandOutline] [-EnableFinalEditPass] [-Debug]
+                [-CheckerModel CHECKERMODEL] [-TranslatorModel TRANSLATORMODEL] [-Translate TRANSLATE] [-Seed SEED] [-OutlineMinRevisions OUTLINEMINREVISIONS] [-OutlineMaxRevisions OUTLINEMAXREVISIONS]
+                [-ChapterMinRevisions CHAPTERMINREVISIONS] [-ChapterMaxRevisions CHAPTERMAXREVISIONS] [-NoChapterRevision] [-NoScrubChapters] [-ExpandOutline] [-EnableFinalEditPass] [-Debug]
 
 options:
   -h, --help            show this help message and exit
@@ -133,6 +141,9 @@ options:
                         Model to use when scrubbing the story at the end
   -CheckerModel CHECKERMODEL
                         Model to use when checking if the LLM cheated or not
+  -TranslatorModel TRANSLATORMODEL
+                        Model to use if translation of the story is enabled
+  -Translate TRANSLATE  Specify a language to translate the story to - will not translate by default. Ex: 'French'
   -Seed SEED            Used to seed models.
   -OutlineMinRevisions OUTLINEMINREVISIONS
                         Number of minimum revisions that the outline must be given prior to proceeding
