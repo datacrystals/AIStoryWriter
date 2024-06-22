@@ -3,6 +3,7 @@
 import argparse
 import time
 import datetime
+import os
 
 import Writer.Config
 import Writer.OllamaInterface
@@ -232,6 +233,7 @@ StatsString += f" - Disable Scrubbing: {Writer.Config.SCRUB_NO_SCRUB}  \n"
 
 # Save The Story To Disk
 SysLogger.Log("Saving Story To Disk", 3)
+os.makedirs("Stories", exist_ok=True)
 FName = f"Stories/Story_{Title.replace(' ', '_')}.md"
 if (Writer.Config.OPTIONAL_OUTPUT_NAME != ""):
     FName = Writer.Config.OPTIONAL_OUTPUT_NAME
