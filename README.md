@@ -101,7 +101,7 @@ This project supports translating the generated story into another language via 
 
 If you want to use a specific model for translation, use the -TranslatorModel flag: `-TranslatorModel llama3:70b`
 
-You can also translate your input prompt from your native language via `TranslatePrompt "French` for example, if your prompt is written in French.
+You can also translate your input prompt from your native language via `TranslatePrompt "French"` for example, if your prompt is written in French.
 
 Very simple example [here](ExamplePrompts/ShortDebuggingStory/TranslationExample.md) (note the story prompt here was intended to be as short as possible for fast debugging).
 
