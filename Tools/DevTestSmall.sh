@@ -19,5 +19,4 @@ echo "Running tests with smallest and fastest model"
 -EvalModel mistral \
 -InfoModel mistral \
 -CheckerModel mistral \
--NoScrubChapters \
--Debug
+-NoScrubChapters

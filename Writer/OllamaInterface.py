@@ -8,7 +8,7 @@ def InitClient(_ClientHost:str = "http://10.1.65.4:11434"):
     return ollama.Client(host=_ClientHost)
 
 
-def ChatAndStreamResponse(_Client, _Messages, _Model:str="llama3"):
+def ChatAndStreamResponse(_Client, _Logger, _Messages, _Model:str="llama3"):
 
     # Disallow empty garbage responses
     if (Writer.Config.DEBUG):
@@ -25,8 +25,13 @@ def ChatAndStreamResponse(_Client, _Messages, _Model:str="llama3"):
         TotalChars = len(str(_Messages))
         AvgCharsPerToken = 5 # got this off of some random dude on the internet
         EstimatedTokens = TotalChars / AvgCharsPerToken
+        _Logger.Log(f"Using Model '{_Model}' | (Est. ~{EstimatedTokens}tok Context Length)", 4)
 
-        print(f"DEBUG: Using Model {_Model} (Est. ~{EstimatedTokens}tok Context Length)")
+        # Log if there's a large estimated tokens of context history
+        if EstimatedTokens > 24000:
+            _Logger.Log(f"Warning, Detected High Token Context Length of est. ~{EstimatedTokens}tok", 6)
+
+        # Now actually stream the response from ollama
         Stream = _Client.chat(
             model=_Model,
             messages=_Messages,
@@ -40,8 +45,9 @@ def ChatAndStreamResponse(_Client, _Messages, _Model:str="llama3"):
             _Messages.append(ThisMessage)
             return _Messages
         else:
-            print("WARNING: LLM RETURNED ONLY WHITESPACE!")
+            _Logger.Log("Model Returned Only Whitespace, Attempting Regeneration", 6)
             _Messages.append(BuildUserQuery("Sorry, but you returned an empty string, please try again!"))
+
 
 def StreamResponse(_Stream):
   

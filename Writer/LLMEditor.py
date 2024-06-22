@@ -27,7 +27,7 @@ It should be very clear which chapter is which, and the content in each chapter.
     _Logger.Log("Prompting LLM To Critique Outline", 5)
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(StartingPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.REVISION_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.REVISION_MODEL)
     _Logger.Log("Finished Getting Outline Feedback", 5)
 
     return Writer.OllamaInterface.GetLastMessageText(Messages), Messages
@@ -52,7 +52,7 @@ Please do not include any other text, just the JSON as your response will be par
     _Logger.Log("Prompting LLM To Get Review JSON", 5)
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(StartingPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.EVAL_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.EVAL_MODEL)
     _Logger.Log("Finished Getting Review JSON", 5)
 
 
@@ -71,7 +71,7 @@ Please do not include any other text, just the JSON as your response will be par
             EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
             Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
-            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.EVAL_MODEL)
+            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.EVAL_MODEL)
             _Logger.Log("Done Asking LLM TO Revise", 7)
 
 
@@ -104,7 +104,7 @@ Please give feedback on the above chapter based on the following criteria:
     _Logger.Log("Prompting LLM To Critique Chapter", 5)
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(StartingPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.REVISION_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.REVISION_MODEL)
     _Logger.Log("Finished Getting Chapter Feedback", 5)
 
     return Writer.OllamaInterface.GetLastMessageText(Messages), Messages
@@ -130,7 +130,7 @@ Please do not include any other text, just the JSON as your response will be par
     _Logger.Log("Prompting LLM To Get Review JSON", 5)
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(StartingPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.EVAL_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.EVAL_MODEL)
     _Logger.Log("Finished Getting Review JSON", 5)
 
 
@@ -149,5 +149,5 @@ Please do not include any other text, just the JSON as your response will be par
             EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
             Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
-            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.EVAL_MODEL)
+            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.EVAL_MODEL)
             _Logger.Log("Done Asking LLM TO Revise", 7)

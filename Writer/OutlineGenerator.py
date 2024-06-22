@@ -39,7 +39,7 @@ Again, remember - you're writing an outline for the story.
     # Generate Initial Outline
     _Logger.Log(f"Generating Initial Outline", 4)
     Messages = [Writer.OllamaInterface.BuildUserQuery(Prompt)]
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL)
     Outline:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     _Logger.Log(f"Done Generating Initial Outline", 4)
 
@@ -102,7 +102,7 @@ Don't answer these questions directly, instead make your writing implicitly answ
     _Logger.Log(f"Revising Outline", 2)
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(RevisionPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL)
     SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     _Logger.Log(f"Done Revising Outline", 2)
 
@@ -134,7 +134,7 @@ Make sure your chapter has a markdown-formatted name!
     _Logger.Log("Generating Outline For Chapter " + str(_Chapter), 5)
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(RevisionPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_OUTLINE_WRITER_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.CHAPTER_OUTLINE_WRITER_MODEL)
     SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     _Logger.Log("Done Generating Outline For Chapter " + str(_Chapter), 5)
 

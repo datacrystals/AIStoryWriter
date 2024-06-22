@@ -24,7 +24,7 @@ Again, remember to make your response JSON formatted with no extra words. It wil
     _Logger.Log("Prompting LLM To Generate Stats", 5)
     Messages = _Messages
     Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.INFO_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.INFO_MODEL)
     _Logger.Log("Finished Getting Stats Feedback", 5)
 
     Dict = json.loads(Writer.OllamaInterface.GetLastMessageText(Messages))
@@ -44,7 +44,7 @@ Again, remember to make your response JSON formatted with no extra words. It wil
             EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
             Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
-            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.INFO_MODEL)
+            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.INFO_MODEL)
             _Logger.Log("Done Asking LLM TO Revise", 7)
 
 

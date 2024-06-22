@@ -25,7 +25,7 @@ Please do not include any other text, just the JSON as your response will be par
     _Logger.Log("Prompting LLM To Get ChapterCount JSON", 5)
     Messages = []
     Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.EVAL_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.EVAL_MODEL)
     _Logger.Log("Finished Getting ChapterCount JSON", 5)
 
 
@@ -44,5 +44,5 @@ Please do not include any other text, just the JSON as your response will be par
             EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
             Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
-            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.EVAL_MODEL)
+            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.EVAL_MODEL)
             _Logger.Log("Done Asking LLM TO Revise", 7)

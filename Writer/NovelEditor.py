@@ -28,7 +28,7 @@ Given the above novel and outline, please edit chapter {i} so that it fits toget
         _Logger.Log(f"Prompting LLM To Perform Chapter {i} Second Pass In-Place Edit", 5)
         Messages = []
         Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
-        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_WRITER_MODEL)
+        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.CHAPTER_WRITER_MODEL)
         _Logger.Log(f"Finished Chapter {i} Second Pass In-Place Edit", 5)
 
         NewChapter = Writer.OllamaInterface.GetLastMessageText(Messages)

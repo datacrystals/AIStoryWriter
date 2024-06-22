@@ -25,7 +25,7 @@ Do not comment on your task, as your output will be the final print version.
         _Logger.Log(f"Prompting LLM To Perform Chapter {i+1} Scrubbing Edit", 5)
         Messages = []
         Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
-        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.SCRUB_MODEL)
+        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.SCRUB_MODEL)
         _Logger.Log(f"Finished Chapter {i+1} Scrubbing Edit", 5)
 
         NewChapter = Writer.OllamaInterface.GetLastMessageText(Messages)

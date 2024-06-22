@@ -29,7 +29,7 @@ Please summarize the following chapter:
 Do not include anything in your response except the summary.
 
 """))
-    SummaryLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, SummaryLangchain, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
+    SummaryLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, SummaryLangchain, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
     WorkSummary:str = Writer.OllamaInterface.GetLastMessageText(SummaryLangchain)
 
 
@@ -60,7 +60,7 @@ Did it write the correct chapter? Sometimes it'll get confused and write the wro
 
 Again, remember to make your response JSON formatted with no extra words. It will be fed directly to a JSON parser.
 """))
-    ComparisonLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, ComparisonLangchain, Writer.Config.REVISION_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
+    ComparisonLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, ComparisonLangchain, Writer.Config.REVISION_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
     # Dict = json.loads(Writer.OllamaInterface.GetLastMessageText(ComparisonLangchain))
 
 
@@ -78,7 +78,7 @@ Again, remember to make your response JSON formatted with no extra words. It wil
             EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
             ComparisonLangchain.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", "red")
-            ComparisonLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, ComparisonLangchain, Writer.Config.CHECKER_MODEL)
+            ComparisonLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, ComparisonLangchain, Writer.Config.CHECKER_MODEL)
             _Logger.Log("Done Asking LLM TO Revise", "red")
 
 
@@ -141,7 +141,7 @@ Please help me extract the part of this outline that is just for chapter {_Chapt
 
 Do not include anything else in your response except just the content for chapter {_ChapterNum}.
 """))
-    ChapterSegmentMessages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, ChapterSegmentMessages, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
+    ChapterSegmentMessages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, ChapterSegmentMessages, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
     ThisChapterOutline:str = Writer.OllamaInterface.GetLastMessageText(ChapterSegmentMessages)
     _Logger.Log(f"Created Chapter Specific Outline", 4)
 
@@ -191,7 +191,7 @@ Things to keep in Mind:
 
 Thank you for helping me write my story! Please only include your summary and things to keep in mind, don't write anything else.
     """))
-        ChapterSummaryMessages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, ChapterSummaryMessages, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
+        ChapterSummaryMessages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, ChapterSummaryMessages, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
         FormattedLastChapterSummary:str = Writer.OllamaInterface.GetLastMessageText(ChapterSummaryMessages)
         _Logger.Log(f"Created Summary Of Last Chapter Info", 3)
         
@@ -234,7 +234,7 @@ As you write your work, please use the following suggestions to help you write c
         Messages = MesssageHistory.copy()
         Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
-        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL)
+        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL)
         Stage1Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
         _Logger.Log(f"Finished Initial Generation For Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}", 5)
 
@@ -286,7 +286,7 @@ Remember, have fun, be creative, and improve the character development of chapte
         Messages = MesssageHistory.copy()
         Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
-        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_STAGE2_WRITER_MODEL)
+        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.CHAPTER_STAGE2_WRITER_MODEL)
         Stage2Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
         _Logger.Log(f"Finished Initial Generation For Initial Chapter (Stage 2: Character Development)  {_ChapterNum}/{_TotalChapters}", 5)
 
@@ -340,7 +340,7 @@ Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make
         Messages = MesssageHistory.copy()
         Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
-        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_STAGE3_WRITER_MODEL)
+        Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.CHAPTER_STAGE3_WRITER_MODEL)
         Stage3Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
         _Logger.Log(f"Finished Initial Generation For Initial Chapter (Stage 3: Dialogue)  {_ChapterNum}/{_TotalChapters}", 5)
 
@@ -388,7 +388,7 @@ Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make
 #     Messages = MesssageHistory.copy()
 #     Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
-#     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_STAGE4_WRITER_MODEL)
+#     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.CHAPTER_STAGE4_WRITER_MODEL)
 #     Chapter:str = Writer.OllamaInterface.GetLastMessageText(Messages)
 #     _Logger.Log(f"Done Generating Initial Chapter (Stage 4: Final Pass)  {_ChapterNum}/{_TotalChapters}", 5)
     Chapter:str = Stage3Chapter
@@ -442,7 +442,7 @@ Remember not to include any author notes.
     _Logger.Log("Revising Chapter", 5)
     Messages = _History
     Messages.append(Writer.OllamaInterface.BuildUserQuery(RevisionPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, Messages, Writer.Config.CHAPTER_REVISION_WRITER_MODEL)
+    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.CHAPTER_REVISION_WRITER_MODEL)
     SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
     _Logger.Log("Done Revising Chapter", 5)
 
