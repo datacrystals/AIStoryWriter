@@ -261,7 +261,7 @@ os.makedirs("Stories", exist_ok=True)
 FName = f"Stories/Story_{Title.replace(' ', '_')}.md"
 if (Writer.Config.OPTIONAL_OUTPUT_NAME != ""):
     FName = Writer.Config.OPTIONAL_OUTPUT_NAME
-with open(FName, "w") as F:
+with open(FName, "w", encoding="utf-8") as F:
     Out = f"""
 {StatsString}
 
