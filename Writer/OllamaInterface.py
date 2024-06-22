@@ -65,6 +65,8 @@ def StreamResponse(_Stream):
 
     if (Writer.Config.DEBUG):
         print("\n\n\n")
+    else:
+        print("")
     
     return {'role': 'assistant', 'content': Response}
 
