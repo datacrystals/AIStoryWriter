@@ -241,7 +241,7 @@ As you write your work, please use the following suggestions to help you write c
         _Logger.Log(f"Finished Initial Generation For Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}", 5)
 
         # Check if LLM did the work
-        if (LLMSummaryCheck(_Client, _Logger, DetailedChapterOutline, Stage1Chapter)):
+        if (LLMSummaryCheck(_Client, _Logger, DetailedChapterOutline, Stage1Chapter) or (IterCounter > Writer.Config.CHAPTER_MAX_REVISIONS)):
             _Logger.Log(f"Done Generating Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}", 5)
             break
 
@@ -296,7 +296,7 @@ Remember, have fun, be creative, and improve the character development of chapte
 
 
         # Check if LLM did the work
-        if (LLMSummaryCheck(_Client, _Logger, DetailedChapterOutline, Stage2Chapter)):
+        if (LLMSummaryCheck(_Client, _Logger, DetailedChapterOutline, Stage2Chapter) or (IterCounter > Writer.Config.CHAPTER_MAX_REVISIONS)):
             _Logger.Log(f"Done Generating Initial Chapter (Stage 2: Character Development)  {_ChapterNum}/{_TotalChapters}", 5)
             break
 
@@ -350,7 +350,7 @@ Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make
         _Logger.Log(f"Finished Initial Generation For Initial Chapter (Stage 3: Dialogue)  {_ChapterNum}/{_TotalChapters}", 5)
 
         # Check if LLM did the work
-        if (LLMSummaryCheck(_Client, _Logger, DetailedChapterOutline, Stage3Chapter)):
+        if (LLMSummaryCheck(_Client, _Logger, DetailedChapterOutline, Stage3Chapter) or (IterCounter > Writer.Config.CHAPTER_MAX_REVISIONS)):
             _Logger.Log(f"Done Generating Initial Chapter (Stage 3: Dialogue)  {_ChapterNum}/{_TotalChapters}", 5)
             break
 
