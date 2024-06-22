@@ -1,22 +1,20 @@
 #!/bin/bash
 
 cd ..
-
-echo "Running tests with smaller models (~14b params, rather than the normal 70b param models)"
-
 ./Write.py \
--Host localhost:11434 \
+-Host 10.1.65.4:11434 \
 -Seed 999 \
 -Prompt ExamplePrompts/Example1.txt \
--InitialOutlineModel phi3:14b \
--ChapterOutlineModel phi3:14b \
--ChapterS1Model aya:8b \
--ChapterS2Model phi3:14b \
--ChapterS3Model aya:8b \
--ChapterS4Model llava:13b \
--ChapterRevisionModel phi3:14b \
--RevisionModel llama3 \
--EvalModel llama3 \
--InfoModel llama3 \
+-InitialOutlineModel datacrystals/miqulitz120b-v2:latest \
+-ChapterOutlineModel datacrystals/midnight-rose103b-v2:latest \
+-ChapterS1Model datacrystals/midnight-miqu70b-v1.5:latest \
+-ChapterS2Model command-r-plus \
+-ChapterS3Model datacrystals/miqulitz120b-v2:latest \
+-ChapterS4Model datacrystals/midnight-miqu103b-v1:latest \
+-ChapterRevisionModel datacrystals/miqulitz120b-v2:latest \
+-RevisionModel llama3:70b \
+-EvalModel llama3:70b \
+-InfoModel llama3:70b \
 -NoScrubChapters \
 -Debug
+
