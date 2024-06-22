@@ -13,7 +13,7 @@ def LLMSummaryCheck(_Client, _Logger, _RefSummary:str , _Work:str):
 
     # LLM Length Check - Firstly, check if the length of the response was at least 100 words.
     if (len(_Work.split(" ")) < 100):
-        _Logger.Log("Previous response didn't meet the length requirement, so it probably tried to cheat around writing.", "red")
+        _Logger.Log("Previous response didn't meet the length requirement, so it probably tried to cheat around writing.", 7)
         return False
 
     # Build Summariziation Langchain
@@ -74,12 +74,12 @@ Again, remember to make your response JSON formatted with no extra words. It wil
             Dict = json.loads(RawResponse)
             return Dict["DidFollowOutline"]
         except Exception as E:
-            _Logger.Log("Error Parsing JSON Written By LLM, Asking For Edits", "red")
+            _Logger.Log("Error Parsing JSON Written By LLM, Asking For Edits", 7)
             EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
             ComparisonLangchain.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
-            _Logger.Log("Asking LLM TO Revise", "red")
+            _Logger.Log("Asking LLM TO Revise", 7)
             ComparisonLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, ComparisonLangchain, Writer.Config.CHECKER_MODEL)
-            _Logger.Log("Done Asking LLM TO Revise", "red")
+            _Logger.Log("Done Asking LLM TO Revise", 7)
 
 
 

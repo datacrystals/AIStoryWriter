@@ -50,7 +50,7 @@ class Logger:
         elif (_Level == 6):
             LogEntry = termcolor.colored(LogEntry, "yellow")
         elif (_Level == 7):
-            LogEntry = termcolor.colored(LogEntry, "red")
+            LogEntry = termcolor.colored(LogEntry, 7)
 
         print(LogEntry)
 
