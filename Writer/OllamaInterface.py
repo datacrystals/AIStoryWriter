@@ -20,13 +20,19 @@ def ChatAndStreamResponse(_Client, _Messages, _Model:str="llama3"):
         print("--------- Message History END --------")
 
     while True:
+
+        # Calculate Num Tokens (ish)
+        TotalChars = len(str(_Messages))
+        AvgCharsPerToken = 5 # got this off of some random dude on the internet
+        EstimatedTokens = TotalChars / AvgCharsPerToken
+
+        print(f"DEBUG: Using Model {_Model} (Est. ~{EstimatedTokens}tok Context Length)")
         Stream = _Client.chat(
             model=_Model,
             messages=_Messages,
             stream=True,
             options=dict(seed=Writer.Config.SEED)
         )
-        print(f"DEBUG: Using Model {_Model}")
         ThisMessage:str = StreamResponse(Stream)
 
         # Check if it's empty
