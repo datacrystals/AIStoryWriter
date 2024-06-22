@@ -79,7 +79,7 @@ Again, remember to make your response JSON formatted with no extra words. It wil
             ComparisonLangchain.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
             ComparisonLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, ComparisonLangchain, Writer.Config.CHECKER_MODEL)
-            _Logger.Log("Done Asking LLM TO Revise", 7)
+            _Logger.Log("Done Asking LLM TO Revise JSON", 6)
 
 
 
