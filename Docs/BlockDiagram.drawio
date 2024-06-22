@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-06-21T09:10:01.196Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0" etag="hXi9KOj-F1vDBeZn4pgJ" version="24.6.0" type="device">
+<mxfile host="app.diagrams.net" modified="2024-06-22T01:01:58.062Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0" etag="-AGkre3Qt9uP9gQ6dKtO" version="24.6.0" type="device">
   <diagram name="Page-1" id="VVhmB19lJa970bU6VVn2">
     <mxGraphModel dx="2074" dy="1107" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -175,7 +175,7 @@
         <mxCell id="ltB6q_ZLXanU9qL2ggv_-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="ltB6q_ZLXanU9qL2ggv_-23" source="ltB6q_ZLXanU9qL2ggv_-28" target="ltB6q_ZLXanU9qL2ggv_-29">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="ltB6q_ZLXanU9qL2ggv_-28" value="Prompt Model 7 To Generate Feedback/Critique Chapter" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ltB6q_ZLXanU9qL2ggv_-23">
+        <mxCell id="ltB6q_ZLXanU9qL2ggv_-28" value="Prompt Model 6 To Generate Feedback/Critique Chapter" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ltB6q_ZLXanU9qL2ggv_-23">
           <mxGeometry x="175" y="60" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="ltB6q_ZLXanU9qL2ggv_-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="ltB6q_ZLXanU9qL2ggv_-23" source="ltB6q_ZLXanU9qL2ggv_-29" target="E7-By8wQyRp-O-3EYaCL-29">
@@ -234,7 +234,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="E7-By8wQyRp-O-3EYaCL-39" value="Prompt Model 8 To Clean Up Chapter And Produce FInal Version" style="rounded=0;whiteSpace=wrap;html=1;" parent="E7-By8wQyRp-O-3EYaCL-35" vertex="1">
+        <mxCell id="E7-By8wQyRp-O-3EYaCL-39" value="Prompt Model 7 To Clean Up Chapter And Produce FInal Version" style="rounded=0;whiteSpace=wrap;html=1;" parent="E7-By8wQyRp-O-3EYaCL-35" vertex="1">
           <mxGeometry x="135" y="70" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="E7-By8wQyRp-O-3EYaCL-45" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="E7-By8wQyRp-O-3EYaCL-35" edge="1">
