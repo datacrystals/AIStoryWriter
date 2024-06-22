@@ -231,7 +231,7 @@ As you write your work, please use the following suggestions to help you write c
     """
 
         # Generate Initial Chapter
-        _Logger.Log(f"Generating Initial Chapter (Stage 1: Plot) {_ChapterNum}/{_TotalChapters}", 5)
+        _Logger.Log(f"Generating Initial Chapter (Stage 1: Plot) {_ChapterNum}/{_TotalChapters} (Iteration {IterCounter})", 5)
         Messages = MesssageHistory.copy()
         Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
@@ -288,7 +288,7 @@ Remember, have fun, be creative, and improve the character development of chapte
 """
 
         # Generate Initial Chapter
-        _Logger.Log(f"Generating Initial Chapter (Stage 2: Character Development) {_ChapterNum}/{_TotalChapters}", 5)
+        _Logger.Log(f"Generating Initial Chapter (Stage 2: Character Development) {_ChapterNum}/{_TotalChapters} (Iteration {IterCounter})", 5)
         Messages = MesssageHistory.copy()
         Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
@@ -346,7 +346,7 @@ Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make
 """
 
         # Generate Initial Chapter
-        _Logger.Log(f"Generating Initial Chapter (Stage 3: Dialogue) {_ChapterNum}/{_TotalChapters}", 5)
+        _Logger.Log(f"Generating Initial Chapter (Stage 3: Dialogue) {_ChapterNum}/{_TotalChapters} (Iteration {IterCounter})", 5)
         Messages = MesssageHistory.copy()
         Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
 
