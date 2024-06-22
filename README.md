@@ -43,16 +43,22 @@ Again, please note that this is still a WIP, so there's still quite a bit to fix
 
 This system will generate a story based on a user provided prompt. Simply create a file with your intended prompt in a text file, and pass the path to that as a parameter (use ./Write.py --help) to get a full list of parameters.
 
-As of 2024-06-19, here's an example usage command, but make sure to check for any updated test scripts as those will be more up-to-date than this readme.
+As of 2024-06-22, here's an example usage command, but make sure to check for any updated test scripts as those will be more up-to-date than this readme.
 
-Make sure to substitute in values for your OLLAMA host and prompt path.
+Make sure to substitute in values for your OLLAMA host.
+
+
+### 72GiB VRAM
+If you have 72GiB or more of VRAM, this example should work for you.
+
+Note that you'll need to download all of the used models via `ollama pull [modelname]` on your OLLAMA host.
 
 ```sh
 
 ./Write.py \
 -Host [OLLAMA HOST HERE]:11434 \
--Seed 999 \
--Prompt Path/To/Your/Prompt/File/Here \
+-Seed 1234 \
+-Prompt ExamplePrompts/Example1.txt  \
 -InitialOutlineModel datacrystals/miqulitz120b-v2:latest \ 
 -ChapterOutlineModel datacrystals/midnight-rose103b-v2:latest \
 -ChapterS1Model datacrystals/midnight-miqu70b-v1.5:latest \
@@ -63,13 +69,36 @@ Make sure to substitute in values for your OLLAMA host and prompt path.
 -RevisionModel llama3:70b \
 -EvalModel llama3:70b \
 -InfoModel llama3:70b \
--NoScrubChapters \
--Debug \
--NoChapterRevision
+-NoScrubChapters
 
 ```
 
-Here's a full list of arguments as of 2024-06-19:
+### 20GiB VRAM
+Alternatively, this example should work for you if you have about 20GiB VRAM. Again, you'll need to download these models. I haven't tested this one nearly as much as the 72GiB version. If someone wants to experiment with different models and let me know what works best, I'd be thrilled.
+
+```sh
+
+./Write.py \
+-Host [OLLAMA HOST HERE]:11434 \
+-Seed 1234 \
+-Prompt ExamplePrompts/Example1.txt  \
+-InitialOutlineModel phi3:14b \
+-ChapterOutlineModel phi3:14b \
+-ChapterS1Model aya:8b \
+-ChapterS2Model phi3:14b \
+-ChapterS3Model aya:8b \
+-ChapterS4Model llava:13b \
+-ChapterRevisionModel phi3:14b \
+-RevisionModel llama3 \
+-EvalModel llama3 \
+-InfoModel llama3 \
+-NoScrubChapters
+```
+
+
+### Command Line Flags
+
+Here's a full list of arguments as of 2024-06-22:
 
 ```
 usage: Write.py [-h] [-Prompt PROMPT] [-Output OUTPUT] [-Host HOST] [-InitialOutlineModel INITIALOUTLINEMODEL] [-ChapterOutlineModel CHAPTEROUTLINEMODEL] [-ChapterS1Model CHAPTERS1MODEL] [-ChapterS2Model CHAPTERS2MODEL]
