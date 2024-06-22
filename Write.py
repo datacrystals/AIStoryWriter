@@ -26,7 +26,7 @@ Parser.add_argument("-Host", default="http://10.1.65.4:11434", type=str, help="H
 Parser.add_argument("-InitialOutlineModel", default="llama3:70b", type=str, help="Model to use for writing the base outline content")
 Parser.add_argument("-ChapterOutlineModel", default="llama3:70b", type=str, help="Model to use for writing the per-chapter outline content")
 Parser.add_argument("-ChapterS1Model", default="llama3:70b", type=str, help="Model to use for writing the chapter (stage 1: plot)")
-Parser.add_argument("-ChapterS2Model", default="llama3:70bt", type=str, help="Model to use for writing the chapter (stage 2: character development)")
+Parser.add_argument("-ChapterS2Model", default="llama3:70b", type=str, help="Model to use for writing the chapter (stage 2: character development)")
 Parser.add_argument("-ChapterS3Model", default="llama3:70b", type=str, help="Model to use for writing the chapter (stage 3: dialogue)")
 Parser.add_argument("-ChapterS4Model", default="llama3:70b", type=str, help="Model to use for writing the chapter (stage 4: final correction pass)")
 Parser.add_argument("-ChapterRevisionModel", default="llama3:70b", type=str, help="Model to use for revising the chapter until it meets criteria")
