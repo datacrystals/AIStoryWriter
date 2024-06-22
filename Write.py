@@ -37,6 +37,7 @@ Parser.add_argument("-ScrubModel", default="llama3:70b", type=str, help="Model t
 Parser.add_argument("-CheckerModel", default="llama3:70b", type=str, help="Model to use when checking if the LLM cheated or not")
 Parser.add_argument("-TranslatorModel", default="llama3:70b", type=str, help="Model to use if translation of the story is enabled")
 Parser.add_argument("-Translate", default="", type=str, help="Specify a language to translate the story to - will not translate by default. Ex: 'French'")
+Parser.add_argument("-TranslatePrompt", default="", type=str, help="Specify a language to translate your input prompt to. Ex: 'French'")
 Parser.add_argument("-Seed", default=12, type=int, help="Used to seed models.")
 Parser.add_argument("-OutlineMinRevisions", default=0, type=int, help="Number of minimum revisions that the outline must be given prior to proceeding")
 Parser.add_argument("-OutlineMaxRevisions", default=3, type=int, help="Max number of revisions that the outline may have")
@@ -72,6 +73,7 @@ Writer.Config.CHECKER_MODEL = Args.CheckerModel
 Writer.Config.TRANSLATOR_MODEL = Args.TranslatorModel
 
 Writer.Config.TRANSLATE_LANGUAGE = Args.Translate
+Writer.Config.TRANSLATE_PROMPT_LANGUAGE = Args.TranslatePrompt
 
 Writer.Config.OUTLINE_MIN_REVISIONS = Args.OutlineMinRevisions
 Writer.Config.OUTLINE_MAX_REVISIONS = Args.OutlineMaxRevisions
@@ -95,10 +97,18 @@ SysLogger = Writer.PrintUtils.Logger()
 SysLogger.Log("Created OLLAMA Client", 5)
 Client = Writer.OllamaInterface.InitClient(Args.Host)
 
-# Generate the Outline
+# Load User Prompt
 Prompt:str = ""
 with open(Args.Prompt, "r") as f:
     Prompt = f.read()
+
+
+# If user wants their prompt translated, do so
+if (Writer.Config.TRANSLATE_PROMPT_LANGUAGE != ""):
+    Prompt = Writer.Translator.TranslatePrompt(Client, SysLogger, Prompt, Writer.Config.TRANSLATE_PROMPT_LANGUAGE)
+
+
+# Generate the Outline
 Outline = Writer.OutlineGenerator.GenerateOutline(Client, SysLogger, Prompt, Writer.Config.OUTLINE_QUALITY)
 BasePrompt = Prompt
 

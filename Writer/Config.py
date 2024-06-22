@@ -15,6 +15,7 @@ TRANSLATOR_MODEL="llama3"
 SEED=12 # Note this value is overridden by the argparser
 
 TRANSLATE_LANGUAGE = "" # If the user wants to translate, this'll be changed from empty to a language e.g 'French' or 'Russian'
+TRANSLATE_PROMPT_LANGUAGE = "" # If the user wants to translate their prompt, this'll be changed from empty to a language e.g 'French' or 'Russian'
 
 OUTLINE_QUALITY=87 # Note this value is overridden by the argparser
 OUTLINE_MIN_REVISIONS=0 # Note this value is overridden by the argparser

@@ -7,7 +7,7 @@ echo "Running tests with smallest and fastest model"
 ./Write.py \
 -Host localhost:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/ShortDebuggingStory/Prompt.txt \
+-Prompt ExamplePrompts/ShortDebuggingStory/PromptFrench.txt \
 -InitialOutlineModel mistral \
 -ChapterOutlineModel mistral \
 -ChapterS1Model mistral \
@@ -21,8 +21,10 @@ echo "Running tests with smallest and fastest model"
 -CheckerModel mistral \
 -NoScrubChapters \
 -TranslatorModel mistral \
--Translate "French"
+-Translate "French" \
+-TranslatePrompt "French"
 
 ## Note the two additional params:
 # -TranslatorModel mistral 
+# -TranslatePrompt "French"
 # -Translate "French"
