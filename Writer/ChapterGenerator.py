@@ -407,8 +407,8 @@ Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make
     Iterations:int = 0
     while True:
         Iterations += 1
-        Feedback, FeedbackHistory = Writer.LLMEditor.GetFeedbackOnChapter(_Client, Chapter, _Outline, FeedbackHistory)
-        Rating, FeedbackHistory = Writer.LLMEditor.GetChapterRating(_Client, Chapter, FeedbackHistory)
+        Feedback, FeedbackHistory = Writer.LLMEditor.GetFeedbackOnChapter(_Client, _Logger, Chapter, _Outline, FeedbackHistory)
+        Rating, FeedbackHistory = Writer.LLMEditor.GetChapterRating(_Client, _Logger, Chapter, FeedbackHistory)
 
         if (Iterations > Writer.Config.CHAPTER_MAX_REVISIONS):
             break
