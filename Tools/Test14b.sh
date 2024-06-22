@@ -7,7 +7,7 @@ echo "Running tests with smaller models (~14b params, rather than the normal 70b
 ./Write.py \
 -Host localhost:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1.txt \
+-Prompt ExamplePrompts/Example1/Prompt.txt \
 -InitialOutlineModel phi3:14b \
 -ChapterOutlineModel phi3:14b \
 -ChapterS1Model aya:8b \

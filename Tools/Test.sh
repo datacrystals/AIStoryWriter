@@ -4,7 +4,7 @@ cd ..
 ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1.txt \
+-Prompt ExamplePrompts/Example1/Prompt.txt \
 -InitialOutlineModel datacrystals/miqulitz120b-v2:latest \
 -ChapterOutlineModel datacrystals/midnight-rose103b-v2:latest \
 -ChapterS1Model datacrystals/midnight-miqu70b-v1.5:latest \

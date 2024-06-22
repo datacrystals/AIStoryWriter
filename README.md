@@ -58,7 +58,7 @@ Note that you'll need to download all of the used models via `ollama pull [model
 ./Write.py \
 -Host [OLLAMA HOST HERE]:11434 \
 -Seed 1234 \
--Prompt ExamplePrompts/Example1.txt  \
+-Prompt ExamplePrompts/Example1/Prompt.txt  \
 -InitialOutlineModel datacrystals/miqulitz120b-v2:latest \ 
 -ChapterOutlineModel datacrystals/midnight-rose103b-v2:latest \
 -ChapterS1Model datacrystals/midnight-miqu70b-v1.5:latest \
@@ -81,7 +81,7 @@ Alternatively, this example should work for you if you have about 20GiB VRAM. Ag
 ./Write.py \
 -Host [OLLAMA HOST HERE]:11434 \
 -Seed 1234 \
--Prompt ExamplePrompts/Example1.txt  \
+-Prompt ExamplePrompts/Example1/Prompt.txt  \
 -InitialOutlineModel phi3:14b \
 -ChapterOutlineModel phi3:14b \
 -ChapterS1Model aya:8b \
