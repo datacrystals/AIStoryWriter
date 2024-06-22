@@ -62,7 +62,10 @@ def StreamResponse(_Stream):
         Response += ChunkText
 
         print(ChunkText, end='', flush=True)
-    print("\n\n\n")
+
+    if (Writer.Config.DEBUG):
+        print("\n\n\n")
+    
     return {'role': 'assistant', 'content': Response}
 
 def BuildUserQuery(_Query:str):
