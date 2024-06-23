@@ -27,9 +27,6 @@ Again, remember to make your response JSON formatted with no extra words. It wil
     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.INFO_MODEL)
     _Logger.Log("Finished Getting Stats Feedback", 5)
 
-    Dict = json.loads(Writer.OllamaInterface.GetLastMessageText(Messages))
-
-
     while True:
         
         RawResponse = Writer.OllamaInterface.GetLastMessageText(Messages)
