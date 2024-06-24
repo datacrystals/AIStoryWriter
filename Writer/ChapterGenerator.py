@@ -4,83 +4,7 @@ import Writer.LLMEditor
 import Writer.OllamaInterface
 import Writer.PrintUtils
 import Writer.Config
-
-
-def LLMSummaryCheck(_Client, _Logger, _RefSummary:str , _Work:str):
-    '''
-    Generates a summary of the work provided, and compares that to the reference summary, asking if they answered the prompt correctly.
-    '''
-
-    # LLM Length Check - Firstly, check if the length of the response was at least 100 words.
-    if (len(_Work.split(" ")) < 100):
-        _Logger.Log("Previous response didn't meet the length requirement, so it probably tried to cheat around writing.", 7)
-        return False
-
-    # Build Summariziation Langchain
-    SummaryLangchain:list = []
-    SummaryLangchain.append(Writer.OllamaInterface.BuildSystemQuery(f"You are a helpful AI Assistant. Answer the user's prompts to the best of your abilities."))
-    SummaryLangchain.append(Writer.OllamaInterface.BuildUserQuery(f"""
-Please summarize the following chapter:
-                                                                  
-<CHAPTER>
-{_Work}
-</CHAPTER>
-
-Do not include anything in your response except the summary.
-
-"""))
-    SummaryLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, SummaryLangchain, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
-    WorkSummary:str = Writer.OllamaInterface.GetLastMessageText(SummaryLangchain)
-
-
-    # Now, generate a comparison JSON value.
-    ComparisonLangchain:list = []
-    ComparisonLangchain.append(Writer.OllamaInterface.BuildSystemQuery(f"You are a helpful AI Assistant. Answer the user's prompts to the best of your abilities."))
-    ComparisonLangchain.append(Writer.OllamaInterface.BuildUserQuery(f"""
-Please compare the provided summary of a chapter and the associated outline, and indicate if the provided content matches the outline.
-                                                                     
-Please write a JSON formatted response with no other content with the following keys.
-Note that a computer is parsing this JSON so it must be correct.
-
-<CHAPTER_SUMMARY>
-{WorkSummary}
-</CHAPTER_SUMMARY>
-                                                                     
-<OUTLINE>
-{_RefSummary}
-</OUTLINE>
-
-Please indicate if they did or did not by responding:
-
-"DidFollowOutline": true/false
-
-For example, if the previous response was "Good luck!" or something similar that doesn't *actually* do what is needed by the system, that would be an automatic fail.
-Make sure to double check for things like that - sometimes the LLM is tricky and tries to sneak around doing what is needed.
-Did it write the correct chapter? Sometimes it'll get confused and write the wrong chapter (usually one more than the current one).
-
-Again, remember to make your response JSON formatted with no extra words. It will be fed directly to a JSON parser.
-"""))
-    ComparisonLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, ComparisonLangchain, Writer.Config.REVISION_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
-    # Dict = json.loads(Writer.OllamaInterface.GetLastMessageText(ComparisonLangchain))
-
-
-    while True:
-        
-        RawResponse = Writer.OllamaInterface.GetLastMessageText(ComparisonLangchain)
-        RawResponse = RawResponse.replace("`", "")
-        RawResponse = RawResponse.replace("json", "")
-
-        try:
-            Dict = json.loads(RawResponse)
-            return Dict["DidFollowOutline"]
-        except Exception as E:
-            _Logger.Log("Error Parsing JSON Written By LLM, Asking For Edits", 7)
-            EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
-            ComparisonLangchain.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
-            _Logger.Log("Asking LLM TO Revise", 7)
-            ComparisonLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, ComparisonLangchain, Writer.Config.CHECKER_MODEL)
-            _Logger.Log("Done Asking LLM TO Revise JSON", 6)
-
+import Writer.ChapterGenSummaryCheck
 
 
 def GenerateChapter(_Client, _Logger, _ChapterNum:int, _TotalChapters:int, _Outline:str, _Chapters:list = [], _QualityThreshold:int = 85):
@@ -207,6 +131,7 @@ Thank you for helping me write my story! Please only include your summary and th
     #### STAGE 1: Create Initial Plot
     Stage1Chapter = ""
     IterCounter:int = 0
+    Feedback:str = ""
     while True:
         Prompt = f"""
 {ContextHistoryInsert}
@@ -228,6 +153,8 @@ As you write your work, please use the following suggestions to help you write c
     - Flow: Does each chapter flow into the next? Does the plot make logical sense to the reader? Does it have a specific narrative structure at play? Is the narrative structure consistent throughout the story?
     - Genre: What is the genre? What language is appropriate for that genre? Do the scenes support the genre?
 
+{Feedback}
+
     """
 
         # Generate Initial Chapter
@@ -244,7 +171,8 @@ As you write your work, please use the following suggestions to help you write c
         if (IterCounter > Writer.Config.CHAPTER_MAX_REVISIONS):
             _Logger.Log("Chapter Summary-Based Revision Seems Stuck - Forcefully Exiting", 7)
             break
-        if (LLMSummaryCheck(_Client, _Logger, DetailedChapterOutline, Stage1Chapter)):
+        Result, Feedback = Writer.ChapterGenSummaryCheck.LLMSummaryCheck(_Client, _Logger, DetailedChapterOutline, Stage1Chapter)
+        if (Result):
             _Logger.Log(f"Done Generating Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}", 5)
             break
 
@@ -252,6 +180,7 @@ As you write your work, please use the following suggestions to help you write c
     #### STAGE 2: Add Character Development
     Stage2Chapter = ""
     IterCounter:int = 0
+    Feedback:str = ""
     while True:
         Prompt = f"""
 {ContextHistoryInsert}
@@ -302,7 +231,8 @@ Remember, have fun, be creative, and improve the character development of chapte
         if (IterCounter > Writer.Config.CHAPTER_MAX_REVISIONS):
             _Logger.Log("Chapter Summary-Based Revision Seems Stuck - Forcefully Exiting", 7)
             break
-        if (LLMSummaryCheck(_Client, _Logger, DetailedChapterOutline, Stage2Chapter)):
+        Result, Feedback = Writer.ChapterGenSummaryCheck.LLMSummaryCheck(_Client, _Logger, DetailedChapterOutline, Stage2Chapter)
+        if (Result):
             _Logger.Log(f"Done Generating Initial Chapter (Stage 2: Character Development)  {_ChapterNum}/{_TotalChapters}", 5)
             break
 
@@ -310,6 +240,7 @@ Remember, have fun, be creative, and improve the character development of chapte
     #### STAGE 3: Add Dialogue
     Stage3Chapter = ""
     IterCounter:int = 0
+    Feedback:str = ""
     while True:
         Prompt = f"""
 {ContextHistoryInsert}
@@ -359,7 +290,8 @@ Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make
         if (IterCounter > Writer.Config.CHAPTER_MAX_REVISIONS):
             _Logger.Log("Chapter Summary-Based Revision Seems Stuck - Forcefully Exiting", 7)
             break
-        if (LLMSummaryCheck(_Client, _Logger, DetailedChapterOutline, Stage3Chapter)):
+        Result, Feedback = Writer.ChapterGenSummaryCheck.LLMSummaryCheck(_Client, _Logger, DetailedChapterOutline, Stage3Chapter)
+        if (Result):
             _Logger.Log(f"Done Generating Initial Chapter (Stage 3: Dialogue)  {_ChapterNum}/{_TotalChapters}", 5)
             break
 
