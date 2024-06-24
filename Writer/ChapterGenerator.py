@@ -214,6 +214,9 @@ Make sure that your chapter flows into the next and from the previous (if applic
 
 Remember, have fun, be creative, and improve the character development of chapter {_ChapterNum} (make sure you only write this one)!
 
+{Feedback}
+
+
 """
 
         # Generate Initial Chapter
@@ -273,6 +276,9 @@ Make sure that your chapter flows into the next and from the previous (if applic
 Also, please remove any headings from the outline that may still be present in the chapter.
 
 Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make sure you only write this one)!
+
+{Feedback}
+
 
 """
 

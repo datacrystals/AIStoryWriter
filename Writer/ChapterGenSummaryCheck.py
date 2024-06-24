@@ -78,7 +78,7 @@ Again, remember to make your response JSON formatted with no extra words. It wil
 
         try:
             Dict = json.loads(RawResponse)
-            return Dict["DidFollowOutline"], Dict["Suggestions"]
+            return Dict["DidFollowOutline"], "### Extra Suggestions:\n" + Dict["Suggestions"]
         except Exception as E:
             _Logger.Log("Error Parsing JSON Written By LLM, Asking For Edits", 7)
             EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
