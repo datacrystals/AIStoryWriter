@@ -61,7 +61,9 @@ Please indicate if they did or did not by responding with the following JSON fie
 
 Did it write the correct chapter? Sometimes it'll get confused and write the wrong chapter (usually one more than the current one).
 
-Suggestions should include a string containing markdown formatted feedback that will be used to prompt the LLM on the next iteration of generation. Specify why you rejected the current chapter.
+Suggestions should include a string containing markdown formatted feedback that will be used to prompt the LLM on the next iteration of generation.
+Specify general things that would help the LLM remember what to do in the next generation.
+It will not see the current chapter, so feedback specific to this one is not helpful, instead specify areas where it needs to pay attention to either the prompt or outline.
 
 Again, remember to make your response JSON formatted with no extra words. It will be fed directly to a JSON parser.
 """))
