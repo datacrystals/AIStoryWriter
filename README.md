@@ -29,7 +29,8 @@ Here's what the system does well, and what it has limitations doing.
 Here's an example as of 2024-06-21 - note that there are still some major issues that I'm working on fixing (see limitations section).
 
 - [Prompt](ExamplePrompts/Example1/Prompt.txt)
-- [Output (2024-06-20 Version)](ExamplePrompts/Example1/Output_2024-06-20.md)
+- [Output (2024-06-24 Version)](ExamplePrompts/Example1/Output_2024-06-24.md)
+- [Output (2024-06-20 Version)](ExamplePrompts/Example1/Output_2024-06-20.md) (Old!)
 
 I've made some changes since this version, and I'm regenerating the example, so this is a bit outdated.
 
