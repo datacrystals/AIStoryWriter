@@ -27,6 +27,7 @@ Again, remember to make your response JSON formatted with no extra words. It wil
     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.INFO_MODEL)
     _Logger.Log("Finished Getting Stats Feedback", 5)
 
+    Iters:int = 0
     while True:
         
         RawResponse = Writer.OllamaInterface.GetLastMessageText(Messages)
@@ -34,9 +35,13 @@ Again, remember to make your response JSON formatted with no extra words. It wil
         RawResponse = RawResponse.replace("json", "")
 
         try:
+            Iters += 1
             Dict = json.loads(RawResponse)
             return Dict
         except Exception as E:
+            if (Iters > 4):
+                _Logger.Log("Critical Error Parsing JSON", 7)
+                return {}
             _Logger.Log("Error Parsing JSON Written By LLM, Asking For Edits", 7)
             EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
             Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))

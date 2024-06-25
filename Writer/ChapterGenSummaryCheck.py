@@ -74,7 +74,7 @@ Again, remember to make your response JSON formatted with no extra words. It wil
 """))
     ComparisonLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, ComparisonLangchain, Writer.Config.REVISION_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
 
-
+    Iters:int = 0
     while True:
         
         RawResponse = Writer.OllamaInterface.GetLastMessageText(ComparisonLangchain)
@@ -82,9 +82,14 @@ Again, remember to make your response JSON formatted with no extra words. It wil
         RawResponse = RawResponse.replace("json", "")
 
         try:
+            Iters += 1
             Dict = json.loads(RawResponse)
             return Dict["DidFollowOutline"], "### Extra Suggestions:\n" + Dict["Suggestions"]
         except Exception as E:
+            if (Iters > 4):
+                _Logger.Log("Critical Error Parsing JSON", 7)
+                return False, ""
+            
             _Logger.Log("Error Parsing JSON Written By LLM, Asking For Edits", 7)
             EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
             ComparisonLangchain.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
