@@ -67,6 +67,7 @@ Suggestions should include a string containing detailed markdown formatted feedb
 Specify general things that would help the writer remember what to do in the next iteration.
 It will not see the current chapter, so feedback specific to this one is not helpful, instead specify areas where it needs to pay attention to either the prompt or outline.
 The writer is also not aware of each iteration - so provide detailed information in the prompt that will help guide it.
+Start your suggestions with 'Important things to keep in mind as you write: \n'.
 
 It's okay if the summary isn't a complete perfect match, but it should have roughly the same plot, and pacing.
 
