@@ -2,17 +2,28 @@ import Writer.LLMEditor
 import Writer.OllamaInterface
 import Writer.PrintUtils
 import Writer.Config
+import Writer.Outline.StoryElements
 
+
+# We should probably do outline generation in stages, allowing us to go back and add foreshadowing, etc back to previous segments
 
 
 def GenerateOutline(_Client, _Logger, _OutlinePrompt, _QualityThreshold:int = 85):
 
+    # Generate Story Elements
+    StoryElements:str = Writer.Outline.StoryElements.GenerateStoryElements(_Client, _Logger, _OutlinePrompt)
+
+    # Now, Generate Initial Outline
     Prompt:str = f"""
 Please write a markdown formatted outline based on the following prompt:
 
-```
+<PROMPT>
 {_OutlinePrompt}
-```
+</PROMPT>
+
+<ELEMENTS>
+{StoryElements}
+</ELEMENTS>
 
 As you write, remember to ask yourself the following questions:
     - What is the conflict?
@@ -27,16 +38,12 @@ Don't answer these questions directly, instead make your outline implicitly answ
 Please keep your outline clear as to what content is in what chapter.
 Make sure to add lots of detail as you write.
 
-Also include information about the different characters, and how they change over the course of the story.
+Also, include information about the different characters, and how they change over the course of the story.
 We want to have rich and complex character development!
 
-Break up your outline into chapters, and those chapters into scenes so it's clear how they are structured, and how they flow together.
-
-Again, remember - you're writing an outline for the story.
-    
+Start your response with '# Outline\n## Chapter 1:'.
     """
 
-    # Generate Initial Outline
     _Logger.Log(f"Generating Initial Outline", 4)
     Messages = [Writer.OllamaInterface.BuildUserQuery(Prompt)]
     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL)
@@ -64,7 +71,15 @@ Again, remember - you're writing an outline for the story.
 
     _Logger.Log(f"Quality Standard Met, Exiting Feedback/Revision Loop", 4)
 
-    return Outline
+    
+    # Generate Final Outline
+    FinalOutline:str = f'''
+{StoryElements}
+
+{Outline}
+    '''
+
+    return FinalOutline
 
 
 def ReviseOutline(_Client, _Logger, _Outline, _Feedback, _History:list = []):

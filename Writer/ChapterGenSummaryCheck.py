@@ -36,11 +36,15 @@ Do not include anything in your response except the summary.
     WorkSummary:str = Writer.OllamaInterface.GetLastMessageText(SummaryLangchain)
 
 
+    # It might be good to generate a summary of the outline too so that it'll be summary comparing to summary
+    # to be decided though, testing is required
+
+
     # Now, generate a comparison JSON value.
     ComparisonLangchain:list = []
     ComparisonLangchain.append(Writer.OllamaInterface.BuildSystemQuery(f"You are a helpful AI Assistant. Answer the user's prompts to the best of your abilities."))
     ComparisonLangchain.append(Writer.OllamaInterface.BuildUserQuery(f"""
-Please compare the provided summary of a chapter and the associated outline, and indicate if the provided content matches the outline.
+Please compare the provided summary of a chapter and the associated outline, and indicate if the provided content roughly follows the outline.
                                                                      
 Please write a JSON formatted response with no other content with the following keys.
 Note that a computer is parsing this JSON so it must be correct.
@@ -53,23 +57,25 @@ Note that a computer is parsing this JSON so it must be correct.
 {_RefSummary}
 </OUTLINE>
 
-Please indicate if they did or did not by responding with the following JSON fields:
+Please respond with the following JSON fields:
 
 "DidFollowOutline": true/false
 "Suggestions": str
 
 
-Did it write the correct chapter? Sometimes it'll get confused and write the wrong chapter (usually one more than the current one).
-
-Suggestions should include a string containing markdown formatted feedback that will be used to prompt the LLM on the next iteration of generation.
-Specify general things that would help the LLM remember what to do in the next generation.
+Suggestions should include a string containing detailed markdown formatted feedback that will be used to prompt the writer on the next iteration of generation.
+Specify general things that would help the writer remember what to do in the next iteration.
 It will not see the current chapter, so feedback specific to this one is not helpful, instead specify areas where it needs to pay attention to either the prompt or outline.
+The writer is also not aware of each iteration - so provide detailed information in the prompt that will help guide it.
+Start your suggestions with 'Important things to keep in mind as you write: \n'.
+
+It's okay if the summary isn't a complete perfect match, but it should have roughly the same plot, and pacing.
 
 Again, remember to make your response JSON formatted with no extra words. It will be fed directly to a JSON parser.
 """))
     ComparisonLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, ComparisonLangchain, Writer.Config.REVISION_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
 
-
+    Iters:int = 0
     while True:
         
         RawResponse = Writer.OllamaInterface.GetLastMessageText(ComparisonLangchain)
@@ -77,11 +83,16 @@ Again, remember to make your response JSON formatted with no extra words. It wil
         RawResponse = RawResponse.replace("json", "")
 
         try:
+            Iters += 1
             Dict = json.loads(RawResponse)
             return Dict["DidFollowOutline"], "### Extra Suggestions:\n" + Dict["Suggestions"]
         except Exception as E:
+            if (Iters > 4):
+                _Logger.Log("Critical Error Parsing JSON", 7)
+                return False, ""
+            
             _Logger.Log("Error Parsing JSON Written By LLM, Asking For Edits", 7)
-            EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
+            EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}. Remember that your entire response is plugged directly into a JSON parser, so don't write **anything** except pure json."
             ComparisonLangchain.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
             ComparisonLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, ComparisonLangchain, Writer.Config.CHECKER_MODEL)

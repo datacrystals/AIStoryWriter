@@ -16,7 +16,7 @@ Outline:
 
 Please provide a JSON formatted response containing the total number of chapters in the above outline.
 
-Respond with "TotalChapters": <total chapter count>.
+Respond with {{"TotalChapters": <total chapter count>}}
 Please do not include any other text, just the JSON as your response will be parsed by a computer.
 
 """
@@ -28,6 +28,7 @@ Please do not include any other text, just the JSON as your response will be par
     Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.EVAL_MODEL)
     _Logger.Log("Finished Getting ChapterCount JSON", 5)
 
+    Iters:int = 0
 
     while True:
         
@@ -36,12 +37,16 @@ Please do not include any other text, just the JSON as your response will be par
         RawResponse = RawResponse.replace("json", "")
 
         try:
+            Iters += 1
             TotalChapters = json.loads(RawResponse)["TotalChapters"]
             _Logger.Log("Got Total Chapter Count At {TotalChapters}", 5)
             return TotalChapters
         except Exception as E:
+            if Iters > 4:
+                _Logger.Log("Critical Error Parsing JSON", 7)
+                return -1
             _Logger.Log("Error Parsing JSON Written By LLM, Asking For Edits", 7)
-            EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
+            EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}. Remember that your entire response is plugged directly into a JSON parser, so don't write **anything** except pure json."
             Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
             Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.EVAL_MODEL)
