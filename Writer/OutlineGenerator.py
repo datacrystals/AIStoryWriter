@@ -41,7 +41,6 @@ Make sure to add lots of detail as you write.
 Also, include information about the different characters, and how they change over the course of the story.
 We want to have rich and complex character development!
 
-Start your response with '# Outline\n## Chapter 1:'.
     """
 
     _Logger.Log(f"Generating Initial Outline", 4)
