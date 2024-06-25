@@ -71,7 +71,15 @@ Start your response with '# Outline\n## Chapter 1:'.
 
     _Logger.Log(f"Quality Standard Met, Exiting Feedback/Revision Loop", 4)
 
-    return Outline
+    
+    # Generate Final Outline
+    FinalOutline:str = f'''
+{StoryElements}
+
+{Outline}
+    '''
+
+    return FinalOutline
 
 
 def ReviseOutline(_Client, _Logger, _Outline, _Feedback, _History:list = []):
