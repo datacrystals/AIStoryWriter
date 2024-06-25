@@ -6,7 +6,8 @@ import datetime
 import os
 
 import Writer.Config
-import Writer.OllamaInterface
+# import Writer.OllamaInterface
+import Writer.Interface.Wrapper
 import Writer.PrintUtils
 import Writer.ChapterDetector
 import Writer.Scrubber
@@ -95,7 +96,9 @@ SysLogger = Writer.PrintUtils.Logger()
 
 # Initialize Client
 SysLogger.Log("Created OLLAMA Client", 5)
-Client = Writer.OllamaInterface.InitClient(Args.Host)
+OLLAMAClient = Writer.Interface.Wrapper.InitClient(Args.Host)
+Interface = Writer.Interface.Wrapper.Interface(OLLAMAClient)
+# Client = Writer.OllamaInterface.InitClient(Args.Host)
 
 # Load User Prompt
 Prompt:str = ""
