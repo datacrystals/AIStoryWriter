@@ -43,7 +43,7 @@ Again, remember to make your response JSON formatted with no extra words. It wil
                 _Logger.Log("Critical Error Parsing JSON", 7)
                 return {}
             _Logger.Log("Error Parsing JSON Written By LLM, Asking For Edits", 7)
-            EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
+            EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}. Remember that your entire response is plugged directly into a JSON parser, so don't write **anything** except pure json."
             Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
             Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.INFO_MODEL)

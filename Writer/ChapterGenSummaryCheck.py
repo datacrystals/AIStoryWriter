@@ -91,7 +91,7 @@ Again, remember to make your response JSON formatted with no extra words. It wil
                 return False, ""
             
             _Logger.Log("Error Parsing JSON Written By LLM, Asking For Edits", 7)
-            EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}."
+            EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}. Remember that your entire response is plugged directly into a JSON parser, so don't write **anything** except pure json."
             ComparisonLangchain.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
             ComparisonLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, ComparisonLangchain, Writer.Config.CHECKER_MODEL)
