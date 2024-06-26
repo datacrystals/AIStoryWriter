@@ -1,5 +1,4 @@
 import Writer.LLMEditor
-import Writer.OllamaInterface
 import Writer.PrintUtils
 import Writer.Config
 import Writer.Outline.StoryElements
@@ -8,13 +7,15 @@ import Writer.Outline.StoryElements
 # We should probably do outline generation in stages, allowing us to go back and add foreshadowing, etc back to previous segments
 
 
-def GenerateOutline(_Client, _Logger, _OutlinePrompt, _QualityThreshold:int = 85):
+def GenerateOutline(Interface, _Logger, _OutlinePrompt, _QualityThreshold: int = 85):
 
     # Generate Story Elements
-    StoryElements:str = Writer.Outline.StoryElements.GenerateStoryElements(_Client, _Logger, _OutlinePrompt)
+    StoryElements: str = Writer.Outline.StoryElements.GenerateStoryElements(
+        Interface, _Logger, _OutlinePrompt
+    )
 
     # Now, Generate Initial Outline
-    Prompt:str = f"""
+    Prompt: str = f"""
 Please write a markdown formatted outline based on the following prompt:
 
 <PROMPT>
@@ -45,46 +46,52 @@ Start your response with '# Outline\n## Chapter 1:'.
     """
 
     _Logger.Log(f"Generating Initial Outline", 4)
-    Messages = [Writer.OllamaInterface.BuildUserQuery(Prompt)]
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL)
-    Outline:str = Writer.OllamaInterface.GetLastMessageText(Messages)
+    Messages = [Interface.BuildUserQuery(Prompt)]
+    Messages = Interface.ChatAndStreamResponse(
+        _Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL
+    )
+    Outline: str = Interface.GetLastMessageText(Messages)
     _Logger.Log(f"Done Generating Initial Outline", 4)
 
-    
     _Logger.Log(f"Entering Feedback/Revision Loop", 3)
     FeedbackHistory = []
     WritingHistory = Messages
-    Rating:int = 0
-    Iterations:int = 0
+    Rating: int = 0
+    Iterations: int = 0
     while True:
         Iterations += 1
-        Feedback, FeedbackHistory = Writer.LLMEditor.GetFeedbackOnOutline(_Client, _Logger, Outline, FeedbackHistory)
-        Rating, FeedbackHistory = Writer.LLMEditor.GetOutlineRating(_Client, _Logger, Outline, FeedbackHistory)
+        Feedback, FeedbackHistory = Writer.LLMEditor.GetFeedbackOnOutline(
+            Interface, _Logger, Outline, FeedbackHistory
+        )
+        Rating, FeedbackHistory = Writer.LLMEditor.GetOutlineRating(
+            Interface, _Logger, Outline, FeedbackHistory
+        )
         # Rating has been changed from a 0-100 int, to does it meet the standards (yes/no)?
 
-        if (Iterations > Writer.Config.OUTLINE_MAX_REVISIONS):
+        if Iterations > Writer.Config.OUTLINE_MAX_REVISIONS:
             break
-        if ((Iterations > Writer.Config.OUTLINE_MIN_REVISIONS) and (Rating == True)):
+        if (Iterations > Writer.Config.OUTLINE_MIN_REVISIONS) and (Rating == True):
             break
 
-        Outline, WritingHistory = ReviseOutline(_Client, _Logger, Outline, Feedback, WritingHistory)
+        Outline, WritingHistory = ReviseOutline(
+            Interface, _Logger, Outline, Feedback, WritingHistory
+        )
 
     _Logger.Log(f"Quality Standard Met, Exiting Feedback/Revision Loop", 4)
 
-    
     # Generate Final Outline
-    FinalOutline:str = f'''
+    FinalOutline: str = f"""
 {StoryElements}
 
 {Outline}
-    '''
+    """
 
     return FinalOutline
 
 
-def ReviseOutline(_Client, _Logger, _Outline, _Feedback, _History:list = []):
+def ReviseOutline(Interface, _Logger, _Outline, _Feedback, _History: list = []):
 
-    RevisionPrompt:str = f"""
+    RevisionPrompt: str = f"""
 Please revise the following outline:
 ```
 {_Outline}
@@ -116,17 +123,19 @@ Don't answer these questions directly, instead make your writing implicitly answ
 
     _Logger.Log(f"Revising Outline", 2)
     Messages = _History
-    Messages.append(Writer.OllamaInterface.BuildUserQuery(RevisionPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL)
-    SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
+    Messages.append(Interface.BuildUserQuery(RevisionPrompt))
+    Messages = Interface.ChatAndStreamResponse(
+        _Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL
+    )
+    SummaryText: str = Interface.GetLastMessageText(Messages)
     _Logger.Log(f"Done Revising Outline", 2)
 
     return SummaryText, Messages
 
 
-def GeneratePerChapterOutline(_Client, _Logger, _Chapter, _History:list = []):
+def GeneratePerChapterOutline(Interface, _Logger, _Chapter, _History: list = []):
 
-    RevisionPrompt:str = f"""
+    RevisionPrompt: str = f"""
 Please generate an outline for chapter {_Chapter} from the previous outline.
 
 As you write, keep the following in mind:
@@ -148,11 +157,11 @@ Make sure your chapter has a markdown-formatted name!
     """
     _Logger.Log("Generating Outline For Chapter " + str(_Chapter), 5)
     Messages = _History
-    Messages.append(Writer.OllamaInterface.BuildUserQuery(RevisionPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.CHAPTER_OUTLINE_WRITER_MODEL)
-    SummaryText:str = Writer.OllamaInterface.GetLastMessageText(Messages)
+    Messages.append(Interface.BuildUserQuery(RevisionPrompt))
+    Messages = Interface.ChatAndStreamResponse(
+        _Logger, Messages, Writer.Config.CHAPTER_OUTLINE_WRITER_MODEL
+    )
+    SummaryText: str = Interface.GetLastMessageText(Messages)
     _Logger.Log("Done Generating Outline For Chapter " + str(_Chapter), 5)
 
     return SummaryText, Messages
-
-

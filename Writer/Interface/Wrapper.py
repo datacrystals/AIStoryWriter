@@ -1,84 +1,189 @@
 import Writer.Config
-
+import dotenv
 import ollama
+import google.generativeai as genai
+from google.generativeai.types import HarmCategory, HarmBlockThreshold
+import os
+import time
 
-
-
-def InitClient(_ClientHost:str = "http://10.1.65.4:11434"):
-    return ollama.Client(host=_ClientHost)
-
-
-def ChatAndStreamResponse(_Client, _Messages, _Model:str="llama3"):
-    Stream = _Client.chat(
-        model=_Model,
-        messages=_Messages,
-        stream=True,
-        options=dict(seed=Writer.Core.Config.SEED)
-    )
-    print(f"DEBUG: Using Model {_Model}")
-    _Messages.append(StreamResponse(Stream))
-
-    return _Messages
-
-def StreamResponse(_Stream):
-  
-    Response:str = ""
-    for chunk in _Stream:
-        ChunkText = chunk['message']['content']
-        Response += ChunkText
-
-        print(ChunkText, end='', flush=True)
-    print("\n\n\n")
-    return {'role': 'assistant', 'content': Response}
-
-def BuildUserQuery(_Query:str):
-    return {'role': 'user', 'content': _Query}
-
-def GetLastMessageText(_Messages:list):
-    return _Messages[-1]["content"]
-
+dotenv.load_dotenv()
 
 
 class Interface:
 
-    def __init__(self, _Client, _Model:str = "llama3", _Seed:int = 0):
-        self.Client = _Client
-        self.Model = _Model
-        self.Seed = _Seed
+    def __init__(
+        self,
+        Models: list = [],
+    ):
+        self.Clients: dict = {}
         self.History = []
+        for Model in Models:
+            if Model in self.Clients:
+                continue
+            else:
+                Provider, ProviderModel = self.GetModelAndProvider(Model)
+                print(f"DEBUG: Loading Model {ProviderModel} from {Provider}")
+                if Provider == "ollama":
+                    self.Clients[Model] = ollama.Client(host=Writer.Config.OLLAMA_HOST)
 
-    def SetHistory(self, _History):
-        self.History = _History
+                elif Provider == "google":
+                    # Validate Google API Key
+                    if (
+                        not "GOOGLE_API_KEY" in os.environ
+                        or os.environ["GOOGLE_API_KEY"] == ""
+                    ):
+                        raise Exception(
+                            "GOOGLE_API_KEY not found in environment variables"
+                        )
+                    genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
+                    self.Clients[Model] = genai.GenerativeModel(
+                        model_name=ProviderModel
+                    )
 
-    def GetHistory(self):
-        return self.History
+                elif Provider == "openai":
+                    raise NotImplementedError("OpenAI API not supported")
 
-    def GetLastResponse(self):
-        if (len(self.History) == 0):
-            return None
+                elif Provider == "Anthropic":
+                    raise NotImplementedError("Anthropic API not supported")
 
-        return self.History[-1]
+                else:
+                    raise Exception(f"Model Provider {Provider} for {Model} not found")
 
-    def AddMessage(self, _Message):
-        self.History.append({'role': 'user', 'content': _Message})
-    
-    def StreamMessage(self):
-        Stream = self.Client.chat(
-            model=self.Model,
-            messages=self.History,
-            stream=True,
-            options=dict(seed=self.Seed)
+    def ChatAndStreamResponse(
+        self, _Logger, _Messages, _Model: str = "llama3", _SeedOverride: int = -1
+    ):
+        Provider, ProviderModel = self.GetModelAndProvider(_Model)
+
+        # Calculate Seed Information
+        Seed = Writer.Config.SEED if _SeedOverride == -1 else _SeedOverride
+
+        # Log message history if DEBUG is enabled
+        if Writer.Config.DEBUG:
+            print("--------- Message History START ---------")
+            print("[")
+            for Message in _Messages:
+                print(f"{Message},\n----\n")
+            print("]")
+            print("--------- Message History END --------")
+
+        StartGeneration = time.time()
+
+        # Calculate estimated tokens
+        TotalChars = len(str(_Messages))
+        AvgCharsPerToken = 5  # estimated average chars per token
+        EstimatedTokens = TotalChars / AvgCharsPerToken
+        _Logger.Log(
+            f"Using Model '{_Model}' | (Est. ~{EstimatedTokens}tok Context Length)", 4
         )
 
-        Response:str = ""
-        for Chunk in Stream:
-            ChunkText = Chunk['message']['content']
+        # Log if there's a large estimated tokens of context history
+        if EstimatedTokens > 24000:
+            _Logger.Log(
+                f"Warning, Detected High Token Context Length of est. ~{EstimatedTokens}tok",
+                6,
+            )
+
+        if Provider == "ollama":
+            Stream = self.Clients[_Model].chat(
+                model=ProviderModel,
+                messages=_Messages,
+                stream=True,
+                options=dict(seed=Seed),
+            )
+            print(f"DEBUG: Using Model {_Model}")
+            _Messages.append(self.StreamResponse(Stream, Provider))
+
+        elif Provider == "google":
+            # replace "content" with "parts" for google
+            _Messages = [{"role": m["role"], "parts": m["content"]} for m in _Messages]
+            for m in _Messages:
+                if "content" in m:
+                    m["parts"] = m["content"]
+                    del m["content"]
+                if "role" in m and m["role"] == "assistant":
+                    m["role"] = "model"
+                    # Google doesn't support "system" role while generating content (only while instantiating the model)
+                if "role" in m and m["role"] == "system":
+                    m["role"] = "user"
+
+            Stream = self.Clients[_Model].generate_content(
+                contents=_Messages,
+                stream=True,
+                safety_settings={
+                    HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+                    HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
+                    HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
+                    HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
+                },
+            )
+            print(f"DEBUG: Using Model {_Model}")
+            _Messages.append(self.StreamResponse(Stream, Provider))
+
+            # Replace "parts" back to "content" for generalization
+            # and replace "model" with "assistant"
+            for m in _Messages:
+                if "parts" in m:
+                    m["content"] = m["parts"]
+                    del m["parts"]
+                if "role" in m and m["role"] == "model":
+                    m["role"] = "assistant"
+
+        elif Provider == "openai":
+            raise NotImplementedError("OpenAI API not supported")
+
+        elif Provider == "Anthropic":
+            raise NotImplementedError("Anthropic API not supported")
+
+        else:
+            raise Exception(f"Model Provider {Provider} for {_Model} not found")
+
+        # Log the time taken to generate the response
+        EndGeneration = time.time()
+        _Logger.Log(
+            f"Generated Response in {round(EndGeneration - StartGeneration, 2)}s (~{round(EstimatedTokens / (EndGeneration - StartGeneration), 2)}tok/s)",
+            4,
+        )
+        # Check if the response is empty and attempt regeneration if necessary
+        if _Messages[-1]["content"].isspace():
+            _Logger.Log("Model Returned Only Whitespace, Attempting Regeneration", 6)
+            _Messages.append(
+                self.BuildUserQuery(
+                    "Sorry, but you returned an empty string, please try again!"
+                )
+            )
+            return self.ChatAndStreamResponse(_Logger, _Messages, _Model, _SeedOverride)
+
+        return _Messages
+
+    def StreamResponse(self, _Stream, _Provider: str):
+        Response: str = ""
+        for chunk in _Stream:
+            if _Provider == "ollama":
+                ChunkText = chunk["message"]["content"]
+            elif _Provider == "google":
+                ChunkText = chunk.text
+            else:
+                raise ValueError(f"Unsupported provider: {_Provider}")
+
             Response += ChunkText
+            print(ChunkText, end="", flush=True)
 
-            print(ChunkText, end='', flush=True)
+        print("\n\n\n" if Writer.Config.DEBUG else "")
+        return {"role": "assistant", "content": Response}
 
-        self.History.append({'role': 'assistant', 'content': Response})
+    def BuildUserQuery(self, _Query: str):
+        return {"role": "user", "content": _Query}
 
-    def AddMessageAndStream(self, _Message):
-        self.AddMessage(_Message)
-        self.StreamMessage()
+    def BuildSystemQuery(self, _Query: str):
+        return {"role": "system", "content": _Query}
+
+    def BuildAssistantQuery(self, _Query: str):
+        return {"role": "assistant", "content": _Query}
+
+    def GetLastMessageText(self, _Messages: list):
+        return _Messages[-1]["content"]
+
+    def GetModelAndProvider(self, _Model: str):
+        Provider = _Model.lower().split("/")[0] if "/" in _Model else "ollama"
+        Model = _Model.lower().split("/")[1] if "/" in _Model else _Model
+        return Provider, Model
