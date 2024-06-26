@@ -49,7 +49,11 @@ def ChatAndStreamResponse(_Client, _Logger, _Messages, _Model:str="llama3", _See
         # Check if it's empty
         if not ThisMessage["content"].isspace():
             _Messages.append(ThisMessage)
-            _Logger.SaveLangchain(inspect.stack()[1].function, _Messages)
+            CallStack:str = ""
+            for Frame in inspect.stack()[1:]:
+                CallStack = f"{Frame.function}."
+            CallStack = CallStack[:-1].replace("<module>", "Main")
+            _Logger.SaveLangchain(CallStack, _Messages)
             return _Messages
         else:
             _Logger.Log("Model Returned Only Whitespace, Attempting Regeneration", 6)
