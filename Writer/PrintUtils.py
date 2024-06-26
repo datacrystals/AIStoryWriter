@@ -52,6 +52,16 @@ class Logger:
         self.Log(f"Wrote This Language Chain ({LangChainDebugTitle}) To Debug File {ThisLogPathMD}", 5)
 
 
+    # Saves the given story to disk
+    def SaveStory(self, _StoryContent:str):
+
+        with open(f"{self.LogDirPrefix}/Story.md", "w") as f:
+            f.write(_StoryContent)
+
+        self.Log(f"Wrote Story To Disk At {self.LogDirPrefix}/Story.md", 5)
+
+
+    # Logs an item
     def Log(self, _Item, _Level:int):
 
         # Create Log Entry
