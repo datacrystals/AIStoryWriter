@@ -13,11 +13,11 @@ def PrintMessageHistory(_Messages):
 
 class Logger:
 
-    def __init__(self, _LogfilePrefix="Logs/"):
+    def __init__(self, _LogfilePrefix="Logs"):
 
         # Make Paths For Log
-        LogDirPath = _LogfilePrefix + "/Log_" + datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S') + "/LangchainDebug"
-        os.makedirs(_LogfilePrefix, exist_ok=True)
+        LogDirPath = _LogfilePrefix + "/Generation_" + datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        os.makedirs(LogDirPath + "/LangchainDebug", exist_ok=True)
 
         # Setup Log Path
         self.LogDirPrefix = LogDirPath
@@ -46,7 +46,7 @@ class Logger:
             MarkdownVersion:str = f"# Debug LangChain {LangChainDebugTitle}\n"
             for Message in _LangChain:
                 MarkdownVersion += f"\n\n\n## Role: {Message['role']}\n"
-                MarkdownVersion += f"{Message['content']}"
+                MarkdownVersion += f"```{Message['content']}```"
             f.write(MarkdownVersion)
         
         self.Log(f"Wrote This Language Chain ({LangChainDebugTitle}) To Debug File {ThisLogPathMD}", 5)

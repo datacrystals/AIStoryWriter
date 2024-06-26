@@ -72,10 +72,10 @@ Note that a computer is parsing this JSON so it must be correct.
 
 Please respond with the following JSON fields:
 
-{
+{{
 "Suggestions": str
 "DidFollowOutline": true/false
-}
+}}
 
 Suggestions should include a string containing detailed markdown formatted feedback that will be used to prompt the writer on the next iteration of generation.
 Specify general things that would help the writer remember what to do in the next iteration.
