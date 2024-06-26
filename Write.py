@@ -282,4 +282,6 @@ Please scroll to the bottom if you wish to read that.
 {Outline}
 ```
 """
+    SysLogger.SaveStory(Out)
     F.write(Out)
+    

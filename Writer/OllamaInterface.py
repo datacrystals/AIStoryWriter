@@ -51,7 +51,7 @@ def ChatAndStreamResponse(_Client, _Logger, _Messages, _Model:str="llama3", _See
             _Messages.append(ThisMessage)
             CallStack:str = ""
             for Frame in inspect.stack()[1:]:
-                CallStack = f"{Frame.function}."
+                CallStack += f"{Frame.function}."
             CallStack = CallStack[:-1].replace("<module>", "Main")
             _Logger.SaveLangchain(CallStack, _Messages)
             return _Messages
