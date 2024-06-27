@@ -1,13 +1,10 @@
 import Writer.Config
-import Writer.OllamaInterface
-
 import json
 
 
+def GetStoryInfo(Interface, _Logger, _Messages: list):
 
-def GetStoryInfo(_Client, _Logger, _Messages:list):
-
-    Prompt:str = f"""
+    Prompt: str = f"""
 Please write a JSON formatted response with no other content with the following keys.
 Note that a computer is parsing this JSON so it must be correct.
 
@@ -20,17 +17,19 @@ Base your answers on the story written in previous messages.
 
 Again, remember to make your response JSON formatted with no extra words. It will be fed directly to a JSON parser.
 """
-    
+
     _Logger.Log("Prompting LLM To Generate Stats", 5)
     Messages = _Messages
-    Messages.append(Writer.OllamaInterface.BuildUserQuery(Prompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.INFO_MODEL)
+    Messages.append(Interface.BuildUserQuery(Prompt))
+    Messages = Interface.ChatAndStreamResponse(
+        _Logger, Messages, Writer.Config.INFO_MODEL
+    )
     _Logger.Log("Finished Getting Stats Feedback", 5)
 
-    Iters:int = 0
+    Iters: int = 0
     while True:
-        
-        RawResponse = Writer.OllamaInterface.GetLastMessageText(Messages)
+
+        RawResponse = Interface.GetLastMessageText(Messages)
         RawResponse = RawResponse.replace("`", "")
         RawResponse = RawResponse.replace("json", "")
 
@@ -39,14 +38,16 @@ Again, remember to make your response JSON formatted with no extra words. It wil
             Dict = json.loads(RawResponse)
             return Dict
         except Exception as E:
-            if (Iters > 4):
+            if Iters > 4:
                 _Logger.Log("Critical Error Parsing JSON", 7)
                 return {}
             _Logger.Log("Error Parsing JSON Written By LLM, Asking For Edits", 7)
-            EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}. Remember that your entire response is plugged directly into a JSON parser, so don't write **anything** except pure json."
-            Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
+            EditPrompt: str = (
+                f"Please revise your JSON. It encountered the following error during parsing: {E}. Remember that your entire response is plugged directly into a JSON parser, so don't write **anything** except pure json."
+            )
+            Messages.append(Interface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
-            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.INFO_MODEL)
+            Messages = Interface.ChatAndStreamResponse(
+                _Logger, Messages, Writer.Config.INFO_MODEL
+            )
             _Logger.Log("Done Asking LLM TO Revise JSON", 6)
-
-

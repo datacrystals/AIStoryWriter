@@ -9,6 +9,8 @@ Here's what the (mostly up-to-date) process looks like as a block diagram. I'll 
 ![Block Diagram](Docs/BlockDiagram.drawio.svg)
 
 
+Feel free to join our [Discord](https://discord.gg/R2SySWDr2s) to ask any questions you may have or request features!
+
 
 ## Functionality 
 Here's what the system does well, and what it has limitations doing.

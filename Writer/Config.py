@@ -2,15 +2,17 @@ INITIAL_OUTLINE_WRITER_MODEL="llama3:70b" # Note this value is overridden by the
 CHAPTER_OUTLINE_WRITER_MODEL="llama3:70b" # Note this value is overridden by the argparser
 CHAPTER_STAGE1_WRITER_MODEL="llama3:70b" # Note this value is overridden by the argparser
 CHAPTER_STAGE2_WRITER_MODEL="llama3:70b" # Note this value is overridden by the argparser
-CHAPTER_STAGE3_WRITER_MODEL="llama3:70b`" # Note this value is overridden by the argparser
+CHAPTER_STAGE3_WRITER_MODEL="llama3:70b" # Note this value is overridden by the argparser
 CHAPTER_STAGE4_WRITER_MODEL="llama3:70b" # Note this value is overridden by the argparser
 CHAPTER_REVISION_WRITER_MODEL="llama3:70b" # Note this value is overridden by the argparser
 REVISION_MODEL="llama3:70b" # Note this value is overridden by the argparser
 EVAL_MODEL="llama3:70b" # Note this value is overridden by the argparser
 INFO_MODEL="llama3:70b" # Note this value is overridden by the argparser
 SCRUB_MODEL="llama3:70b" # Note this value is overridden by the argparser
-CHECKER_MODEL="llama3" # Model used to check results
-TRANSLATOR_MODEL="llama3"
+CHECKER_MODEL="llama3:70b" # Model used to check results
+TRANSLATOR_MODEL="llama3:70b"
+
+OLLAMA_HOST="127.0.0.1:11434"
 
 SEED=12 # Note this value is overridden by the argparser
 
