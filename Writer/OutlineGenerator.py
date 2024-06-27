@@ -92,14 +92,14 @@ def ReviseOutline(Interface, _Logger, _Outline, _Feedback, _History: list = []):
 
     RevisionPrompt: str = f"""
 Please revise the following outline:
-```
+<OUTLINE>
 {_Outline}
-```
+</OUTLINE>
 
 Based on the following feedback:
-```
+<FEEDBACK>
 {_Feedback}
-```
+</FEEDBACK>
 
 Remember to expand upon your outline and add content to make it as best as it can be!
 

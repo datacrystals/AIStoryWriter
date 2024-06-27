@@ -8,9 +8,9 @@ def GetFeedbackOnOutline(Interface, _Logger, _Outline: str, _History: list = [])
     StartingPrompt: str = f"""
 Please critique the following outline - make sure to provide constructive criticism on how it can be improved and point out any problems with it.
 
----
+<OUTLINE>
 {_Outline}
----
+</OUTLINE>
 
 As you revise, consider the following criteria:
     - Pacing: Is the story rushing over certain plot points and excessively focusing on others?
@@ -37,9 +37,11 @@ It should be very clear which chapter is which, and the content in each chapter.
 def GetOutlineRating(Interface, _Logger, _Outline: str, _History: list = []):
 
     StartingPrompt: str = f"""
-{_Outline}
 
----
+<OUTLINE>
+{_Outline}
+</OUTLINE>
+
 This outline meets all of the following criteria (true or false):
     - Pacing: Is the story rushing over certain plot points and excessively focusing on others?
     - Details: How are things described? Is it repetitive? Is the word choice appropriate for the scene? Are we describing things too much or too little?
@@ -92,10 +94,9 @@ def GetFeedbackOnChapter(
 
     # Disabled seeing the outline too.
     StartingPrompt: str = f"""
-Chapter:
-```
+<CHAPTER>
 {_Chapter}
-```
+</CHAPTER>
 
 Please give feedback on the above chapter based on the following criteria:
     - Pacing: Is the story rushing over certain plot points and excessively focusing on others?
@@ -126,9 +127,11 @@ Please give feedback on the above chapter based on the following criteria:
 def GetChapterRating(Interface, _Logger, _Chapter: str, _History: list = []):
 
     StartingPrompt: str = f"""
-{_Chapter}
 
----
+<CHAPTER>
+{_Chapter}
+</CHAPTER>
+
 This chapter meets all of the following criteria (true or false):
     - Pacing: Is the story rushing over certain plot points and excessively focusing on others?
     - Details: How are things described? Is it repetitive? Is the word choice appropriate for the scene? Are we describing things too much or too little?
