@@ -28,10 +28,12 @@ Here's what the system does well, and what it has limitations doing.
 
 ## Examples
 
-Here's an example as of 2024-06-21 - note that there are still some major issues that I'm working on fixing (see limitations section).
+Please check out our examples below! The most recent example outputs will probably be a good representative of the system in it's current state.
 
 - [Prompt](ExamplePrompts/Example1/Prompt.txt)
-- [Output (2024-06-24 Version)](ExamplePrompts/Example1/Output_2024-06-24.md)
+- [Output (2024-06-27 Version)](ExamplePrompts/Example1/Output_2024-06-27.md) 
+- [Output (2024-06-26 Version)](ExamplePrompts/Example1/Output_2024-06-26.md)
+- [Output (2024-06-24 Version)](ExamplePrompts/Example1/Output_2024-06-24.md) (Old!)
 - [Output (2024-06-20 Version)](ExamplePrompts/Example1/Output_2024-06-20.md) (Old!)
 
 I've made some changes since this version, and I'm regenerating the example, so this is a bit outdated.
