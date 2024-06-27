@@ -32,8 +32,8 @@ class Logger:
     def SaveLangchain(self, _LangChainID:str, _LangChain:list):
 
         # Calculate Filepath For This Langchain
-        ThisLogPathJSON:str = self.LogDirPrefix + f"/LangchainDebug/{_LangChainID}_{self.LangchainID}.json"
-        ThisLogPathMD:str = self.LogDirPrefix + f"/LangchainDebug/{_LangChainID}_{self.LangchainID}.md"
+        ThisLogPathJSON:str = self.LogDirPrefix + f"/LangchainDebug/{self.LangchainID}_{_LangChainID}.json"
+        ThisLogPathMD:str = self.LogDirPrefix + f"/LangchainDebug/{self.LangchainID}_{_LangChainID}.md"
         LangChainDebugTitle:str = f"{self.LangchainID}_{_LangChainID}"
         self.LangchainID += 1
 

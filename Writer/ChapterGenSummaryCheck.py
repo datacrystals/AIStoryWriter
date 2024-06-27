@@ -46,8 +46,8 @@ Do not include anything in your response except the summary.
 
     # Now Summarize The Outline
     SummaryLangchain:list = []
-    SummaryLangchain.append(Writer.OllamaInterface.BuildSystemQuery(f"You are a helpful AI Assistant. Answer the user's prompts to the best of your abilities."))
-    SummaryLangchain.append(Writer.OllamaInterface.BuildUserQuery(f"""
+    SummaryLangchain.append(Interface.BuildSystemQuery(f"You are a helpful AI Assistant. Answer the user's prompts to the best of your abilities."))
+    SummaryLangchain.append(Interface.BuildUserQuery(f"""
 Please summarize the following chapter outline:
                                                                   
 <OUTLINE>
@@ -57,8 +57,8 @@ Please summarize the following chapter outline:
 Do not include anything in your response except the summary.
 
 """))
-    SummaryLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, SummaryLangchain, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
-    OutlineSummary:str = Writer.OllamaInterface.GetLastMessageText(SummaryLangchain)
+    SummaryLangchain = Interface.ChatAndStreamResponse(_Logger, SummaryLangchain, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
+    OutlineSummary:str = Interface.GetLastMessageText(SummaryLangchain)
 
     # Now, generate a comparison JSON value.
     ComparisonLangchain: list = []
