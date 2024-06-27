@@ -55,7 +55,12 @@ class Interface:
                     raise Exception(f"Model Provider {Provider} for {Model} not found")
 
     def ChatAndStreamResponse(
-        self, _Logger, _Messages, _Model: str = "llama3", _SeedOverride: int = -1
+        self,
+        _Logger,
+        _Messages,
+        _Model: str = "llama3",
+        _SeedOverride: int = -1,
+        _Format: str = None,
     ):
         Provider, ProviderModel = self.GetModelAndProvider(_Model)
 
@@ -78,7 +83,8 @@ class Interface:
         AvgCharsPerToken = 5  # estimated average chars per token
         EstimatedTokens = TotalChars / AvgCharsPerToken
         _Logger.Log(
-            f"Using Model '{ProviderModel}' from '{Provider}' | (Est. ~{EstimatedTokens}tok Context Length)", 4
+            f"Using Model '{ProviderModel}' from '{Provider}' | (Est. ~{EstimatedTokens}tok Context Length)",
+            4,
         )
 
         # Log if there's a large estimated tokens of context history
@@ -89,11 +95,13 @@ class Interface:
             )
 
         if Provider == "ollama":
+            if _Format == "json":
+                _Logger.Log("Using Ollama JSON Format", 4)
             Stream = self.Clients[_Model].chat(
                 model=ProviderModel,
                 messages=_Messages,
                 stream=True,
-                options=dict(seed=Seed),
+                options=dict(seed=Seed, format=_Format),
             )
             _Messages.append(self.StreamResponse(Stream, Provider))
 
@@ -157,8 +165,7 @@ class Interface:
             )
             return self.ChatAndStreamResponse(_Logger, _Messages, _Model, _SeedOverride)
 
-
-        CallStack:str = ""
+        CallStack: str = ""
         for Frame in inspect.stack()[1:]:
             CallStack += f"{Frame.function}."
         CallStack = CallStack[:-1].replace("<module>", "Main")
@@ -196,10 +203,10 @@ class Interface:
     def GetModelAndProvider(self, _Model: str):
         # Early check for ollama, since sometimes models have username/model
         # so the full path is going to be `ollama/username/model:size`
-        if (_Model.lower().startswith("ollama")):
+        if _Model.lower().startswith("ollama"):
             Model = _Model.replace("ollama/", "")
             return "ollama", Model
-        
+
         # Now do the proper check for other providers
         Provider = _Model.lower().split("/")[0] if "/" in _Model else "ollama"
         Model = _Model.lower().split("/")[1] if "/" in _Model else _Model
