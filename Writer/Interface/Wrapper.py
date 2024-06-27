@@ -25,6 +25,7 @@ class Interface:
                 print(f"DEBUG: Loading Model {ProviderModel} from {Provider}")
                 if Provider == "ollama":
                     self.Clients[Model] = ollama.Client(host=Writer.Config.OLLAMA_HOST)
+                    print(f"OLLAMA Host is '{Writer.Config.OLLAMA_HOST}'")
 
                 elif Provider == "google":
                     # Validate Google API Key
@@ -47,6 +48,7 @@ class Interface:
                     raise NotImplementedError("Anthropic API not supported")
 
                 else:
+                    print(f"Warning, ")
                     raise Exception(f"Model Provider {Provider} for {Model} not found")
 
     def ChatAndStreamResponse(
@@ -73,7 +75,7 @@ class Interface:
         AvgCharsPerToken = 5  # estimated average chars per token
         EstimatedTokens = TotalChars / AvgCharsPerToken
         _Logger.Log(
-            f"Using Model '{_Model}' | (Est. ~{EstimatedTokens}tok Context Length)", 4
+            f"Using Model '{ProviderModel}' from '{Provider}' | (Est. ~{EstimatedTokens}tok Context Length)", 4
         )
 
         # Log if there's a large estimated tokens of context history
@@ -90,7 +92,6 @@ class Interface:
                 stream=True,
                 options=dict(seed=Seed),
             )
-            print(f"DEBUG: Using Model {_Model}")
             _Messages.append(self.StreamResponse(Stream, Provider))
 
         elif Provider == "google":
@@ -184,6 +185,13 @@ class Interface:
         return _Messages[-1]["content"]
 
     def GetModelAndProvider(self, _Model: str):
+        # Early check for ollama, since sometimes models have username/model
+        # so the full path is going to be `ollama/username/model:size`
+        if (_Model.lower().startswith("ollama")):
+            Model = _Model.replace("ollama/", "")
+            return "ollama", Model
+        
+        # Now do the proper check for other providers
         Provider = _Model.lower().split("/")[0] if "/" in _Model else "ollama"
         Model = _Model.lower().split("/")[1] if "/" in _Model else _Model
         return Provider, Model

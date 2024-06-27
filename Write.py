@@ -180,6 +180,8 @@ StartTime = time.time()
 
 
 # Setup Config
+Writer.Config.OLLAMA_HOST = Args.Host
+
 Writer.Config.SEED = Args.Seed
 
 Writer.Config.INITIAL_OUTLINE_WRITER_MODEL = Args.InitialOutlineModel
