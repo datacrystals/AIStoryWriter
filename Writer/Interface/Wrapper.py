@@ -1,10 +1,13 @@
 import Writer.Config
 import dotenv
 import ollama
-import google.generativeai as genai
-from google.generativeai.types import HarmCategory, HarmBlockThreshold
+import inspect
 import os
 import time
+
+import google.generativeai as genai
+from google.generativeai.types import HarmCategory, HarmBlockThreshold
+
 
 dotenv.load_dotenv()
 
@@ -154,6 +157,12 @@ class Interface:
             )
             return self.ChatAndStreamResponse(_Logger, _Messages, _Model, _SeedOverride)
 
+
+        CallStack:str = ""
+        for Frame in inspect.stack()[1:]:
+            CallStack += f"{Frame.function}."
+        CallStack = CallStack[:-1].replace("<module>", "Main")
+        _Logger.SaveLangchain(CallStack, _Messages)
         return _Messages
 
     def StreamResponse(self, _Stream, _Provider: str):

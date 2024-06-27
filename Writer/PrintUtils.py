@@ -34,7 +34,7 @@ class Logger:
         # Calculate Filepath For This Langchain
         ThisLogPathJSON:str = self.LogDirPrefix + f"/LangchainDebug/{_LangChainID}_{self.LangchainID}.json"
         ThisLogPathMD:str = self.LogDirPrefix + f"/LangchainDebug/{_LangChainID}_{self.LangchainID}.md"
-        LangChainDebugTitle:str = f"{_LangChainID}_{self.LangchainID}"
+        LangChainDebugTitle:str = f"{self.LangchainID}_{_LangChainID}"
         self.LangchainID += 1
 
         # Generate and Save JSON Version
