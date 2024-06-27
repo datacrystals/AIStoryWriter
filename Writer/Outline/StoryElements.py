@@ -1,13 +1,11 @@
 import Writer.LLMEditor
-import Writer.OllamaInterface
 import Writer.PrintUtils
 import Writer.Config
 
 
+def GenerateStoryElements(Interface, _Logger, _OutlinePrompt):
 
-def GenerateStoryElements(_Client, _Logger, _OutlinePrompt):
-
-    Prompt:str = f"""
+    Prompt: str = f"""
 I'm working on writing a fictional story, and I'd like your help writing out the story elements.
 
 Here's the prompt for my story.
@@ -139,10 +137,11 @@ Also, the items in parenthesis are just to give you a better idea of what to wri
 
     # Generate Initial Story Elements
     _Logger.Log(f"Generating Main Story Elements", 4)
-    Messages = [Writer.OllamaInterface.BuildUserQuery(Prompt)]
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL)
-    Elements:str = Writer.OllamaInterface.GetLastMessageText(Messages)
+    Messages = [Interface.BuildUserQuery(Prompt)]
+    Messages = Interface.ChatAndStreamResponse(
+        _Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL
+    )
+    Elements: str = Interface.GetLastMessageText(Messages)
     _Logger.Log(f"Done Generating Main Story Elements", 4)
 
     return Elements
-

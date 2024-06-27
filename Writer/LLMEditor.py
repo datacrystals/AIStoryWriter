@@ -1,12 +1,11 @@
-import Writer.OllamaInterface
 import Writer.PrintUtils
 
 import json
 
 
-def GetFeedbackOnOutline(_Client, _Logger, _Outline:str, _History:list = []):
+def GetFeedbackOnOutline(Interface, _Logger, _Outline: str, _History: list = []):
 
-    StartingPrompt:str = f"""
+    StartingPrompt: str = f"""
 Please critique the following outline - make sure to provide constructive criticism on how it can be improved and point out any problems with it.
 
 ---
@@ -26,16 +25,18 @@ It should be very clear which chapter is which, and the content in each chapter.
 
     _Logger.Log("Prompting LLM To Critique Outline", 5)
     Messages = _History
-    Messages.append(Writer.OllamaInterface.BuildUserQuery(StartingPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.REVISION_MODEL)
+    Messages.append(Interface.BuildUserQuery(StartingPrompt))
+    Messages = Interface.ChatAndStreamResponse(
+        _Logger, Messages, Writer.Config.REVISION_MODEL
+    )
     _Logger.Log("Finished Getting Outline Feedback", 5)
 
-    return Writer.OllamaInterface.GetLastMessageText(Messages), Messages
+    return Interface.GetLastMessageText(Messages), Messages
 
 
-def GetOutlineRating(_Client, _Logger, _Outline:str, _History:list = []):
+def GetOutlineRating(Interface, _Logger, _Outline: str, _History: list = []):
 
-    StartingPrompt:str = f"""
+    StartingPrompt: str = f"""
 {_Outline}
 
 ---
@@ -51,14 +52,16 @@ Please do not include any other text, just the JSON as your response will be par
 
     _Logger.Log("Prompting LLM To Get Review JSON", 5)
     Messages = _History
-    Messages.append(Writer.OllamaInterface.BuildUserQuery(StartingPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.EVAL_MODEL)
+    Messages.append(Interface.BuildUserQuery(StartingPrompt))
+    Messages = Interface.ChatAndStreamResponse(
+        _Logger, Messages, Writer.Config.EVAL_MODEL
+    )
     _Logger.Log("Finished Getting Review JSON", 5)
 
-    Iters:int = 0
+    Iters: int = 0
     while True:
-        
-        RawResponse = Writer.OllamaInterface.GetLastMessageText(Messages)
+
+        RawResponse = Interface.GetLastMessageText(Messages)
         RawResponse = RawResponse.replace("`", "")
         RawResponse = RawResponse.replace("json", "")
 
@@ -68,24 +71,27 @@ Please do not include any other text, just the JSON as your response will be par
             _Logger.Log(f"Editor Determined IsComplete: {Rating}", 5)
             return Rating, Messages
         except Exception as E:
-            if (Iters > 4):
+            if Iters > 4:
                 _Logger.Log("Critical Error Parsing JSON", 7)
                 return False, Messages
             _Logger.Log("Error Parsing JSON Written By LLM, Asking For Edits", 7)
-            EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}. Remember that your entire response is plugged directly into a JSON parser, so don't write **anything** except pure json."
-            Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
+            EditPrompt: str = (
+                f"Please revise your JSON. It encountered the following error during parsing: {E}. Remember that your entire response is plugged directly into a JSON parser, so don't write **anything** except pure json."
+            )
+            Messages.append(Interface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
-            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.EVAL_MODEL)
+            Messages = Interface.ChatAndStreamResponse(
+                _Logger, Messages, Writer.Config.EVAL_MODEL
+            )
             _Logger.Log("Done Asking LLM TO Revise JSON", 6)
 
 
-
-
-
-def GetFeedbackOnChapter(_Client, _Logger, _Chapter:str, _Outline:str, _History:list = []):
+def GetFeedbackOnChapter(
+    Interface, _Logger, _Chapter: str, _Outline: str, _History: list = []
+):
 
     # Disabled seeing the outline too.
-    StartingPrompt:str = f"""
+    StartingPrompt: str = f"""
 Chapter:
 ```
 {_Chapter}
@@ -107,17 +113,19 @@ Please give feedback on the above chapter based on the following criteria:
 
     _Logger.Log("Prompting LLM To Critique Chapter", 5)
     Messages = _History
-    Messages.append(Writer.OllamaInterface.BuildUserQuery(StartingPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.REVISION_MODEL)
+    Messages.append(Interface.BuildUserQuery(StartingPrompt))
+    Messages = Interface.ChatAndStreamResponse(
+        _Logger, Messages, Writer.Config.REVISION_MODEL
+    )
     _Logger.Log("Finished Getting Chapter Feedback", 5)
 
-    return Writer.OllamaInterface.GetLastMessageText(Messages), Messages
+    return Interface.GetLastMessageText(Messages), Messages
 
 
 # Switch this to iscomplete true/false (similar to outline)
-def GetChapterRating(_Client, _Logger, _Chapter:str, _History:list = []):
+def GetChapterRating(Interface, _Logger, _Chapter: str, _History: list = []):
 
-    StartingPrompt:str = f"""
+    StartingPrompt: str = f"""
 {_Chapter}
 
 ---
@@ -133,30 +141,36 @@ Please do not include any other text, just the JSON as your response will be par
 
     _Logger.Log("Prompting LLM To Get Review JSON", 5)
     Messages = _History
-    Messages.append(Writer.OllamaInterface.BuildUserQuery(StartingPrompt))
-    Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.EVAL_MODEL)
+    Messages.append(Interface.BuildUserQuery(StartingPrompt))
+    Messages = Interface.ChatAndStreamResponse(
+        _Logger, Messages, Writer.Config.EVAL_MODEL
+    )
     _Logger.Log("Finished Getting Review JSON", 5)
 
-    Iters:int = 0
+    Iters: int = 0
     while True:
-        
-        RawResponse = Writer.OllamaInterface.GetLastMessageText(Messages)
+
+        RawResponse = Interface.GetLastMessageText(Messages)
         RawResponse = RawResponse.replace("`", "")
         RawResponse = RawResponse.replace("json", "")
-        
+
         try:
             Iters += 1
             Rating = json.loads(RawResponse)["IsComplete"]
             _Logger.Log(f"Editor Determined IsComplete: {Rating}", 5)
             return Rating, Messages
         except Exception as E:
-            if (Iters > 4):
+            if Iters > 4:
                 _Logger.Log("Critical Error Parsing JSON", 7)
                 return False, Messages
-            
+
             _Logger.Log("Error Parsing JSON Written By LLM, Asking For Edits", 7)
-            EditPrompt:str = f"Please revise your JSON. It encountered the following error during parsing: {E}. Remember that your entire response is plugged directly into a JSON parser, so don't write **anything** except pure json."
-            Messages.append(Writer.OllamaInterface.BuildUserQuery(EditPrompt))
+            EditPrompt: str = (
+                f"Please revise your JSON. It encountered the following error during parsing: {E}. Remember that your entire response is plugged directly into a JSON parser, so don't write **anything** except pure json."
+            )
+            Messages.append(Interface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
-            Messages = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, Messages, Writer.Config.EVAL_MODEL)
+            Messages = Interface.ChatAndStreamResponse(
+                _Logger, Messages, Writer.Config.EVAL_MODEL
+            )
             _Logger.Log("Done Asking LLM TO Revise JSON", 6)
