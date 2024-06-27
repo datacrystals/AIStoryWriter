@@ -10,11 +10,15 @@ print("4 -> Gemini 1.5 pro, Gemini 1.5 pro for editing")
 print("5 -> mistral:7b, mistral:7b for editing (fast debug test, produces crap output)")
 print("6 -> Developer testing script 1, uses many local models, very slow, but decent output")
 print("7 -> Developer testing script 2, miqulitz-120b, one model, llama3:70b editor")
-print("8 -> Developer testing script 1, miqu-70b-1.5, one model, llama3:70b editor")
+print("8 -> Developer testing script 3, miqu-70b-1.5, one model, llama3:70b editor")
+print("9 -> Developer testing script 4, gemma2:27b, one model, gemma2:27b editor")
 
-
+# Get Choice
+print("")
 choice = input("> ")
 
+
+# Terrible but effective way to manage the choices
 if (choice == "1"):
     os.system('''
 cd .. && ./Write.py \
@@ -174,6 +178,28 @@ cd .. && ./Write.py \
 -RevisionModel llama3:70b \
 -EvalModel llama3:70b \
 -InfoModel llama3:70b \
+-NoScrubChapters \
+-Debug
+
+''')
+
+    
+elif (choice == "9"):
+    os.system('''
+cd .. && ./Write.py \
+-Host 10.1.65.4:11434 \
+-Seed 999 \
+-Prompt ExamplePrompts/Example1/Prompt.txt \
+-InitialOutlineModel gemma2:27b \
+-ChapterOutlineModel gemma2:27b \
+-ChapterS1Model gemma2:27b \
+-ChapterS2Model gemma2:27b \
+-ChapterS3Model gemma2:27b \
+-ChapterS4Model gemma2:27b \
+-ChapterRevisionModel gemma2:27b \
+-RevisionModel gemma2:27b \
+-EvalModel gemma2:27b \
+-InfoModel gemma2:27b \
 -NoScrubChapters \
 -Debug
 
