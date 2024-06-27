@@ -2,7 +2,11 @@
 
 import os
 
-print("Developer Testing Utillity.")
+print("Developer Testing Utility.")
+
+# Get Choice For Model
+print("Chose Model: ")
+print("-------------------------------------------")
 print("1 -> Gemini 1.5 flash, llama70b for editing")
 print("2 -> Gemini 1.5 flash, Gemini 1.5 flash for editing")
 print("3 -> Gemini 1.5 pro, Gemini 1.5 flash for editing")
@@ -12,19 +16,35 @@ print("6 -> Developer testing script 1, uses many local models, very slow, but d
 print("7 -> Developer testing script 2, miqulitz-120b, one model, llama3:70b editor")
 print("8 -> Developer testing script 3, miqu-70b-1.5, one model, llama3:70b editor")
 print("9 -> Developer testing script 4, gemma2:27b, one model, gemma2:27b editor")
-
-# Get Choice
+print("-------------------------------------------")
 print("")
 choice = input("> ")
+
+# Get Choice For Prompt
+print("Chose Prompt:")
+print("-------------------------------------------")
+print("1 -> ExamplePrompts/Example1/Prompt.txt")
+print("2 -> ExamplePrompts/Example2/Prompt.txt")
+print("-------------------------------------------")
+print("Default = 1")
+print("")
+PromptChoice = input("> ")
+
+Prompt = ""
+if (PromptChoice == "" or PromptChoice == "1"):
+    Prompt = "ExamplePrompts/Example1/Prompt.txt"
+elif (PromptChoice == "2"):
+    Prompt = "ExamplePrompts/Example2/Prompt.txt"
+
 
 
 # Terrible but effective way to manage the choices
 if (choice == "1"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1/Prompt.txt \
+-Prompt {Prompt} \
 -InitialOutlineModel google/gemini-1.5-flash \
 -ChapterOutlineModel google/gemini-1.5-flash \
 -ChapterS1Model google/gemini-1.5-flash \
@@ -40,11 +60,11 @@ cd .. && ./Write.py \
               ''')
 
 elif (choice == "2"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1/Prompt.txt \
+-Prompt {Prompt} \
 -InitialOutlineModel google/gemini-1.5-flash \
 -ChapterOutlineModel google/gemini-1.5-flash \
 -ChapterS1Model google/gemini-1.5-flash \
@@ -60,11 +80,11 @@ cd .. && ./Write.py \
               ''')
 
 elif (choice == "3"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1/Prompt.txt \
+-Prompt {Prompt} \
 -InitialOutlineModel google/gemini-1.5-pro \
 -ChapterOutlineModel google/gemini-1.5-pro \
 -ChapterS1Model google/gemini-1.5-pro \
@@ -80,11 +100,11 @@ cd .. && ./Write.py \
               ''')
     
 elif (choice == "4"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1/Prompt.txt \
+-Prompt {Prompt} \
 -InitialOutlineModel google/gemini-1.5-pro \
 -ChapterOutlineModel google/gemini-1.5-pro \
 -ChapterS1Model google/gemini-1.5-pro \
@@ -100,11 +120,11 @@ cd .. && ./Write.py \
               ''')
     
 elif (choice == "5"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host localhost:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1/Prompt.txt \
+-Prompt {Prompt} \
 -InitialOutlineModel mistral \
 -ChapterOutlineModel mistral \
 -ChapterS1Model mistral \
@@ -120,7 +140,7 @@ cd .. && ./Write.py \
               ''')
     
 elif (choice == "6"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
@@ -141,11 +161,11 @@ cd .. && ./Write.py \
 ''')
     
 elif (choice == "7"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1/Prompt.txt \
+-Prompt {Prompt} \
 -InitialOutlineModel ollama/datacrystals/miqulitz120b-v2:latest \
 -ChapterOutlineModel ollama/datacrystals/miqulitz120b-v2:latest \
 -ChapterS1Model ollama/datacryatals/miqulitz120b-v2:latest \
@@ -163,11 +183,11 @@ cd .. && ./Write.py \
 ''')
     
 elif (choice == "8"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1/Prompt.txt \
+-Prompt {Prompt} \
 -InitialOutlineModel ollama/datacryatals/midnight-miqu70b-v1.5:latest \
 -ChapterOutlineModel ollama/datacryatals/midnight-miqu70b-v1.5:latest \
 -ChapterS1Model ollama/datacryatals/midnight-miqu70b-v1.5:latest \
@@ -185,11 +205,11 @@ cd .. && ./Write.py \
 
     
 elif (choice == "9"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1/Prompt.txt \
+-Prompt {Prompt} \
 -InitialOutlineModel gemma2:27b \
 -ChapterOutlineModel gemma2:27b \
 -ChapterS1Model gemma2:27b \
