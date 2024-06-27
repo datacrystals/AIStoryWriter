@@ -23,7 +23,7 @@ Please do not include any other text, just the JSON as your response will be par
     Messages = []
     Messages.append(Interface.BuildUserQuery(Prompt))
     Messages = Interface.ChatAndStreamResponse(
-        _Logger, Messages, Writer.Config.EVAL_MODEL
+        _Logger, Messages, Writer.Config.EVAL_MODEL, _Format="json"
     )
     _Logger.Log("Finished Getting ChapterCount JSON", 5)
 
@@ -51,6 +51,6 @@ Please do not include any other text, just the JSON as your response will be par
             Messages.append(Interface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
             Messages = Interface.ChatAndStreamResponse(
-                _Logger, Messages, Writer.Config.EVAL_MODEL
+                _Logger, Messages, Writer.Config.EVAL_MODEL, _Format="json"
             )
             _Logger.Log("Done Asking LLM TO Revise JSON", 6)

@@ -22,7 +22,7 @@ Again, remember to make your response JSON formatted with no extra words. It wil
     Messages = _Messages
     Messages.append(Interface.BuildUserQuery(Prompt))
     Messages = Interface.ChatAndStreamResponse(
-        _Logger, Messages, Writer.Config.INFO_MODEL
+        _Logger, Messages, Writer.Config.INFO_MODEL, _Format="json"
     )
     _Logger.Log("Finished Getting Stats Feedback", 5)
 
@@ -48,6 +48,6 @@ Again, remember to make your response JSON formatted with no extra words. It wil
             Messages.append(Interface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
             Messages = Interface.ChatAndStreamResponse(
-                _Logger, Messages, Writer.Config.INFO_MODEL
+                _Logger, Messages, Writer.Config.INFO_MODEL, _Format="json"
             )
             _Logger.Log("Done Asking LLM TO Revise JSON", 6)
