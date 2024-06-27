@@ -1,6 +1,9 @@
 # import Writer.Config
 
-# import ollama
+
+import inspect
+import ollama
+
 
 
 # def InitClient(_ClientHost:str = "http://10.1.65.4:11434"):
@@ -47,6 +50,20 @@
 #         # Check if it's empty
 #         if not ThisMessage["content"].isspace():
 #             _Messages.append(ThisMessage)
+#             return _Messages
+#         else:
+#             _Logger.Log("Model Returned Only Whitespace, Attempting Regeneration", 6)
+#             _Messages.append(BuildUserQuery("Sorry, but you returned an empty string, please try again!"))
+
+
+        # Check if it's empty
+#         if not ThisMessage["content"].isspace():
+#             _Messages.append(ThisMessage)
+#             CallStack:str = ""
+#             for Frame in inspect.stack()[1:]:
+#                 CallStack += f"{Frame.function}."
+#             CallStack = CallStack[:-1].replace("<module>", "Main")
+#             _Logger.SaveLangchain(CallStack, _Messages)
 #             return _Messages
 #         else:
 #             _Logger.Log("Model Returned Only Whitespace, Attempting Regeneration", 6)

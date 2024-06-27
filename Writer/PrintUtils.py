@@ -1,6 +1,7 @@
 import termcolor
 import datetime
 import os
+import json
 
 
 def PrintMessageHistory(_Messages):
@@ -12,19 +13,55 @@ def PrintMessageHistory(_Messages):
 
 class Logger:
 
-    def __init__(self, _LogfilePrefix="Logs/"):
+    def __init__(self, _LogfilePrefix="Logs"):
 
         # Make Paths For Log
-        try:
-            os.makedirs(_LogfilePrefix)
-        except FileExistsError:
-            pass
+        LogDirPath = _LogfilePrefix + "/Generation_" + datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        os.makedirs(LogDirPath + "/LangchainDebug", exist_ok=True)
 
-        self.LogPath = _LogfilePrefix + "Log_" + datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S') + ".log"
+        # Setup Log Path
+        self.LogDirPrefix = LogDirPath
+        self.LogPath = LogDirPath + "/Main.log"
         self.File = open(self.LogPath, "a")
+        self.LangchainID = 0
 
         self.LogItems = []
 
+
+    # Helper function that saves the entire language chain object as both json and markdown for debugging later
+    def SaveLangchain(self, _LangChainID:str, _LangChain:list):
+
+        # Calculate Filepath For This Langchain
+        ThisLogPathJSON:str = self.LogDirPrefix + f"/LangchainDebug/{_LangChainID}_{self.LangchainID}.json"
+        ThisLogPathMD:str = self.LogDirPrefix + f"/LangchainDebug/{_LangChainID}_{self.LangchainID}.md"
+        LangChainDebugTitle:str = f"{_LangChainID}_{self.LangchainID}"
+        self.LangchainID += 1
+
+        # Generate and Save JSON Version
+        with open(ThisLogPathJSON, "w") as f:
+            f.write(json.dumps(_LangChain, indent=4, sort_keys=True))
+        
+        # Now, Save Markdown Version
+        with open(ThisLogPathMD, "w") as f:
+            MarkdownVersion:str = f"# Debug LangChain {LangChainDebugTitle}\n"
+            for Message in _LangChain:
+                MarkdownVersion += f"\n\n\n## Role: {Message['role']}\n"
+                MarkdownVersion += f"```{Message['content']}```"
+            f.write(MarkdownVersion)
+        
+        self.Log(f"Wrote This Language Chain ({LangChainDebugTitle}) To Debug File {ThisLogPathMD}", 5)
+
+
+    # Saves the given story to disk
+    def SaveStory(self, _StoryContent:str):
+
+        with open(f"{self.LogDirPrefix}/Story.md", "w") as f:
+            f.write(_StoryContent)
+
+        self.Log(f"Wrote Story To Disk At {self.LogDirPrefix}/Story.md", 5)
+
+
+    # Logs an item
     def Log(self, _Item, _Level:int):
 
         # Create Log Entry

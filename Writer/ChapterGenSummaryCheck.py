@@ -44,8 +44,21 @@ Do not include anything in your response except the summary.
     )  # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
     WorkSummary: str = Interface.GetLastMessageText(SummaryLangchain)
 
-    # It might be good to generate a summary of the outline too so that it'll be summary comparing to summary
-    # to be decided though, testing is required
+    # Now Summarize The Outline
+    SummaryLangchain:list = []
+    SummaryLangchain.append(Writer.OllamaInterface.BuildSystemQuery(f"You are a helpful AI Assistant. Answer the user's prompts to the best of your abilities."))
+    SummaryLangchain.append(Writer.OllamaInterface.BuildUserQuery(f"""
+Please summarize the following chapter outline:
+                                                                  
+<OUTLINE>
+{_RefSummary}
+</OUTLINE>
+
+Do not include anything in your response except the summary.
+
+"""))
+    SummaryLangchain = Writer.OllamaInterface.ChatAndStreamResponse(_Client, _Logger, SummaryLangchain, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL) # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
+    OutlineSummary:str = Writer.OllamaInterface.GetLastMessageText(SummaryLangchain)
 
     # Now, generate a comparison JSON value.
     ComparisonLangchain: list = []
@@ -67,14 +80,15 @@ Note that a computer is parsing this JSON so it must be correct.
 </CHAPTER_SUMMARY>
                                                                      
 <OUTLINE>
-{_RefSummary}
+{OutlineSummary}
 </OUTLINE>
 
 Please respond with the following JSON fields:
 
-"DidFollowOutline": true/false
+{{
 "Suggestions": str
-
+"DidFollowOutline": true/false
+}}
 
 Suggestions should include a string containing detailed markdown formatted feedback that will be used to prompt the writer on the next iteration of generation.
 Specify general things that would help the writer remember what to do in the next iteration.
