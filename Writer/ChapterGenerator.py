@@ -433,31 +433,21 @@ Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make
         f"Entering Feedback/Revision Loop (Stage 5) For Chapter {_ChapterNum}/{_TotalChapters}",
         4,
     )
-    FeedbackHistory = []
     WritingHistory = MesssageHistory.copy()
     Rating: int = 0
     Iterations: int = 0
     while True:
         Iterations += 1
-        Feedback, FeedbackHistory = Writer.LLMEditor.GetFeedbackOnChapter(
-            Interface, _Logger, Chapter, _Outline, FeedbackHistory
-        )
-        Rating, FeedbackHistory = Writer.LLMEditor.GetChapterRating(
-            Interface, _Logger, Chapter, FeedbackHistory
-        )
+        Feedback = Writer.LLMEditor.GetFeedbackOnChapter(Interface, _Logger, Chapter, _Outline)
+        Rating = Writer.LLMEditor.GetChapterRating(Interface, _Logger, Chapter)
 
         if Iterations > Writer.Config.CHAPTER_MAX_REVISIONS:
             break
         if (Iterations > Writer.Config.CHAPTER_MIN_REVISIONS) and (Rating == True):
             break
-        Chapter, WritingHistory = ReviseChapter(
-            Interface, _Logger, Chapter, Feedback, WritingHistory
-        )
+        Chapter, WritingHistory = ReviseChapter(Interface, _Logger, Chapter, Feedback, WritingHistory)
 
-    _Logger.Log(
-        f"Quality Standard Met, Exiting Feedback/Revision Loop (Stage 5) For Chapter {_ChapterNum}/{_TotalChapters}",
-        4,
-    )
+    _Logger.Log(f"Quality Standard Met, Exiting Feedback/Revision Loop (Stage 5) For Chapter {_ChapterNum}/{_TotalChapters}", 4)
 
     return Chapter
 
