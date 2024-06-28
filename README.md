@@ -1,5 +1,8 @@
 # AI Story Generatior
 
+Join our [Discord](https://discord.gg/R2SySWDr2s) for support and updates!
+
+
 This project aims to be a LLM-based story generator which produces medium to full-length novels based on a user-provided prompt.
 
 So far, it's a work in progress, as I'm still focusing on getting the bugs worked out and improving the generated output quality.
@@ -9,7 +12,6 @@ Here's what the (mostly up-to-date) process looks like as a block diagram. I'll 
 ![Block Diagram](Docs/BlockDiagram.drawio.svg)
 
 
-Feel free to join our [Discord](https://discord.gg/R2SySWDr2s) to ask any questions you may have or request features!
 
 
 ## Functionality 
