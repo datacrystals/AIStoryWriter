@@ -52,7 +52,7 @@ class Interface:
                                     end="\r",
                                 )
                             else:
-                                print(f"{chunk["status"]} {ProviderModel}", end="\r")
+                                print(f"{chunk['status']} {ProviderModel}", end="\r")
                         print("\n\n\n")
                         OllamaModels.append(ProviderModel)
 
