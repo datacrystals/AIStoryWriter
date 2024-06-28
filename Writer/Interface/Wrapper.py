@@ -30,7 +30,7 @@ class Interface:
                 if Provider == "ollama":
                     # Get ollama models (only once)
                     if OllamaModels is None:
-                        OllamaModelList = ollama.list()
+                        OllamaModelList = ollama.Client(host=Writer.Config.OLLAMA_HOST).list()
                         OllamaModels = [m["name"] for m in OllamaModelList["models"]]
 
                     # check if the model is in the list of models
@@ -38,7 +38,7 @@ class Interface:
                         print(
                             f"Model {ProviderModel} not found in Ollama models. Downloading..."
                         )
-                        OllamaDownloadStream = ollama.pull(ProviderModel, stream=True)
+                        OllamaDownloadStream = ollama.Client(host=Writer.Config.OLLAMA_HOST).pull(ProviderModel, stream=True)
                         for chunk in OllamaDownloadStream:
                             if "completed" in chunk and "total" in chunk:
                                 # {'status': 'pulling 232a79463bc4', 'digest': 'sha256:232a79463bc4bcf9a76b1691a7b7beb9c08f5c3a109fedcebff422d7a71fba71', 'total': 7598928672, 'completed': 1042274720}
