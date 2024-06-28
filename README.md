@@ -2,6 +2,8 @@
 
 Join our [Discord](https://discord.gg/R2SySWDr2s) for support and updates!
 
+---
+
 
 This project aims to be a LLM-based story generator which produces medium to full-length novels based on a user-provided prompt.
 

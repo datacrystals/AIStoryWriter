@@ -25,6 +25,7 @@ print("Chose Prompt:")
 print("-------------------------------------------")
 print("1 -> ExamplePrompts/Example1/Prompt.txt")
 print("2 -> ExamplePrompts/Example2/Prompt.txt")
+print("3 -> Custom Prompt")
 print("-------------------------------------------")
 print("Default = 1")
 print("")
@@ -35,7 +36,8 @@ if (PromptChoice == "" or PromptChoice == "1"):
     Prompt = "ExamplePrompts/Example1/Prompt.txt"
 elif (PromptChoice == "2"):
     Prompt = "ExamplePrompts/Example2/Prompt.txt"
-
+elif (PromptChoice == "3"):
+    Prompt = input("Enter Prompt File Path: ")
 
 
 # Terrible but effective way to manage the choices
