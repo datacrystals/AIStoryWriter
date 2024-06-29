@@ -20,6 +20,7 @@ class Interface:
     ):
         self.Clients: dict = {}
         self.History = []
+        OllamaModels = None
         for Model in Models:
             if Model in self.Clients:
                 continue
@@ -27,6 +28,34 @@ class Interface:
                 Provider, ProviderModel = self.GetModelAndProvider(Model)
                 print(f"DEBUG: Loading Model {ProviderModel} from {Provider}")
                 if Provider == "ollama":
+                    # Get ollama models (only once)
+                    if OllamaModels is None:
+                        OllamaModelList = ollama.Client(host=Writer.Config.OLLAMA_HOST).list()
+                        OllamaModels = [m["name"] for m in OllamaModelList["models"]]
+
+                    # check if the model is in the list of models
+                    if ProviderModel not in OllamaModels:
+                        print(
+                            f"Model {ProviderModel} not found in Ollama models. Downloading..."
+                        )
+                        OllamaDownloadStream = ollama.Client(host=Writer.Config.OLLAMA_HOST).pull(ProviderModel, stream=True)
+                        for chunk in OllamaDownloadStream:
+                            if "completed" in chunk and "total" in chunk:
+                                # {'status': 'pulling 232a79463bc4', 'digest': 'sha256:232a79463bc4bcf9a76b1691a7b7beb9c08f5c3a109fedcebff422d7a71fba71', 'total': 7598928672, 'completed': 1042274720}
+                                OllamaDownloadProgress = (
+                                    chunk["completed"] / chunk["total"]
+                                )
+                                completedSize = chunk["completed"] / 1024**3
+                                totalSize = chunk["total"] / 1024**3
+                                print(
+                                    f"Downloading {ProviderModel}: {OllamaDownloadProgress * 100:.2f}% ({completedSize:.3f}GB/{totalSize:.3f}GB)",
+                                    end="\r",
+                                )
+                            else:
+                                print(f"{chunk['status']} {ProviderModel}", end="\r")
+                        print("\n\n\n")
+                        OllamaModels.append(ProviderModel)
+
                     self.Clients[Model] = ollama.Client(host=Writer.Config.OLLAMA_HOST)
                     print(f"OLLAMA Host is '{Writer.Config.OLLAMA_HOST}'")
 
@@ -55,7 +84,12 @@ class Interface:
                     raise Exception(f"Model Provider {Provider} for {Model} not found")
 
     def ChatAndStreamResponse(
-        self, _Logger, _Messages, _Model: str = "llama3", _SeedOverride: int = -1
+        self,
+        _Logger,
+        _Messages,
+        _Model: str = "llama3",
+        _SeedOverride: int = -1,
+        _Format: str = None,
     ):
         Provider, ProviderModel = self.GetModelAndProvider(_Model)
 
@@ -78,7 +112,8 @@ class Interface:
         AvgCharsPerToken = 5  # estimated average chars per token
         EstimatedTokens = TotalChars / AvgCharsPerToken
         _Logger.Log(
-            f"Using Model '{ProviderModel}' from '{Provider}' | (Est. ~{EstimatedTokens}tok Context Length)", 4
+            f"Using Model '{ProviderModel}' from '{Provider}' | (Est. ~{EstimatedTokens}tok Context Length)",
+            4,
         )
 
         # Log if there's a large estimated tokens of context history
@@ -89,11 +124,13 @@ class Interface:
             )
 
         if Provider == "ollama":
+            if _Format == "json":
+                _Logger.Log("Using Ollama JSON Format", 4)
             Stream = self.Clients[_Model].chat(
                 model=ProviderModel,
                 messages=_Messages,
                 stream=True,
-                options=dict(seed=Seed),
+                options=dict(seed=Seed, format=_Format),
             )
             MaxRetries=3
             while True:
@@ -179,8 +216,7 @@ class Interface:
             )
             return self.ChatAndStreamResponse(_Logger, _Messages, _Model, _SeedOverride)
 
-
-        CallStack:str = ""
+        CallStack: str = ""
         for Frame in inspect.stack()[1:]:
             CallStack += f"{Frame.function}."
         CallStack = CallStack[:-1].replace("<module>", "Main")
@@ -218,10 +254,10 @@ class Interface:
     def GetModelAndProvider(self, _Model: str):
         # Early check for ollama, since sometimes models have username/model
         # so the full path is going to be `ollama/username/model:size`
-        if (_Model.lower().startswith("ollama")):
+        if _Model.lower().startswith("ollama"):
             Model = _Model.replace("ollama/", "")
             return "ollama", Model
-        
+
         # Now do the proper check for other providers
         Provider = _Model.lower().split("/")[0] if "/" in _Model else "ollama"
         Model = _Model.lower().split("/")[1] if "/" in _Model else _Model

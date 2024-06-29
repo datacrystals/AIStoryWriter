@@ -16,7 +16,11 @@ print("6 -> Developer testing script 1, uses many local models, very slow, but d
 print("7 -> Developer testing script 2, miqulitz-120b, one model, llama3:70b editor")
 print("8 -> Developer testing script 3, miqu-70b-1.5, one model, llama3:70b editor")
 print("9 -> Developer testing script 4, gemma2:27b, one model, gemma2:27b editor")
+print("10 -> Developer testing script 4, qwen2:72b, one model, qwen2:72b editor")
 print("-------------------------------------------")
+
+
+# Get Choice
 print("")
 choice = input("> ")
 
@@ -222,6 +226,27 @@ cd .. && ./Write.py \
 -RevisionModel gemma2:27b \
 -EvalModel gemma2:27b \
 -InfoModel gemma2:27b \
+-NoScrubChapters \
+-Debug
+
+''')
+    
+elif (choice == "10"):
+    os.system('''
+cd .. && ./Write.py \
+-Host 10.1.65.4:11434 \
+-Seed 999 \
+-Prompt ExamplePrompts/Example1/Prompt.txt \
+-InitialOutlineModel qwen2:72b \
+-ChapterOutlineModel qwen2:72b \
+-ChapterS1Model qwen2:72b \
+-ChapterS2Model qwen2:72b \
+-ChapterS3Model qwen2:72b \
+-ChapterS4Model qwen2:72b \
+-ChapterRevisionModel qwen2:72b \
+-RevisionModel qwen2:72b \
+-EvalModel qwen2:72b \
+-InfoModel qwen2:72b \
 -NoScrubChapters \
 -Debug
 
