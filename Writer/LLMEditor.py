@@ -65,9 +65,7 @@ Please do not include any other text, just the JSON as your response will be par
     _Logger.Log("Prompting LLM To Get Review JSON", 5)
 
     History.append(Interface.BuildUserQuery(StartingPrompt))
-    History = Interface.ChatAndStreamResponse(
-        _Logger, Messages, Writer.Config.EVAL_MODEL, _Format="json"
-    )
+    History = Interface.ChatAndStreamResponse(_Logger, Writer.Config.EVAL_MODEL, _Format="json")
     _Logger.Log("Finished Getting Review JSON", 5)
 
     Iters: int = 0
@@ -92,10 +90,7 @@ Please do not include any other text, just the JSON as your response will be par
             )
             History.append(Interface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
-            History = Interface.ChatAndStreamResponse(
-                _Logger, History, Writer.Config.EVAL_MODEL, _Format="json
-
-            )
+            History = Interface.ChatAndStreamResponse(_Logger, History, Writer.Config.EVAL_MODEL, _Format="json")
             _Logger.Log("Done Asking LLM TO Revise JSON", 6)
 
 
