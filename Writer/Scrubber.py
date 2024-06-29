@@ -9,10 +9,9 @@ def ScrubNovel(Interface, _Logger, _Chapters: list, _TotalChapters: int):
 
         Prompt: str = f"""
 
-Chapter:
-```
+<CHAPTER>
 {_Chapters[i]}
-```
+</CHAPTER>
 
 Given the above chapter, please clean it up so that it is ready to be published.
 That is, please remove any leftover outlines or editorial comments only leaving behind the finished story.

@@ -7,10 +7,9 @@ import json
 def LLMCountChapters(Interface, _Logger, _Summary):
 
     Prompt = f"""
-Outline:
----
+<OUTLINE>
 {_Summary}
----
+</OUTLINE>
 
 Please provide a JSON formatted response containing the total number of chapters in the above outline.
 

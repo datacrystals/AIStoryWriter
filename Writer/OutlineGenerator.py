@@ -46,35 +46,27 @@ We want to have rich and complex character development!
 
     _Logger.Log(f"Generating Initial Outline", 4)
     Messages = [Interface.BuildUserQuery(Prompt)]
-    Messages = Interface.ChatAndStreamResponse(
-        _Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL
-    )
+    Messages = Interface.ChatAndStreamResponse(_Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL)
     Outline: str = Interface.GetLastMessageText(Messages)
     _Logger.Log(f"Done Generating Initial Outline", 4)
 
     _Logger.Log(f"Entering Feedback/Revision Loop", 3)
-    FeedbackHistory = []
     WritingHistory = Messages
     Rating: int = 0
     Iterations: int = 0
     while True:
         Iterations += 1
-        Feedback, FeedbackHistory = Writer.LLMEditor.GetFeedbackOnOutline(
-            Interface, _Logger, Outline, FeedbackHistory
-        )
-        Rating, FeedbackHistory = Writer.LLMEditor.GetOutlineRating(
-            Interface, _Logger, Outline, FeedbackHistory
-        )
+        Feedback = Writer.LLMEditor.GetFeedbackOnOutline(Interface, _Logger, Outline)
+        Rating = Writer.LLMEditor.GetOutlineRating(Interface, _Logger, Outline)
         # Rating has been changed from a 0-100 int, to does it meet the standards (yes/no)?
+        # Yes it has - the 0-100 int isn't actually good at all, LLM just returned a bunch of junk ratings
 
         if Iterations > Writer.Config.OUTLINE_MAX_REVISIONS:
             break
         if (Iterations > Writer.Config.OUTLINE_MIN_REVISIONS) and (Rating == True):
             break
 
-        Outline, WritingHistory = ReviseOutline(
-            Interface, _Logger, Outline, Feedback, WritingHistory
-        )
+        Outline = ReviseOutline(Interface, _Logger, Outline, Feedback)
 
     _Logger.Log(f"Quality Standard Met, Exiting Feedback/Revision Loop", 4)
 
@@ -92,14 +84,14 @@ def ReviseOutline(Interface, _Logger, _Outline, _Feedback, _History: list = []):
 
     RevisionPrompt: str = f"""
 Please revise the following outline:
-```
+<OUTLINE>
 {_Outline}
-```
+</OUTLINE>
 
 Based on the following feedback:
-```
+<FEEDBACK>
 {_Feedback}
-```
+</FEEDBACK>
 
 Remember to expand upon your outline and add content to make it as best as it can be!
 

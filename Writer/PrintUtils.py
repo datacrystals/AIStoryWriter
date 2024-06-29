@@ -43,10 +43,10 @@ class Logger:
         
         # Now, Save Markdown Version
         with open(ThisLogPathMD, "w") as f:
-            MarkdownVersion:str = f"# Debug LangChain {LangChainDebugTitle}\n"
+            MarkdownVersion:str = f"# Debug LangChain {LangChainDebugTitle}\n**Note: '```' tags have been removed in this version.**\n"
             for Message in _LangChain:
-                MarkdownVersion += f"\n\n\n## Role: {Message['role']}\n"
-                MarkdownVersion += f"```{Message['content']}```"
+                MarkdownVersion += f"\n\n\n# Role: {Message['role']}\n"
+                MarkdownVersion += f"```{Message['content'].replace('```', '')}```"
             f.write(MarkdownVersion)
         
         self.Log(f"Wrote This Language Chain ({LangChainDebugTitle}) To Debug File {ThisLogPathMD}", 5)

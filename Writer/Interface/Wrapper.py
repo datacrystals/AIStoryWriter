@@ -132,8 +132,19 @@ class Interface:
                 stream=True,
                 options=dict(seed=Seed, format=_Format),
             )
-            _Messages.append(self.StreamResponse(Stream, Provider))
-
+            MaxRetries=3
+            while True:
+                try:
+                    _Messages.append(self.StreamResponse(Stream, Provider))
+                    break
+                except Exception as e:
+                    if MaxRetries > 0:
+                        _Logger.Log(f"Exception During Generation '{e}', {MaxRetries} Retries Remaining", 7)
+                        MaxRetries -= 1
+                    else:
+                        _Logger.Log(f"Max Retries Exceeded During Generation, Aborting!", 7)
+                        raise Exception("Generation Failed, Max Retires Exceeded, Aborting")
+            
         elif Provider == "google":
             # replace "content" with "parts" for google
             _Messages = [{"role": m["role"], "parts": m["content"]} for m in _Messages]
@@ -147,18 +158,29 @@ class Interface:
                 if "role" in m and m["role"] == "system":
                     m["role"] = "user"
 
-            Stream = self.Clients[_Model].generate_content(
-                contents=_Messages,
-                stream=True,
-                safety_settings={
-                    HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
-                    HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
-                    HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
-                    HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
-                },
-            )
-            print(f"DEBUG: Using Model {_Model}")
-            _Messages.append(self.StreamResponse(Stream, Provider))
+
+            MaxRetries=3
+            while True:
+                try:
+                    Stream = self.Clients[_Model].generate_content(
+                        contents=_Messages,
+                        stream=True,
+                        safety_settings={
+                            HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+                            HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
+                            HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
+                            HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
+                        },
+                    )
+                    _Messages.append(self.StreamResponse(Stream, Provider))
+                    break
+                except Exception as e:
+                    if MaxRetries > 0:
+                        _Logger.Log(f"Exception During Generation '{e}', {MaxRetries} Retries Remaining", 7)
+                        MaxRetries -= 1
+                    else:
+                        _Logger.Log(f"Max Retries Exceeded During Generation, Aborting!", 7)
+                        raise Exception("Generation Failed, Max Retires Exceeded, Aborting")
 
             # Replace "parts" back to "content" for generalization
             # and replace "model" with "assistant"

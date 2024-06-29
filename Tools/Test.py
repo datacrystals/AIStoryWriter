@@ -2,7 +2,11 @@
 
 import os
 
-print("Developer Testing Utillity.")
+print("Developer Testing Utility.")
+
+# Get Choice For Model
+print("Chose Model: ")
+print("-------------------------------------------")
 print("1 -> Gemini 1.5 flash, llama70b for editing")
 print("2 -> Gemini 1.5 flash, Gemini 1.5 flash for editing")
 print("3 -> Gemini 1.5 pro, Gemini 1.5 flash for editing")
@@ -13,19 +17,40 @@ print("7 -> Developer testing script 2, miqulitz-120b, one model, llama3:70b edi
 print("8 -> Developer testing script 3, miqu-70b-1.5, one model, llama3:70b editor")
 print("9 -> Developer testing script 4, gemma2:27b, one model, gemma2:27b editor")
 print("10 -> Developer testing script 4, qwen2:72b, one model, qwen2:72b editor")
+print("-------------------------------------------")
+
 
 # Get Choice
 print("")
 choice = input("> ")
 
+# Get Choice For Prompt
+print("Chose Prompt:")
+print("-------------------------------------------")
+print("1 -> ExamplePrompts/Example1/Prompt.txt")
+print("2 -> ExamplePrompts/Example2/Prompt.txt")
+print("3 -> Custom Prompt")
+print("-------------------------------------------")
+print("Default = 1")
+print("")
+PromptChoice = input("> ")
+
+Prompt = ""
+if (PromptChoice == "" or PromptChoice == "1"):
+    Prompt = "ExamplePrompts/Example1/Prompt.txt"
+elif (PromptChoice == "2"):
+    Prompt = "ExamplePrompts/Example2/Prompt.txt"
+elif (PromptChoice == "3"):
+    Prompt = input("Enter Prompt File Path: ")
+
 
 # Terrible but effective way to manage the choices
 if (choice == "1"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1/Prompt.txt \
+-Prompt {Prompt} \
 -InitialOutlineModel google/gemini-1.5-flash \
 -ChapterOutlineModel google/gemini-1.5-flash \
 -ChapterS1Model google/gemini-1.5-flash \
@@ -41,11 +66,11 @@ cd .. && ./Write.py \
               ''')
 
 elif (choice == "2"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1/Prompt.txt \
+-Prompt {Prompt} \
 -InitialOutlineModel google/gemini-1.5-flash \
 -ChapterOutlineModel google/gemini-1.5-flash \
 -ChapterS1Model google/gemini-1.5-flash \
@@ -61,11 +86,11 @@ cd .. && ./Write.py \
               ''')
 
 elif (choice == "3"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1/Prompt.txt \
+-Prompt {Prompt} \
 -InitialOutlineModel google/gemini-1.5-pro \
 -ChapterOutlineModel google/gemini-1.5-pro \
 -ChapterS1Model google/gemini-1.5-pro \
@@ -81,11 +106,11 @@ cd .. && ./Write.py \
               ''')
     
 elif (choice == "4"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1/Prompt.txt \
+-Prompt {Prompt} \
 -InitialOutlineModel google/gemini-1.5-pro \
 -ChapterOutlineModel google/gemini-1.5-pro \
 -ChapterS1Model google/gemini-1.5-pro \
@@ -101,11 +126,11 @@ cd .. && ./Write.py \
               ''')
     
 elif (choice == "5"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host localhost:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1/Prompt.txt \
+-Prompt {Prompt} \
 -InitialOutlineModel mistral \
 -ChapterOutlineModel mistral \
 -ChapterS1Model mistral \
@@ -121,18 +146,18 @@ cd .. && ./Write.py \
               ''')
     
 elif (choice == "6"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
 -Prompt Prompts/Genshin/Kaeluc.txt \
--InitialOutlineModel ollama/datacryatals/miqulitz120b-v2:latest \
--ChapterOutlineModel ollama/datacryatals/midnight-rose103b-v2:latest \
--ChapterS1Model ollama/datacryatals/midnight-miqu70b-v1.5:latest \
+-InitialOutlineModel ollama/datacrystals/miqulitz120b-v2:latest \
+-ChapterOutlineModel ollama/datacrystals/midnight-rose103b-v2:latest \
+-ChapterS1Model ollama/datacrystals/midnight-miqu70b-v1.5:latest \
 -ChapterS2Model command-r-plus \
--ChapterS3Model ollama/datacryatals/miqulitz120b-v2:latest \
--ChapterS4Model ollama/datacryatals/midnight-miqu103b-v1:latest \
--ChapterRevisionModel ollama/datacryatals/miqulitz120b-v2:latest \
+-ChapterS3Model ollama/datacrystals/miqulitz120b-v2:latest \
+-ChapterS4Model ollama/datacrystals/midnight-miqu103b-v1:latest \
+-ChapterRevisionModel ollama/datacrystals/miqulitz120b-v2:latest \
 -RevisionModel llama3:70b \
 -EvalModel llama3:70b \
 -InfoModel llama3:70b \
@@ -142,18 +167,18 @@ cd .. && ./Write.py \
 ''')
     
 elif (choice == "7"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1/Prompt.txt \
+-Prompt {Prompt} \
 -InitialOutlineModel ollama/datacrystals/miqulitz120b-v2:latest \
 -ChapterOutlineModel ollama/datacrystals/miqulitz120b-v2:latest \
--ChapterS1Model ollama/datacryatals/miqulitz120b-v2:latest \
--ChapterS2Model ollama/datacryatals/miqulitz120b-v2:latest \
--ChapterS3Model ollama/datacryatals/miqulitz120b-v2:latest \
--ChapterS4Model ollama/datacryatals/miqulitz120b-v2:latest \
--ChapterRevisionModel ollama/datacryatals/miqulitz120b-v2:latest \
+-ChapterS1Model ollama/datacrystals/miqulitz120b-v2:latest \
+-ChapterS2Model ollama/datacrystals/miqulitz120b-v2:latest \
+-ChapterS3Model ollama/datacrystals/miqulitz120b-v2:latest \
+-ChapterS4Model ollama/datacrystals/miqulitz120b-v2:latest \
+-ChapterRevisionModel ollama/datacrystals/miqulitz120b-v2:latest \
 -RevisionModel llama3:70b \
 -EvalModel llama3:70b \
 -InfoModel llama3:70b \
@@ -164,18 +189,18 @@ cd .. && ./Write.py \
 ''')
     
 elif (choice == "8"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1/Prompt.txt \
--InitialOutlineModel ollama/datacryatals/midnight-miqu70b-v1.5:latest \
--ChapterOutlineModel ollama/datacryatals/midnight-miqu70b-v1.5:latest \
--ChapterS1Model ollama/datacryatals/midnight-miqu70b-v1.5:latest \
--ChapterS2Model ollama/datacryatals/midnight-miqu70b-v1.5:latest \
--ChapterS3Model ollama/datacryatals/midnight-miqu70b-v1.5:latest \
--ChapterS4Model ollama/datacryatals/midnight-miqu70b-v1.5:latest \
--ChapterRevisionModel ollama/datacryatals/midnight-miqu70b-v1.5:latest \
+-Prompt {Prompt} \
+-InitialOutlineModel ollama/datacrystals/midnight-miqu70b-v1.5:latest \
+-ChapterOutlineModel ollama/datacrystals/midnight-miqu70b-v1.5:latest \
+-ChapterS1Model ollama/datacrystals/midnight-miqu70b-v1.5:latest \
+-ChapterS2Model ollama/datacrystals/midnight-miqu70b-v1.5:latest \
+-ChapterS3Model ollama/datacrystals/midnight-miqu70b-v1.5:latest \
+-ChapterS4Model ollama/datacrystals/midnight-miqu70b-v1.5:latest \
+-ChapterRevisionModel ollama/datacrystals/midnight-miqu70b-v1.5:latest \
 -RevisionModel llama3:70b \
 -EvalModel llama3:70b \
 -InfoModel llama3:70b \
@@ -186,11 +211,11 @@ cd .. && ./Write.py \
 
     
 elif (choice == "9"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Host 10.1.65.4:11434 \
 -Seed 999 \
--Prompt ExamplePrompts/Example1/Prompt.txt \
+-Prompt {Prompt} \
 -InitialOutlineModel gemma2:27b \
 -ChapterOutlineModel gemma2:27b \
 -ChapterS1Model gemma2:27b \

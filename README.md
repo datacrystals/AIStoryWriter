@@ -1,5 +1,10 @@
 # AI Story Generatior
 
+Join our [Discord](https://discord.gg/R2SySWDr2s) for support and updates!
+
+---
+
+
 This project aims to be a LLM-based story generator which produces medium to full-length novels based on a user-provided prompt.
 
 So far, it's a work in progress, as I'm still focusing on getting the bugs worked out and improving the generated output quality.
@@ -9,7 +14,6 @@ Here's what the (mostly up-to-date) process looks like as a block diagram. I'll 
 ![Block Diagram](Docs/BlockDiagram.drawio.svg)
 
 
-Feel free to join our [Discord](https://discord.gg/R2SySWDr2s) to ask any questions you may have or request features!
 
 
 ## Functionality 
@@ -30,11 +34,17 @@ Here's what the system does well, and what it has limitations doing.
 
 Please check out our examples below! The most recent example outputs will probably be a good representative of the system in it's current state.
 
+### Example 1
 - [Prompt](ExamplePrompts/Example1/Prompt.txt)
 - [Output (2024-06-27 Version)](ExamplePrompts/Example1/Output_2024-06-27.md) 
 - [Output (2024-06-26 Version)](ExamplePrompts/Example1/Output_2024-06-26.md)
 - [Output (2024-06-24 Version)](ExamplePrompts/Example1/Output_2024-06-24.md) (Old!)
 - [Output (2024-06-20 Version)](ExamplePrompts/Example1/Output_2024-06-20.md) (Old!)
+
+### Example 2
+- [Prompt](ExamplePrompts/Example2/Prompt.txt)
+- [Output (2024-06-27 Version) (Gemini 1.5 Pro)](ExamplePrompts/Example2/Output_2024-06-27_Gemini1.5Pro.md) 
+- [Output (2024-06-27 Version) (Gemini 1.5 Flash)](ExamplePrompts/Example2/Output_2024-06-27_Gemini1.5Flash.md) 
 
 I've made some changes since this version, and I'm regenerating the example, so this is a bit outdated.
 
