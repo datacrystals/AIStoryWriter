@@ -48,7 +48,7 @@ def GetChapter(_Client, _Logger, _Story, _Chapter):
     {Story}
     </STORY>
 
-    Only respond with the full story text for chapter {_Chapter} verbatim (not the outline). Do not include anything else in your response.
+    Copy the full chapter text for chapter {_Chapter}.Don't summarize or change any details, just copy the whole thing exactly as it's written.
     
     """))
     Messages = Interface.ChatAndStreamResponse(Logger, Messages, Args.Model)
