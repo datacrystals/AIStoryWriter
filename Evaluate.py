@@ -48,7 +48,9 @@ def GetChapter(_Client, _Logger, _Story, _Chapter):
     {Story}
     </STORY>
 
-    Copy the full chapter text for chapter {_Chapter}.Don't summarize or change any details, just copy the whole thing exactly as it's written.
+    Copy the full chapter text for chapter {_Chapter}. Don't summarize or change any details, just copy the whole thing exactly as it's written.
+
+    This should be several thousand words at least.
     
     """))
     Messages = Interface.ChatAndStreamResponse(Logger, Messages, Args.Model)
@@ -88,7 +90,7 @@ with open(Args.Story, "r") as f:
 ChapterCount = GetNumChapters(Interface, Logger, Story)
 
 Chapters:list = []
-for i in range(ChapterCount):
+for i in range(1, ChapterCount + 1):
     Chapters.append(GetChapter(Interface, Logger, Story, i))
 
 
