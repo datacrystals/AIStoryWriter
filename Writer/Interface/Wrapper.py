@@ -30,15 +30,22 @@ class Interface:
                 if Provider == "ollama":
                     # Get ollama models (only once)
                     if OllamaModels is None:
-                        OllamaModelList = ollama.Client(host=Writer.Config.OLLAMA_HOST).list()
+                        OllamaModelList = ollama.Client(
+                            host=Writer.Config.OLLAMA_HOST
+                        ).list()
                         OllamaModels = [m["name"] for m in OllamaModelList["models"]]
 
                     # check if the model is in the list of models
-                    if ProviderModel not in OllamaModels:
+                    if (
+                        ProviderModel not in OllamaModels
+                        and not ProviderModel + ":latest" in OllamaModels
+                    ):
                         print(
                             f"Model {ProviderModel} not found in Ollama models. Downloading..."
                         )
-                        OllamaDownloadStream = ollama.Client(host=Writer.Config.OLLAMA_HOST).pull(ProviderModel, stream=True)
+                        OllamaDownloadStream = ollama.Client(
+                            host=Writer.Config.OLLAMA_HOST
+                        ).pull(ProviderModel, stream=True)
                         for chunk in OllamaDownloadStream:
                             if "completed" in chunk and "total" in chunk:
                                 # {'status': 'pulling 232a79463bc4', 'digest': 'sha256:232a79463bc4bcf9a76b1691a7b7beb9c08f5c3a109fedcebff422d7a71fba71', 'total': 7598928672, 'completed': 1042274720}
@@ -132,19 +139,26 @@ class Interface:
                 stream=True,
                 options=dict(seed=Seed, format=_Format),
             )
-            MaxRetries=3
+            MaxRetries = 3
             while True:
                 try:
                     _Messages.append(self.StreamResponse(Stream, Provider))
                     break
                 except Exception as e:
                     if MaxRetries > 0:
-                        _Logger.Log(f"Exception During Generation '{e}', {MaxRetries} Retries Remaining", 7)
+                        _Logger.Log(
+                            f"Exception During Generation '{e}', {MaxRetries} Retries Remaining",
+                            7,
+                        )
                         MaxRetries -= 1
                     else:
-                        _Logger.Log(f"Max Retries Exceeded During Generation, Aborting!", 7)
-                        raise Exception("Generation Failed, Max Retires Exceeded, Aborting")
-            
+                        _Logger.Log(
+                            f"Max Retries Exceeded During Generation, Aborting!", 7
+                        )
+                        raise Exception(
+                            "Generation Failed, Max Retires Exceeded, Aborting"
+                        )
+
         elif Provider == "google":
             # replace "content" with "parts" for google
             _Messages = [{"role": m["role"], "parts": m["content"]} for m in _Messages]
@@ -158,8 +172,7 @@ class Interface:
                 if "role" in m and m["role"] == "system":
                     m["role"] = "user"
 
-
-            MaxRetries=3
+            MaxRetries = 3
             while True:
                 try:
                     Stream = self.Clients[_Model].generate_content(
@@ -176,11 +189,18 @@ class Interface:
                     break
                 except Exception as e:
                     if MaxRetries > 0:
-                        _Logger.Log(f"Exception During Generation '{e}', {MaxRetries} Retries Remaining", 7)
+                        _Logger.Log(
+                            f"Exception During Generation '{e}', {MaxRetries} Retries Remaining",
+                            7,
+                        )
                         MaxRetries -= 1
                     else:
-                        _Logger.Log(f"Max Retries Exceeded During Generation, Aborting!", 7)
-                        raise Exception("Generation Failed, Max Retires Exceeded, Aborting")
+                        _Logger.Log(
+                            f"Max Retries Exceeded During Generation, Aborting!", 7
+                        )
+                        raise Exception(
+                            "Generation Failed, Max Retires Exceeded, Aborting"
+                        )
 
             # Replace "parts" back to "content" for generalization
             # and replace "model" with "assistant"
