@@ -1,4 +1,5 @@
 import Writer.Config
+import Writer.Prompts
 
 import re
 import json
@@ -6,17 +7,7 @@ import json
 
 def LLMCountChapters(Interface, _Logger, _Summary):
 
-    Prompt = f"""
-<OUTLINE>
-{_Summary}
-</OUTLINE>
-
-Please provide a JSON formatted response containing the total number of chapters in the above outline.
-
-Respond with {{"TotalChapters": <total chapter count>}}
-Please do not include any other text, just the JSON as your response will be parsed by a computer.
-
-"""
+    Prompt = Writer.Prompts.CHAPTER_COUNT_PROMPT.format(_Summary=_Summary)
 
     _Logger.Log("Prompting LLM To Get ChapterCount JSON", 5)
     Messages = []

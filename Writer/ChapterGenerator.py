@@ -4,6 +4,7 @@ import Writer.LLMEditor
 import Writer.PrintUtils
 import Writer.Config
 import Writer.ChapterGenSummaryCheck
+import Writer.Prompts
 
 
 def GenerateChapter(
@@ -24,7 +25,9 @@ def GenerateChapter(
     MesssageHistory: list = []
     MesssageHistory.append(
         Interface.BuildSystemQuery(
-            f"You are a great fiction writer, and you're working on a great new story. You're working on a new novel, and you want to produce a quality output. Here is your outline: \n<OUTLINE>\n{_Outline}\n</OUTLINE>"
+            Writer.Prompts.CHAPTER_GENERATION_INTRO.format(
+                _ChapterNum=_ChapterNum, _TotalChapters=_TotalChapters
+            )
         )
     )
 
@@ -36,21 +39,10 @@ def GenerateChapter(
         for Chapter in _Chapters:
             ChapterSuperlist += f"{Chapter}\n"
 
-        ContextHistoryInsert += f"""
-Please help me write my novel.
+        ContextHistoryInsert += Writer.Prompts.CHAPTER_HISTORY_INSERT.format(
+            _Outline=_Outline, ChapterSuperlist=ChapterSuperlist
+        )
 
-I'm basing my work on this outline:
-
-<OUTLINE>
-{_Outline}
-</OUTLINE>
-
-And here is what I've written so far:
-<PREVIOUS_CHAPTERS>
-{ChapterSuperlist}
-</PREVIOUS_CHAPTERS>
-
-"""
     #
     # MesssageHistory.append(Interface.BuildUserQuery(f"""
     # Here is the novel so far.
@@ -63,21 +55,13 @@ And here is what I've written so far:
     ThisChapterOutline: str = ""
     ChapterSegmentMessages = []
     ChapterSegmentMessages.append(
-        Interface.BuildSystemQuery(
-            f"You are a helpful AI Assistant. Answer the user's prompts to the best of your abilities."
-        )
+        Interface.BuildSystemQuery(Writer.Prompts.CHAPTER_GENERATION_INTRO)
     )
     ChapterSegmentMessages.append(
         Interface.BuildUserQuery(
-            f"""
-Please help me extract the part of this outline that is just for chapter {_ChapterNum}.
-
-<OUTLINE>
-{_Outline}
-</OUTLINE>
-
-Do not include anything else in your response except just the content for chapter {_ChapterNum}.
-"""
+            Writer.Prompts.CHAPTER_GENERATION_PROMPT.format(
+                _Outline=_Outline, _ChapterNum=_ChapterNum
+            )
         )
     )
     ChapterSegmentMessages = Interface.ChatAndStreamResponse(
@@ -94,51 +78,16 @@ Do not include anything else in your response except just the content for chapte
         _Logger.Log(f"Creating Summary Of Last Chapter Info", 3)
         ChapterSummaryMessages = []
         ChapterSummaryMessages.append(
-            Interface.BuildSystemQuery(
-                f"You are a helpful AI Assistant. Answer the user's prompts to the best of your abilities."
-            )
+            Interface.BuildSystemQuery(Writer.Prompts.CHAPTER_SUMMARY_INTRO)
         )
         ChapterSummaryMessages.append(
             Interface.BuildUserQuery(
-                f"""
-I'm writing the next chapter in my novel (chapter {_ChapterNum}), and I have the following written so far.
-
-My outline:
-<OUTLINE>
-{_Outline}
-</OUTLINE>
-
-And what I've written in the last chapter:
-<PREVIOUS_CHAPTER>
-{_Chapters[-1]}
-</PREVIOUS_CHAPTER>
-
-Please create a list of important summary points from the last chapter so that I know what to keep in mind as I write this chapter.
-Also make sure to add a summary of the previous chapter, and focus on noting down any important plot points, and the state of the story as the chapter ends.
-That way, when I'm writing, I'll know where to pick up again.
-
-Here's some formatting guidelines:
-
-```
-Previous Chapter:
-    - Plot:
-        - Your bullet point summary here with as much detail as needed
-    - Setting:
-        - some stuff here
-    - Characters:
-        - character 1
-            - info about them, from that chapter
-            - if they changed, how so
-
-Things to keep in Mind:
-    - something that the previous chapter did to advance the plot, so we incorporate it into the next chapter
-    - something else that is important to remember when writing the next chapter
-    - another thing
-    - etc.
-```
-
-Thank you for helping me write my story! Please only include your summary and things to keep in mind, don't write anything else.
-    """
+                Writer.Prompts.CHAPTER_SUMMARY_PROMPT.format(
+                    _ChapterNum=_ChapterNum,
+                    _TotalChapters=_TotalChapters,
+                    _Outline=_Outline,
+                    _LastChapter=_Chapters[-1],
+                )
             )
         )
         ChapterSummaryMessages = Interface.ChatAndStreamResponse(
@@ -162,29 +111,14 @@ Thank you for helping me write my story! Please only include your summary and th
     IterCounter: int = 0
     Feedback: str = ""
     while True:
-        Prompt = f"""
-{ContextHistoryInsert}
-
-Please write the plot for chapter {_ChapterNum} of {_TotalChapters} based on the following chapter outline and any previous chapters.
-Pay attention to the previous chapters, and make sure you both continue seamlessly from them, It's imperative that your writing connects well with the previous chapter, and flows into the next (so try to follow the outline)!
-
-Here is my outline for this chapter:
-<CHAPTER_OUTLINE>
-{ThisChapterOutline}
-</CHAPTER_OUTLINE>
-
-{FormattedLastChapterSummary}
-
-As you write your work, please use the following suggestions to help you write chapter {_ChapterNum} (make sure you only write this one):
-    - Pacing: 
-    - Are you skipping days at a time? Summarizing events? Don't do that, add scenes to detail them.
-    - Is the story rushing over certain plot points and excessively focusing on others?
-    - Flow: Does each chapter flow into the next? Does the plot make logical sense to the reader? Does it have a specific narrative structure at play? Is the narrative structure consistent throughout the story?
-    - Genre: What is the genre? What language is appropriate for that genre? Do the scenes support the genre?
-
-{Feedback}
-
-    """
+        Prompt = Writer.Prompts.CHAPTER_GENERATION_STAGE1.format(
+            ContextHistoryInsert=ContextHistoryInsert,
+            _ChapterNum=_ChapterNum,
+            _TotalChapters=_TotalChapters,
+            ThisChapterOutline=ThisChapterOutline,
+            FormattedLastChapterSummary=FormattedLastChapterSummary,
+            Feedback=Feedback,
+        )
 
         # Generate Initial Chapter
         _Logger.Log(
@@ -228,42 +162,15 @@ As you write your work, please use the following suggestions to help you write c
     IterCounter: int = 0
     Feedback: str = ""
     while True:
-        Prompt = f"""
-{ContextHistoryInsert}
-
-
-Please write character development for the following chapter {_ChapterNum} of {_TotalChapters} based on the following criteria and any previous chapters.
-Pay attention to the previous chapters, and make sure you both continue seamlessly from them, It's imperative that your writing connects well with the previous chapter, and flows into the next (so try to follow the outline)!
-
-Don't take away content, instead expand upon it to make a longer and more detailed output.
-
-For your reference, here is my outline for this chapter:
-<CHAPTER_OUTLINE>
-{ThisChapterOutline}
-</CHAPTER_OUTLINE>
-
-{FormattedLastChapterSummary}
-
-And here is what I have for the current chapter's plot:
-<CHAPTER_PLOT>
-{Stage1Chapter}
-</CHAPTER_PLOT>
-
-As a reminder to keep the following criteria in mind as you expand upon the above work:
-    - Characters: Who are the characters in this chapter? What do they mean to each other? What is the situation between them? Is it a conflict? Is there tension? Is there a reason that the characters have been brought together?
-    - Development: What are the goals of each character, and do they meet those goals? Do the characters change and exhibit growth? Do the goals of each character change over the story?
-    - Details: How are things described? Is it repetitive? Is the word choice appropriate for the scene? Are we describing things too much or too little?
-
-Don't answer these questions directly, instead make your writing implicitly answer them. (Show, don't tell)
-
-Make sure that your chapter flows into the next and from the previous (if applicable).
-
-Remember, have fun, be creative, and improve the character development of chapter {_ChapterNum} (make sure you only write this one)!
-
-{Feedback}
-
-
-"""
+        Prompt = Writer.Prompts.CHAPTER_GENERATION_STAGE2.format(
+            ContextHistoryInsert=ContextHistoryInsert,
+            _ChapterNum=_ChapterNum,
+            _TotalChapters=_TotalChapters,
+            ThisChapterOutline=ThisChapterOutline,
+            FormattedLastChapterSummary=FormattedLastChapterSummary,
+            Stage1Chapter=Stage1Chapter,
+            Feedback=Feedback,
+        )
 
         # Generate Initial Chapter
         _Logger.Log(
@@ -307,43 +214,15 @@ Remember, have fun, be creative, and improve the character development of chapte
     IterCounter: int = 0
     Feedback: str = ""
     while True:
-        Prompt = f"""
-{ContextHistoryInsert}
-
-
-Please add dialogue the following chapter {_ChapterNum} of {_TotalChapters} based on the following criteria and any previous chapters.
-Pay attention to the previous chapters, and make sure you both continue seamlessly from them, It's imperative that your writing connects well with the previous chapter, and flows into the next (so try to follow the outline)!
-
-Don't take away content, instead expand upon it to make a longer and more detailed output.
-
-
-{FormattedLastChapterSummary}
-
-Here's what I have so far for this chapter:
-<CHAPTER_CONTENT>
-{Stage2Chapter}
-</CHAPTER_CONTENT
-
-As a reminder to keep the following criteria in mind:
-    - Dialogue: Does the dialogue make sense? Is it appropriate given the situation? Does the pacing make sense for the scene E.g: (Is it fast-paced because they're running, or slow-paced because they're having a romantic dinner)? 
-    - Disruptions: If the flow of dialogue is disrupted, what is the reason for that disruption? Is it a sense of urgency? What is causing the disruption? How does it affect the dialogue moving forwards? 
-     - Pacing: 
-       - Are you skipping days at a time? Summarizing events? Don't do that, add scenes to detail them.
-       - Is the story rushing over certain plot points and excessively focusing on others?
-    
-Don't answer these questions directly, instead make your writing implicitly answer them. (Show, don't tell)
-
-Make sure that your chapter flows into the next and from the previous (if applicable).
-
-Also, please remove any headings from the outline that may still be present in the chapter.
-
-Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make sure you only write this one)!
-
-{Feedback}
-
-
-"""
-
+        Prompt = Writer.Prompts.CHAPTER_GENERATION_STAGE3.format(
+            ContextHistoryInsert=ContextHistoryInsert,
+            _ChapterNum=_ChapterNum,
+            _TotalChapters=_TotalChapters,
+            ThisChapterOutline=ThisChapterOutline,
+            FormattedLastChapterSummary=FormattedLastChapterSummary,
+            Stage2Chapter=Stage2Chapter,
+            Feedback=Feedback,
+        )
         # Generate Initial Chapter
         _Logger.Log(
             f"Generating Initial Chapter (Stage 3: Dialogue) {_ChapterNum}/{_TotalChapters} (Iteration {IterCounter})",
@@ -381,38 +260,15 @@ Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make
             )
             break
 
-    #     #### STAGE 4: Final-Pre-Revision Edit Pass
-    #     Prompt = f"""
-    # Please provide a final edit the following chapter based on the following criteria and any previous chapters.
-    # Do not summarize any previous chapters, make your chapter connect seamlessly with previous ones.
-
-    # Don't take away content, instead expand upon it to make a longer and more detailed output.
-
-    # For your reference, here is the outline:
-    # ```
-    # {_Outline}
-    # ```
-
-    # And here is the chapter to tweak and improve:
-    # ```
-    # {Stage3Chapter}
-    # ```
-
-    # As a reminder to keep the following criteria in mind:
-    #     - Pacing:
-    #       - Are you skipping days at a time? Summarizing events? Don't do that, add scenes to detail them.
-    #       - Is the story rushing over certain plot points and excessively focusing on others?
-    #     - Characters
-    #     - Flow
-    #     - Details: Is the output too flowery?
-    #     - Dialogue
-    #     - Development: Is there a clear development from scene to scene, chapter to chapter?
-    #     - Genre
-    #     - Disruptions/conflict
-
-    # Remember to remove any author notes or non-chapter text, as this is the version that will be published.
-
-    # """
+        #     #### STAGE 4: Final-Pre-Revision Edit Pass
+        # Prompt = Writer.Prompts.CHAPTER_GENERATION_STAGE4.format(
+        #    ContextHistoryInsert=ContextHistoryInsert,
+        #     _ChapterNum=_ChapterNum,
+        #     _TotalChapters=_TotalChapters,
+        #     _Outline=_Outline,
+        #     Stage3Chapter=Stage3Chapter,
+        #     Feedback=Feedback,
+        # )
 
     #     # Generate Initial Chapter
     #     _Logger.Log(f"Generating Initial Chapter (Stage 4: Final Pass) {_ChapterNum}/{_TotalChapters}", 5)
@@ -438,37 +294,32 @@ Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make
     Iterations: int = 0
     while True:
         Iterations += 1
-        Feedback = Writer.LLMEditor.GetFeedbackOnChapter(Interface, _Logger, Chapter, _Outline)
+        Feedback = Writer.LLMEditor.GetFeedbackOnChapter(
+            Interface, _Logger, Chapter, _Outline
+        )
         Rating = Writer.LLMEditor.GetChapterRating(Interface, _Logger, Chapter)
 
         if Iterations > Writer.Config.CHAPTER_MAX_REVISIONS:
             break
         if (Iterations > Writer.Config.CHAPTER_MIN_REVISIONS) and (Rating == True):
             break
-        Chapter, WritingHistory = ReviseChapter(Interface, _Logger, Chapter, Feedback, WritingHistory)
+        Chapter, WritingHistory = ReviseChapter(
+            Interface, _Logger, Chapter, Feedback, WritingHistory
+        )
 
-    _Logger.Log(f"Quality Standard Met, Exiting Feedback/Revision Loop (Stage 5) For Chapter {_ChapterNum}/{_TotalChapters}", 4)
+    _Logger.Log(
+        f"Quality Standard Met, Exiting Feedback/Revision Loop (Stage 5) For Chapter {_ChapterNum}/{_TotalChapters}",
+        4,
+    )
 
     return Chapter
 
 
 def ReviseChapter(Interface, _Logger, _Chapter, _Feedback, _History: list = []):
 
-    RevisionPrompt = f"""
-Please revise the following chapter:
-
-<CHAPTER_CONTENT>
-{_Chapter}
-</CHAPTER_CONTENT>
-
-Based on the following feedback:
-<FEEDBACK>
-{_Feedback}
-</FEEDBACK>
-Do not reflect on the revisions, just write the improved chapter that addresses the feedback and prompt criteria.  
-Remember not to include any author notes.  
-
-"""
+    RevisionPrompt = Writer.Prompts.CHAPTER_REVISION.format(
+        _Chapter=_Chapter, _Feedback=_Feedback
+    )
 
     _Logger.Log("Revising Chapter", 5)
     Messages = _History
