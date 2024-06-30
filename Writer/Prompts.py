@@ -311,7 +311,7 @@ Give a JSON formatted response, containing the string \"IsComplete\", followed b
 Please do not include any other text, just the JSON as your response will be parsed by a computer.
 """
 
-JSON_PARSE_ERROR = "Please revise your JSON. It encountered the following error during parsing: {E}. Remember that your entire response is plugged directly into a JSON parser, so don't write **anything** except pure json."
+JSON_PARSE_ERROR = "Please revise your JSON. It encountered the following error during parsing: {_Error}. Remember that your entire response is plugged directly into a JSON parser, so don't write **anything** except pure json."
 
 CRITIC_CHAPTER_INTRO = "You are a helpful AI Assistant. Answer the user's prompts to the best of your abilities."
 CRITIC_CHAPTER_PROMPT = """<CHAPTER>
