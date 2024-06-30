@@ -1,4 +1,5 @@
 import Writer.PrintUtils
+import Writer.Prompts
 
 
 def ScrubNovel(Interface, _Logger, _Chapters: list, _TotalChapters: int):
@@ -7,17 +8,9 @@ def ScrubNovel(Interface, _Logger, _Chapters: list, _TotalChapters: int):
 
     for i in range(_TotalChapters):
 
-        Prompt: str = f"""
-
-<CHAPTER>
-{_Chapters[i]}
-</CHAPTER>
-
-Given the above chapter, please clean it up so that it is ready to be published.
-That is, please remove any leftover outlines or editorial comments only leaving behind the finished story.
-
-Do not comment on your task, as your output will be the final print version.
-"""
+        Prompt: str = Writer.Prompts.CHAPTER_SCRUB_PROMPT.format(
+            _Chapter=EditedChapters[i]
+        )
         _Logger.Log(f"Prompting LLM To Perform Chapter {i+1} Scrubbing Edit", 5)
         Messages = []
         Messages.append(Interface.BuildUserQuery(Prompt))

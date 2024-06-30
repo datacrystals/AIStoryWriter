@@ -1,5 +1,7 @@
 import Writer.PrintUtils
 import Writer.Config
+import Writer.Prompts
+
 
 def EditNovel(Interface, _Logger, _Chapters: list, _Outline: str, _TotalChapters: int):
 
@@ -11,17 +13,10 @@ def EditNovel(Interface, _Logger, _Chapters: list, _Outline: str, _TotalChapters
         for Chapter in EditedChapters:
             NovelText += Chapter
 
-        Prompt: str = f"""
-<OUTLINE>
-{_Outline}
-</OUTLINE>
+        Prompt: str = Writer.Prompts.CHAPTER_EDIT_PROMPT.format(
+            _Chapter=EditedChapters[i], NovelText=NovelText, i=i
+        )
 
-<NOVEL>
-{NovelText}
-</NOVEL
-
-Given the above novel and outline, please edit chapter {i} so that it fits together with the rest of the story.
-"""
         _Logger.Log(
             f"Prompting LLM To Perform Chapter {i} Second Pass In-Place Edit", 5
         )
