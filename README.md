@@ -37,8 +37,6 @@ That's it! The system will automatically download any required models and start 
 
 ## 💻 Hardware Recommendations
 
-## 💻 Hardware Recommendations
-
 Not sure which models to use with your GPU? Check out our [Model Recommendations](Docs/Models.md) page for suggestions based on different GPU capabilities. We provide a quick reference table to help you choose the right models for your hardware, ensuring optimal performance and quality for your story generation projects.
 
 ## 🧰 Architecture Overview
