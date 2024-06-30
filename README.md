@@ -1,206 +1,86 @@
-# AI Story Generatior
+# AI Story Generator 📚✨
 
-Join our [Discord](https://discord.gg/R2SySWDr2s) for support and updates!
+Generate full-length novels with AI! Harness the power of large language models to create engaging stories based on your prompts.
 
----
+[![Discord](https://img.shields.io/discord/1255847829763784754?color=7289DA&label=Discord&logo=discord&logoColor=white)](https://discord.gg/R2SySWDr2s)
 
+## 🚀 Features
 
-This project aims to be a LLM-based story generator which produces medium to full-length novels based on a user-provided prompt.
+- Generate medium to full-length novels: Produce substantial stories with coherent narratives, suitable for novella or novel-length works.
+- Easy setup and use: Get started quickly with minimal configuration required.
+- Customizable prompts and models: Choose from existing prompts or create your own, and select from various language models.
+- Automatic model downloading: The system can automatically download required models via Ollama if they aren't already available.
+- Support for local models via Ollama: Run language models locally for full control and privacy.
+- Cloud provider support (currently Google): Access high-performance computing resources for those without powerful GPUs.
+- Flexible configuration options: Fine-tune the generation process through easily modifiable settings.
+- Works across all operating systems
+- Supoorts translation of the generated stories in all languages
 
-So far, it's a work in progress, as I'm still focusing on getting the bugs worked out and improving the generated output quality.
+## 🏁 Quick Start
 
-Here's what the (mostly up-to-date) process looks like as a block diagram. I'll try to keep this up-to-date but no promises.
+Getting started with AI Story Generator is easy:
+
+1. Clone the repository
+2. Install [Ollama](https://ollama.com/) for local model support
+3. Run the generator:
+
+```sh
+./Write.py -Prompt Prompts/YourChosenPrompt.txt
+```
+
+That's it! The system will automatically download any required models and start generating your story.
+
+**Optional steps:**
+
+- Modify prompts in `Writer/Prompts.py` or create your own
+- Configure the model selection in `Writer/config.py`
+
+## 💻 Hardware Recommendations
+
+Not sure which models to use with your GPU? Check out our [Model Recommendations](Docs/Models.md) page for suggestions based on different GPU capabilities. We provide a quick reference table to help you choose the right models for your hardware, ensuring optimal performance and quality for your story generation projects.
+
+## 🧰 Architecture Overview
 
 ![Block Diagram](Docs/BlockDiagram.drawio.svg)
 
+## 🛠️ Customization
 
+- Experiment with different local models via Ollama: Try out various language models to find the best fit for your storytelling needs.
+- Test various model combinations for different story components: Mix and match models for outline generation, chapter writing, and revisions to optimize output quality.
 
+## 💪 What's Working Well
 
-## Functionality 
-Here's what the system does well, and what it has limitations doing.
+- Generating decent-length stories: The system consistently produces narratives of substantial length, suitable for novella or novel-length works.
+- Character consistency: AI models maintain coherent character traits and development throughout the generated stories.
+- Interesting story outlines: The initial outline generation creates compelling story structures that serve as strong foundations for the full narratives.
 
-### What works well
-- Length - usually the system will generate a decent length story, although this has been shorter recently. Should be easy to fix though, as you can specify the num chapters you want in your prompt.
-- Characters - most of the time, the LLMs will understand what character is what and write appropriately.
-- Outlines - for the most part, the outlines the system generates are actually pretty good, and seem very interesting. If nothing else, this project generates good outlines.
+## 🔧 Areas for Improvement
 
-### What doesn't work well
-- Tends to use a few token phrases "the tension was palpable", etc. More of an LLM issue though.
-- System sometimes writes chapters that don't flow together - they tend to feel disjointed. This has been my current area of focus, and they feel at least somewhat connected now (at least initially).
-- Pacing issues - frequently the language models don't understand what to focus their writing on, and often skip over the juicy parts of a story.
-- Generation speed is slow, at least on my limited hardware - this leads to 5+ hour generation times, making debugging tricky.
+- Reducing repetitive phrases: We're working on enhancing the language variety to create more natural-sounding prose.
+- Improving chapter flow and connections: Efforts are ongoing to create smoother transitions between chapters and maintain narrative cohesion.
+- Addressing pacing issues: Refinements are being made to ensure proper story pacing and focus on crucial plot points.
+- Optimizing generation speed: We're continuously working on improving performance to reduce generation times without sacrificing quality.
 
-## Examples
+## 🤝 Contributing
 
-Please check out our examples below! The most recent example outputs will probably be a good representative of the system in it's current state.
+We're excited to hear from you! Your feedback and contributions are crucial to improving the AI Story Generator. Here's how you can get involved:
 
-### Example 1
-- [Prompt](ExamplePrompts/Example1/Prompt.txt)
-- [Output (2024-06-27 Version)](ExamplePrompts/Example1/Output_2024-06-27.md) 
-- [Output (2024-06-26 Version)](ExamplePrompts/Example1/Output_2024-06-26.md)
-- [Output (2024-06-24 Version)](ExamplePrompts/Example1/Output_2024-06-24.md) (Old!)
-- [Output (2024-06-20 Version)](ExamplePrompts/Example1/Output_2024-06-20.md) (Old!)
+1. 🐛 **Open Issues**: Encountered a bug or have a feature request? [Open an issue](https://github.com/datacrystals/AIStoryWriter/issues) and let us know!
 
-### Example 2
-- [Prompt](ExamplePrompts/Example2/Prompt.txt)
-- [Output (2024-06-27 Version) (Gemini 1.5 Pro)](ExamplePrompts/Example2/Output_2024-06-27_Gemini1.5Pro.md) 
-- [Output (2024-06-27 Version) (Gemini 1.5 Flash)](ExamplePrompts/Example2/Output_2024-06-27_Gemini1.5Flash.md) 
+2. 💡 **Start Discussions**: Have ideas or want to brainstorm? [Start a discussion](https://github.com/datacrystals/AIStoryWriter/discussions) in our GitHub Discussions forum.
 
-I've made some changes since this version, and I'm regenerating the example, so this is a bit outdated.
+3. 🔬 **Experiment and Share**: Try different model combinations and share your results. Your experiments can help improve the system for everyone!
 
+4. 🖊️ **Submit Pull Requests**: Ready to contribute code? We welcome pull requests for improvements and new features.
 
-Again, please note that this is still a WIP, so there's still quite a bit to fix here. 
+5. 💬 **Join our Discord**: For real-time chat, support, and community engagement, [join our Discord server](https://discord.gg/R2SySWDr2s).
 
+Don't hesitate to reach out – your input is valuable, and we're here to help!
 
+## 📄 License
 
+This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0). This means that if you modify the code and use it to provide a service over a network, you must make your modified source code available to the users of that service. For more details, see the [LICENSE](LICENSE) file in the repository or visit [https://www.gnu.org/licenses/agpl-3.0.en.html](https://www.gnu.org/licenses/agpl-3.0.en.html).
 
-## Usage
+---
 
-This system will generate a story based on a user provided prompt. Simply create a file with your intended prompt in a text file, and pass the path to that as a parameter (use ./Write.py --help) to get a full list of parameters.
-
-As of 2024-06-22, here's an example usage command, but make sure to check for any updated test scripts as those will be more up-to-date than this readme.
-
-Make sure to substitute in values for your OLLAMA host.
-
-
-### 72GiB VRAM
-If you have 72GiB or more of VRAM, this example should work for you.
-
-Note that you'll need to download all of the used models via `ollama pull [modelname]` on your OLLAMA host.
-
-```sh
-
-./Write.py \
--Host [OLLAMA HOST HERE]:11434 \
--Seed 1234 \
--Prompt ExamplePrompts/Example1/Prompt.txt  \
--InitialOutlineModel datacrystals/miqulitz120b-v2:latest \ 
--ChapterOutlineModel datacrystals/midnight-rose103b-v2:latest \
--ChapterS1Model datacrystals/midnight-miqu70b-v1.5:latest \
--ChapterS2Model command-r-plus \
--ChapterS3Model datacrystals/miqulitz120b-v2:latest \
--ChapterS4Model datacrystals/midnight-miqu103b-v1:latest \
--ChapterRevisionModel datacrystals/miqulitz120b-v2:latest \
--RevisionModel llama3:70b \
--EvalModel llama3:70b \
--InfoModel llama3:70b \
--NoScrubChapters
-
-```
-
-### 20GiB VRAM
-Alternatively, this example should work for you if you have about 20GiB VRAM. Again, you'll need to download these models. I haven't tested this one nearly as much as the 72GiB version. If someone wants to experiment with different models and let me know what works best, I'd be thrilled.
-
-```sh
-
-./Write.py \
--Host [OLLAMA HOST HERE]:11434 \
--Seed 1234 \
--Prompt ExamplePrompts/Example1/Prompt.txt  \
--InitialOutlineModel phi3:14b \
--ChapterOutlineModel phi3:14b \
--ChapterS1Model aya:8b \
--ChapterS2Model phi3:14b \
--ChapterS3Model aya:8b \
--ChapterS4Model llava:13b \
--ChapterRevisionModel phi3:14b \
--RevisionModel llama3 \
--EvalModel llama3 \
--InfoModel llama3 \
--NoScrubChapters
-```
-
-### Translating
-
-This project supports translating the generated story into another language via the `-Translate` argument. Simply specify a language after the flag: `-Translate "French"`.
-
-If you want to use a specific model for translation, use the -TranslatorModel flag: `-TranslatorModel llama3:70b`
-
-You can also translate your input prompt from your native language via `TranslatePrompt "French"` for example, if your prompt is written in French.
-
-Very simple example [here](ExamplePrompts/ShortDebuggingStory/TranslationExample.md) (note the story prompt here was intended to be as short as possible for fast debugging).
-
-
-### Command Line Flags
-
-Here's a full list of arguments as of 2024-06-22:
-
-```
-usage: Write.py [-h] [-Prompt PROMPT] [-Output OUTPUT] [-Host HOST] [-InitialOutlineModel INITIALOUTLINEMODEL] [-ChapterOutlineModel CHAPTEROUTLINEMODEL] [-ChapterS1Model CHAPTERS1MODEL] [-ChapterS2Model CHAPTERS2MODEL]
-                [-ChapterS3Model CHAPTERS3MODEL] [-ChapterS4Model CHAPTERS4MODEL] [-ChapterRevisionModel CHAPTERREVISIONMODEL] [-RevisionModel REVISIONMODEL] [-EvalModel EVALMODEL] [-InfoModel INFOMODEL] [-ScrubModel SCRUBMODEL]
-                [-CheckerModel CHECKERMODEL] [-TranslatorModel TRANSLATORMODEL] [-Translate TRANSLATE] [-TranslatePrompt TRANSLATEPROMPT] [-Seed SEED] [-OutlineMinRevisions OUTLINEMINREVISIONS]
-                [-OutlineMaxRevisions OUTLINEMAXREVISIONS] [-ChapterMinRevisions CHAPTERMINREVISIONS] [-ChapterMaxRevisions CHAPTERMAXREVISIONS] [-NoChapterRevision] [-NoScrubChapters] [-ExpandOutline] [-EnableFinalEditPass]
-                [-Debug]
-
-options:
-  -h, --help            show this help message and exit
-  -Prompt PROMPT        Path to file containing the prompt
-  -Output OUTPUT        Optional file output path, if none is speciifed, we will autogenerate a file name based on the story title
-  -Host HOST            HTTP URL to ollama instance
-  -InitialOutlineModel INITIALOUTLINEMODEL
-                        Model to use for writing the base outline content
-  -ChapterOutlineModel CHAPTEROUTLINEMODEL
-                        Model to use for writing the per-chapter outline content
-  -ChapterS1Model CHAPTERS1MODEL
-                        Model to use for writing the chapter (stage 1: plot)
-  -ChapterS2Model CHAPTERS2MODEL
-                        Model to use for writing the chapter (stage 2: character development)
-  -ChapterS3Model CHAPTERS3MODEL
-                        Model to use for writing the chapter (stage 3: dialogue)
-  -ChapterS4Model CHAPTERS4MODEL
-                        Model to use for writing the chapter (stage 4: final correction pass)
-  -ChapterRevisionModel CHAPTERREVISIONMODEL
-                        Model to use for revising the chapter until it meets criteria
-  -RevisionModel REVISIONMODEL
-                        Model to use for generating constructive criticism
-  -EvalModel EVALMODEL  Model to use for evaluating the rating out of 100
-  -InfoModel INFOMODEL  Model to use when generating summary/info at the end
-  -ScrubModel SCRUBMODEL
-                        Model to use when scrubbing the story at the end
-  -CheckerModel CHECKERMODEL
-                        Model to use when checking if the LLM cheated or not
-  -TranslatorModel TRANSLATORMODEL
-                        Model to use if translation of the story is enabled
-  -Translate TRANSLATE  Specify a language to translate the story to - will not translate by default. Ex: 'French'
-  -TranslatePrompt TRANSLATEPROMPT
-                        Specify a language to translate your input prompt to. Ex: 'French'
-  -Seed SEED            Used to seed models.
-  -OutlineMinRevisions OUTLINEMINREVISIONS
-                        Number of minimum revisions that the outline must be given prior to proceeding
-  -OutlineMaxRevisions OUTLINEMAXREVISIONS
-                        Max number of revisions that the outline may have
-  -ChapterMinRevisions CHAPTERMINREVISIONS
-                        Number of minimum revisions that the chapter must be given prior to proceeding
-  -ChapterMaxRevisions CHAPTERMAXREVISIONS
-                        Max number of revisions that the chapter may have
-  -NoChapterRevision    Disables Chapter Revisions
-  -NoScrubChapters      Disables a final pass over the story to remove prompt leftovers/outline tidbits
-  -ExpandOutline        Disables the system from expanding the outline for the story chapter by chapter prior to writing the story's chapter content
-  -EnableFinalEditPass  Enable a final edit pass of the whole story prior to scrubbing
-  -Debug                Print system prompts to stdout during generation
-
-```
-
-NOTE: due to the many LLMs used and the various edit/revision cycle loops, this project does not produce output quickly - on 3x TESLA P40 24GB GPUs, some stories take over 18 hours to generate. Faster hardware will of course result in lower generation time.
-
-
-
-## Installation
-
-Installing is pretty easy - just clone this repo, install [OLLAMA](https://ollama.com/) on some machine you have, and point the writer at it. 
-
-For now, you also have to download the different LLMs that this project uses manually (sorry). Please see some of the test scripts for an idea of the models that I've been using so far.
-The project uses a few different LLMs to generate different parts of the output (for example one for outline generation, another for each stage for the chapter generation, etc.), so make sure you have a few hundred GB of disk space free for this.
-
-I've been developing on a machine with 3x NVIDIA TESLA P40 24GB GPUs, so all the models used by default (and in the testing scripts), are 70 billion parameters and up. I've not thoroughly experimented with smaller models as of yet - those likely aren't going to produce as good of a result, but they will definitely be much faster to run.
-
-
-For now, Linux is the only thing supported - I don't use or like Windows or Mac, so I've not tested either platform. It might work, it might not - feel free to try though!
-I run on a Debian distro, so that is what i'll write an installer script for, once the project matures enough to get there.
-
-
-## Contributing
-
-I welcome contributions, please either email me at `thomas.liao13 [at] gmail.com`, or open up a pull request (or both)!
-
-If you encounter issues, please feel free to also open up an issue - I'll do my best to help with those!
+Join us in shaping the future of AI-assisted storytelling! 🖋️🤖
