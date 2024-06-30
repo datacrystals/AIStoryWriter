@@ -163,3 +163,4 @@ cython_debug/
 Stories/*
 Prompts/*
 Logs/*
+EvalLogs/*

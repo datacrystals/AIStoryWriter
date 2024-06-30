@@ -42,7 +42,14 @@ Please rate the below story:
 {Story}
 </STORY>
 
-Please make your story have 
+Please respond in the following categories:
+- Plot: Does the story have a coherent plot? Is It creative?
+- Chapters: Do the chapters flow into each-other (be very careful when checking this)? Do they feel connected? Do they feel homogenized or are they unique and fresh?
+- Style: Does the writing style help move the plot or is it distracting from the rest of the story? Is it excessively flowery?
+- Dialogue: Is the dialog specific to each character? Does it feel in-character? Is there enough or too little?
+- Tropes: Do the tropes make sense for the genre? Are they interesting and well integrated?
+- Genre: Is the genre clear?
+
 """))
 Messages = Interface.ChatAndStreamResponse(Logger, Messages, Args.Model)
 
