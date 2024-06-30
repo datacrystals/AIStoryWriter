@@ -4,6 +4,7 @@ import argparse
 import time
 import datetime
 import os
+import json
 
 import Writer.Config
 
@@ -333,11 +334,13 @@ for i in range(1, NumChapters + 1):
 
 # Now edit the whole thing together
 StoryBodyText: str = ""
+StoryInfoJSON:dict = {"Outline": Outline}
 if Writer.Config.ENABLE_FINAL_EDIT_PASS:
     NewChapters = Writer.NovelEditor.EditNovel(
         Interface, SysLogger, Chapters, Outline, NumChapters
     )
 NewChapters = Chapters
+StoryInfoJSON.update({"UnscrubbedChapters": NewChapters})
 
 # Now scrub it (if enabled)
 if not Writer.Config.SCRUB_NO_SCRUB:
@@ -346,6 +349,7 @@ if not Writer.Config.SCRUB_NO_SCRUB:
     )
 else:
     SysLogger.Log(f"Skipping Scrubbing Due To Config", 4)
+StoryInfoJSON.update({"ScrubbedChapter": NewChapters})
 
 
 # If enabled, translate the novel
@@ -355,6 +359,7 @@ if Writer.Config.TRANSLATE_LANGUAGE != "":
     )
 else:
     SysLogger.Log(f"No Novel Translation Requested, Skipping Translation Step", 4)
+StoryInfoJSON.update({"TranslatedChapters": NewChapters})
 
 
 # Compile The Story
@@ -367,8 +372,11 @@ Messages = []
 Messages.append(Interface.BuildUserQuery(Outline))
 Info = Writer.StoryInfo.GetStoryInfo(Interface, SysLogger, Messages)
 Title = Info["Title"]
+StoryInfoJSON.update({"Title": Info["Title"]})
 Summary = Info["Summary"]
+StoryInfoJSON.update({"Summary": Info["Summary"]})
 Tags = Info["Tags"]
+StoryInfoJSON.update({"Tags": Info["Tags"]})
 
 print("---------------------------------------------")
 print(f"Story Title: {Title}")
@@ -426,10 +434,10 @@ StatsString += f" - Disable Scrubbing: {Writer.Config.SCRUB_NO_SCRUB}  \n"
 # Save The Story To Disk
 SysLogger.Log("Saving Story To Disk", 3)
 os.makedirs("Stories", exist_ok=True)
-FName = f"Stories/Story_{Title.replace(' ', '_')}.md"
+FName = f"Stories/Story_{Title.replace(' ', '_')}"
 if Writer.Config.OPTIONAL_OUTPUT_NAME != "":
     FName = Writer.Config.OPTIONAL_OUTPUT_NAME
-with open(FName, "w", encoding="utf-8") as F:
+with open(f"{FName}.md", "w", encoding="utf-8") as F:
     Out = f"""
 {StatsString}
 
@@ -452,4 +460,7 @@ Please scroll to the bottom if you wish to read that.
 """
     SysLogger.SaveStory(Out)
     F.write(Out)
-    
+
+# Save JSON
+with open(f"{FName}.json", "w", encoding="utf-8") as F:
+    F.write(json.dumps(StoryInfoJSON, indent=4))
