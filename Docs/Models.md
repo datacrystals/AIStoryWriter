@@ -5,7 +5,7 @@ Use this table as a guide to choose appropriate models based on your GPU's VRAM.
 | VRAM Capacity | Recommended Models              | Notes                                                                                                  |
 | ------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | 4-6 GB        | aya:7b, phi:3b, tinyllama:1.5b  | Suitable for very basic story generation. Strong limitations                                           |
-| 8-12 GB       | llama3:8b, mistral:7b, phi:7b   | Good for general story generation tasks. Still lacking at some points but generats consistent stories. |
+| 8-12 GB       | llama3:8b, mistral:7b, phi:7b, gemma2:9b   | Good for general story generation tasks. Still lacking at some points but generats consistent stories. |
 | 16-24 GB      | ?                               | Capable of generating more complex and coherent stories. Good for most users.                          |
 | 32-48 GB      | llama3:70b                      | High-quality output with improved coherence and creativity. Recommended for advanced projects.         |
 | 64+ GB        | miqulitz120b, midnight-miqu103b | Top-tier performance. Ideal for professional use and generating consistent novel-length content.       |
