@@ -15,6 +15,7 @@ def GenerateChapter(
     _Outline: str,
     _Chapters: list = [],
     _QualityThreshold: int = 85,
+    _BaseContext:str = ""
 ):
 
     # Some important notes
@@ -118,6 +119,7 @@ def GenerateChapter(
             ThisChapterOutline=ThisChapterOutline,
             FormattedLastChapterSummary=FormattedLastChapterSummary,
             Feedback=Feedback,
+            _BaseContext=_BaseContext
         )
 
         # Generate Initial Chapter
@@ -170,6 +172,7 @@ def GenerateChapter(
             FormattedLastChapterSummary=FormattedLastChapterSummary,
             Stage1Chapter=Stage1Chapter,
             Feedback=Feedback,
+            _BaseContext=_BaseContext
         )
 
         # Generate Initial Chapter
@@ -222,6 +225,7 @@ def GenerateChapter(
             FormattedLastChapterSummary=FormattedLastChapterSummary,
             Stage2Chapter=Stage2Chapter,
             Feedback=Feedback,
+            _BaseContext=_BaseContext
         )
         # Generate Initial Chapter
         _Logger.Log(

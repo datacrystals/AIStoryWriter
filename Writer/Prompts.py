@@ -85,8 +85,32 @@ Things to keep in Mind:
 Thank you for helping me write my story! Please only include your summary and things to keep in mind, don't write anything else.
 """
 
+GET_IMPORTANT_BASE_PROMPT_INFO = """
+Please extract any important information from the user's prompt below:
+
+<USER_PROMPT>
+{_Prompt}
+</USER_PROMPT>
+
+Just write down any information that wouldn't be covered in an outline.
+Please use the below template for formatting your response.
+This would be things like instructions for chapter length, overall vision, instructions for formatting, etc.
+(Don't use the xml tags though - those are for example only)
+
+<EXAMPLE>
+# Important Additional Context
+- Important point 1
+- Important point 2
+</EXAMPLE>
+
+Do NOT write the outline itself, just some extra context. Keep your responses short.
+
+"""
+
 CHAPTER_GENERATION_STAGE1 = """
 {ContextHistoryInsert}
+
+{_BaseContext}
 
 Please write the plot for chapter {_ChapterNum} of {_TotalChapters} based on the following chapter outline and any previous chapters.
 Pay attention to the previous chapters, and make sure you both continue seamlessly from them, It's imperative that your writing connects well with the previous chapter, and flows into the next (so try to follow the outline)!
@@ -110,6 +134,7 @@ As you write your work, please use the following suggestions to help you write c
 CHAPTER_GENERATION_STAGE2 = """
 {ContextHistoryInsert}
 
+{_BaseContext}
 
 Please write character development for the following chapter {_ChapterNum} of {_TotalChapters} based on the following criteria and any previous chapters.
 Pay attention to the previous chapters, and make sure you both continue seamlessly from them, It's imperative that your writing connects well with the previous chapter, and flows into the next (so try to follow the outline)!
@@ -144,6 +169,7 @@ Remember, have fun, be creative, and improve the character development of chapte
 CHAPTER_GENERATION_STAGE3 = """
 {ContextHistoryInsert}
 
+{_BaseContext}
 
 Please add dialogue the following chapter {_ChapterNum} of {_TotalChapters} based on the following criteria and any previous chapters.
 Pay attention to the previous chapters, and make sure you both continue seamlessly from them, It's imperative that your writing connects well with the previous chapter, and flows into the next (so try to follow the outline)!
@@ -176,36 +202,36 @@ Remember, have fun, be creative, and add dialogue to chapter {_ChapterNum} (make
 {Feedback}"""
 
 CHAPTER_GENERATION_STAGE4 = """
-    Please provide a final edit the following chapter based on the following criteria and any previous chapters.
-    Do not summarize any previous chapters, make your chapter connect seamlessly with previous ones.
+Please provide a final edit the following chapter based on the following criteria and any previous chapters.
+Do not summarize any previous chapters, make your chapter connect seamlessly with previous ones.
 
-    Don't take away content, instead expand upon it to make a longer and more detailed output.
+Don't take away content, instead expand upon it to make a longer and more detailed output.
 
-    For your reference, here is the outline:
-    ```
-    {_Outline}
-    ```
+For your reference, here is the outline:
+```
+{_Outline}
+```
 
-    And here is the chapter to tweak and improve:
-    ```
-    {Stage3Chapter}
-    ```
+And here is the chapter to tweak and improve:
+```
+{Stage3Chapter}
+```
 
-    As a reminder to keep the following criteria in mind:
-        - Pacing:
-          - Are you skipping days at a time? Summarizing events? Don't do that, add scenes to detail them.
-          - Is the story rushing over certain plot points and excessively focusing on others?
-        - Characters
-        - Flow
-        - Details: Is the output too flowery?
-        - Dialogue
-        - Development: Is there a clear development from scene to scene, chapter to chapter?
-        - Genre
-        - Disruptions/conflict
+As a reminder to keep the following criteria in mind:
+    - Pacing:
+        - Are you skipping days at a time? Summarizing events? Don't do that, add scenes to detail them.
+        - Is the story rushing over certain plot points and excessively focusing on others?
+    - Characters
+    - Flow
+    - Details: Is the output too flowery?
+    - Dialogue
+    - Development: Is there a clear development from scene to scene, chapter to chapter?
+    - Genre
+    - Disruptions/conflict
 
-    Remember to remove any author notes or non-chapter text, as this is the version that will be published.
+Remember to remove any author notes or non-chapter text, as this is the version that will be published.
 
-    """
+"""
 
 CHAPTER_REVISION = """
 Please revise the following chapter:

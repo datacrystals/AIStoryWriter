@@ -10,15 +10,32 @@ import Writer.Prompts
 
 def GenerateOutline(Interface, _Logger, _OutlinePrompt, _QualityThreshold: int = 85):
 
+    # Get any important info about the base prompt to pass along
+    Prompt: str = Writer.Prompts.GET_IMPORTANT_BASE_PROMPT_INFO.format(
+        _Prompt = _OutlinePrompt
+    )
+
+
+    _Logger.Log(f"Extracting Important Base Context", 4)
+    Messages = [Interface.BuildUserQuery(Prompt)]
+    Messages = Interface.SafeGenerateText(
+        _Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL
+    )
+    BaseContext: str = Interface.GetLastMessageText(Messages)
+    _Logger.Log(f"Done Extracting Important Base Context", 4)
+
+
     # Generate Story Elements
     StoryElements: str = Writer.Outline.StoryElements.GenerateStoryElements(
         Interface, _Logger, _OutlinePrompt
     )
 
+
     # Now, Generate Initial Outline
     Prompt: str = Writer.Prompts.INITIAL_OUTLINE_PROMPT.format(
         StoryElements=StoryElements, _OutlinePrompt=_OutlinePrompt
     )
+
 
     _Logger.Log(f"Generating Initial Outline", 4)
     Messages = [Interface.BuildUserQuery(Prompt)]
@@ -50,12 +67,14 @@ def GenerateOutline(Interface, _Logger, _OutlinePrompt, _QualityThreshold: int =
 
     # Generate Final Outline
     FinalOutline: str = f"""
+{BaseContext}
+
 {StoryElements}
 
 {Outline}
     """
 
-    return FinalOutline, StoryElements, Outline
+    return FinalOutline, StoryElements, Outline, BaseContext
 
 
 def ReviseOutline(Interface, _Logger, _Outline, _Feedback, _History: list = []):

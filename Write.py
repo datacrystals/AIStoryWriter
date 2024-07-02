@@ -257,7 +257,7 @@ if Writer.Config.TRANSLATE_PROMPT_LANGUAGE != "":
 
 
 # Generate the Outline
-Outline, Elements, RoughChapterOutline = Writer.OutlineGenerator.GenerateOutline(
+Outline, Elements, RoughChapterOutline, BaseContext = Writer.OutlineGenerator.GenerateOutline(
     Interface, SysLogger, Prompt, Writer.Config.OUTLINE_QUALITY
 )
 BasePrompt = Prompt
@@ -324,6 +324,7 @@ for i in range(1, NumChapters + 1):
         Outline,
         Chapters,
         Writer.Config.OUTLINE_QUALITY,
+        BaseContext,
     )
 
     Chapter = f"### Chapter {i}\n\n{Chapter}"
@@ -337,6 +338,7 @@ StoryBodyText: str = ""
 StoryInfoJSON:dict = {"Outline": Outline}
 StoryInfoJSON.update({"StoryElements": Elements})
 StoryInfoJSON.update({"RoughChapterOutline": RoughChapterOutline})
+StoryInfoJSON.update({"BaseContext": BaseContext})
 
 if Writer.Config.ENABLE_FINAL_EDIT_PASS:
     NewChapters = Writer.NovelEditor.EditNovel(
