@@ -30,7 +30,7 @@ def GetNumChapters(_Client, _Logger, _Story):
     Only respond with just JSON - your output will be parsed by a computer.
     
     """))
-    Messages = Interface.ChatAndStreamResponse(Logger, Messages, Args.Model)
+    Messages = Interface.SafeGenerateText(Logger, Messages, Args.Model)
     JSON = Interface.GetLastMessageText(Messages)
 
     _Logger.Log("Finished Detecting Num Chapters In Story", 4)
@@ -53,7 +53,7 @@ def GetChapter(_Client, _Logger, _Story, _Chapter):
     This should be several thousand words at least.
     
     """))
-    Messages = Interface.ChatAndStreamResponse(Logger, Messages, Args.Model)
+    Messages = Interface.SafeGenerateText(Logger, Messages, Args.Model)
     _Logger.Log(f"Finished Extracting Chapter {_Chapter} From Story", 4)
 
     return Interface.GetLastMessageText(Messages)
@@ -100,7 +100,7 @@ Please give your response in JSON format, indicating the ratings for each story:
     
 Do not respond with anything except JSON.
     """))
-    Messages = _Client.ChatAndStreamResponse(Logger, Messages, Args.Model)
+    Messages = _Client.SafeGenerateText(Logger, Messages, Args.Model)
     JSON = json.loads(_Client.GetLastMessageText(Messages))
     Report = ""
     Report += f"Winner of Plot: {JSON['Plot']}\n"
@@ -183,7 +183,7 @@ Please respond in the following categories:
 - Genre: Is the genre clear?
 
 """))
-Messages = Interface.ChatAndStreamResponse(Logger, Messages, Args.Model)
+Messages = Interface.SafeGenerateText(Logger, Messages, Args.Model)
 
 
 # Calculate Eval Time

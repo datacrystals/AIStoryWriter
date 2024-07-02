@@ -91,7 +91,7 @@ class Interface:
                     print(f"Warning, ")
                     raise Exception(f"Model Provider {Provider} for {Model} not found")
 
-    def SafeGenerateText(self, _Logger, _Messages, _Model:str, _SeedOverride:int, _Format:str):
+    def SafeGenerateText(self, _Logger, _Messages, _Model:str, _SeedOverride:int = -1, _Format:str = None):
         """
         This function guarantees that the output will be greater than 150 tokens, and not whitespace.
         """

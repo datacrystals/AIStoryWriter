@@ -29,7 +29,7 @@ def LLMSummaryCheck(Interface, _Logger, _RefSummary: str, _Work: str):
             Writer.Prompts.SUMMARY_CHECK_PROMPT.format(_Work=_Work)
         )
     )
-    SummaryLangchain = Interface.ChatAndStreamResponse(
+    SummaryLangchain = Interface.SafeGenerateText(
         _Logger, SummaryLangchain, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL
     )  # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
     WorkSummary: str = Interface.GetLastMessageText(SummaryLangchain)
@@ -44,7 +44,7 @@ def LLMSummaryCheck(Interface, _Logger, _RefSummary: str, _Work: str):
             Writer.Prompts.SUMMARY_OUTLINE_PROMPT.format(_RefSummary=_RefSummary)
         )
     )
-    SummaryLangchain = Interface.ChatAndStreamResponse(
+    SummaryLangchain = Interface.SafeGenerateText(
         _Logger, SummaryLangchain, Writer.Config.CHAPTER_STAGE1_WRITER_MODEL
     )  # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
     OutlineSummary: str = Interface.GetLastMessageText(SummaryLangchain)
@@ -61,7 +61,7 @@ def LLMSummaryCheck(Interface, _Logger, _RefSummary: str, _Work: str):
             )
         )
     )
-    ComparisonLangchain = Interface.ChatAndStreamResponse(
+    ComparisonLangchain = Interface.SafeGenerateText(
         _Logger, ComparisonLangchain, Writer.Config.REVISION_MODEL, _Format="json"
     )  # CHANGE THIS MODEL EVENTUALLY - BUT IT WORKS FOR NOW!!!
 
@@ -90,7 +90,7 @@ def LLMSummaryCheck(Interface, _Logger, _RefSummary: str, _Work: str):
             )
             ComparisonLangchain.append(Interface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
-            ComparisonLangchain = Interface.ChatAndStreamResponse(
+            ComparisonLangchain = Interface.SafeGenerateText(
                 _Logger,
                 ComparisonLangchain,
                 Writer.Config.CHECKER_MODEL,

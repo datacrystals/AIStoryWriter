@@ -22,7 +22,7 @@ def GenerateOutline(Interface, _Logger, _OutlinePrompt, _QualityThreshold: int =
 
     _Logger.Log(f"Generating Initial Outline", 4)
     Messages = [Interface.BuildUserQuery(Prompt)]
-    Messages = Interface.ChatAndStreamResponse(
+    Messages = Interface.SafeGenerateText(
         _Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL
     )
     Outline: str = Interface.GetLastMessageText(Messages)
@@ -67,7 +67,7 @@ def ReviseOutline(Interface, _Logger, _Outline, _Feedback, _History: list = []):
     _Logger.Log(f"Revising Outline", 2)
     Messages = _History
     Messages.append(Interface.BuildUserQuery(RevisionPrompt))
-    Messages = Interface.ChatAndStreamResponse(
+    Messages = Interface.SafeGenerateText(
         _Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL
     )
     SummaryText: str = Interface.GetLastMessageText(Messages)
@@ -84,7 +84,7 @@ def GeneratePerChapterOutline(Interface, _Logger, _Chapter, _History: list = [])
     _Logger.Log("Generating Outline For Chapter " + str(_Chapter), 5)
     Messages = _History
     Messages.append(Interface.BuildUserQuery(RevisionPrompt))
-    Messages = Interface.ChatAndStreamResponse(
+    Messages = Interface.SafeGenerateText(
         _Logger, Messages, Writer.Config.CHAPTER_OUTLINE_WRITER_MODEL
     )
     SummaryText: str = Interface.GetLastMessageText(Messages)
