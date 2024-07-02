@@ -14,7 +14,7 @@ def ScrubNovel(Interface, _Logger, _Chapters: list, _TotalChapters: int):
         _Logger.Log(f"Prompting LLM To Perform Chapter {i+1} Scrubbing Edit", 5)
         Messages = []
         Messages.append(Interface.BuildUserQuery(Prompt))
-        Messages = Interface.ChatAndStreamResponse(
+        Messages = Interface.SafeGenerateText(
             _Logger, Messages, Writer.Config.SCRUB_MODEL
         )
         _Logger.Log(f"Finished Chapter {i+1} Scrubbing Edit", 5)

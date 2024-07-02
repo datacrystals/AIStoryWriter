@@ -14,7 +14,7 @@ def GetFeedbackOnOutline(Interface, _Logger, _Outline: str):
 
     _Logger.Log("Prompting LLM To Critique Outline", 5)
     History.append(Interface.BuildUserQuery(StartingPrompt))
-    History = Interface.ChatAndStreamResponse(
+    History = Interface.SafeGenerateText(
         _Logger, History, Writer.Config.REVISION_MODEL
     )
     _Logger.Log("Finished Getting Outline Feedback", 5)
@@ -39,7 +39,7 @@ def GetOutlineRating(
     _Logger.Log("Prompting LLM To Get Review JSON", 5)
 
     History.append(Interface.BuildUserQuery(StartingPrompt))
-    History = Interface.ChatAndStreamResponse(
+    History = Interface.SafeGenerateText(
         _Logger, History, Writer.Config.EVAL_MODEL, _Format="json"
     )
     _Logger.Log("Finished Getting Review JSON", 5)
@@ -64,7 +64,7 @@ def GetOutlineRating(
             EditPrompt: str = Writer.Prompts.JSON_PARSE_ERROR.format(_Error=E)
             History.append(Interface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
-            History = Interface.ChatAndStreamResponse(
+            History = Interface.SafeGenerateText(
                 _Logger, History, Writer.Config.EVAL_MODEL, _Format="json"
             )
             _Logger.Log("Done Asking LLM TO Revise JSON", 6)
@@ -87,7 +87,7 @@ def GetFeedbackOnChapter(Interface, _Logger, _Chapter: str, _Outline: str):
 
     _Logger.Log("Prompting LLM To Critique Chapter", 5)
     History.append(Interface.BuildUserQuery(StartingPrompt))
-    Messages = Interface.ChatAndStreamResponse(
+    Messages = Interface.SafeGenerateText(
         _Logger, History, Writer.Config.REVISION_MODEL
     )
     _Logger.Log("Finished Getting Chapter Feedback", 5)
@@ -108,7 +108,7 @@ def GetChapterRating(Interface, _Logger, _Chapter: str):
 
     _Logger.Log("Prompting LLM To Get Review JSON", 5)
     History.append(Interface.BuildUserQuery(StartingPrompt))
-    History = Interface.ChatAndStreamResponse(
+    History = Interface.SafeGenerateText(
         _Logger, History, Writer.Config.EVAL_MODEL
     )
     _Logger.Log("Finished Getting Review JSON", 5)
@@ -134,7 +134,7 @@ def GetChapterRating(Interface, _Logger, _Chapter: str):
             EditPrompt: str = Writer.Prompts.JSON_PARSE_ERROR.format(_Error=E)
             History.append(Interface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
-            History = Interface.ChatAndStreamResponse(
+            History = Interface.SafeGenerateText(
                 _Logger, History, Writer.Config.EVAL_MODEL
             )
             _Logger.Log("Done Asking LLM TO Revise JSON", 6)

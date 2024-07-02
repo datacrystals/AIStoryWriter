@@ -12,7 +12,7 @@ def LLMCountChapters(Interface, _Logger, _Summary):
     _Logger.Log("Prompting LLM To Get ChapterCount JSON", 5)
     Messages = []
     Messages.append(Interface.BuildUserQuery(Prompt))
-    Messages = Interface.ChatAndStreamResponse(
+    Messages = Interface.SafeGenerateText(
         _Logger, Messages, Writer.Config.EVAL_MODEL, _Format="json"
     )
     _Logger.Log("Finished Getting ChapterCount JSON", 5)
@@ -40,7 +40,7 @@ def LLMCountChapters(Interface, _Logger, _Summary):
             )
             Messages.append(Interface.BuildUserQuery(EditPrompt))
             _Logger.Log("Asking LLM TO Revise", 7)
-            Messages = Interface.ChatAndStreamResponse(
+            Messages = Interface.SafeGenerateText(
                 _Logger, Messages, Writer.Config.EVAL_MODEL, _Format="json"
             )
             _Logger.Log("Done Asking LLM TO Revise JSON", 6)

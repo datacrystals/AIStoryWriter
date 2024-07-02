@@ -22,7 +22,7 @@ def EditNovel(Interface, _Logger, _Chapters: list, _Outline: str, _TotalChapters
         )
         Messages = []
         Messages.append(Interface.BuildUserQuery(Prompt))
-        Messages = Interface.ChatAndStreamResponse(
+        Messages = Interface.SafeGenerateText(
             _Logger, Messages, Writer.Config.CHAPTER_WRITER_MODEL
         )
         _Logger.Log(f"Finished Chapter {i} Second Pass In-Place Edit", 5)

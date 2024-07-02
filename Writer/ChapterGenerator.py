@@ -64,7 +64,7 @@ def GenerateChapter(
             )
         )
     )
-    ChapterSegmentMessages = Interface.ChatAndStreamResponse(
+    ChapterSegmentMessages = Interface.SafeGenerateText(
         _Logger,
         ChapterSegmentMessages,
         Writer.Config.CHAPTER_STAGE1_WRITER_MODEL,
@@ -90,7 +90,7 @@ def GenerateChapter(
                 )
             )
         )
-        ChapterSummaryMessages = Interface.ChatAndStreamResponse(
+        ChapterSummaryMessages = Interface.SafeGenerateText(
             _Logger,
             ChapterSummaryMessages,
             Writer.Config.CHAPTER_STAGE1_WRITER_MODEL,
@@ -128,7 +128,7 @@ def GenerateChapter(
         Messages = MesssageHistory.copy()
         Messages.append(Interface.BuildUserQuery(Prompt))
 
-        Messages = Interface.ChatAndStreamResponse(
+        Messages = Interface.SafeGenerateText(
             _Logger,
             Messages,
             Writer.Config.CHAPTER_STAGE1_WRITER_MODEL,
@@ -180,7 +180,7 @@ def GenerateChapter(
         Messages = MesssageHistory.copy()
         Messages.append(Interface.BuildUserQuery(Prompt))
 
-        Messages = Interface.ChatAndStreamResponse(
+        Messages = Interface.SafeGenerateText(
             _Logger,
             Messages,
             Writer.Config.CHAPTER_STAGE2_WRITER_MODEL,
@@ -231,7 +231,7 @@ def GenerateChapter(
         Messages = MesssageHistory.copy()
         Messages.append(Interface.BuildUserQuery(Prompt))
 
-        Messages = Interface.ChatAndStreamResponse(
+        Messages = Interface.SafeGenerateText(
             _Logger,
             Messages,
             Writer.Config.CHAPTER_STAGE3_WRITER_MODEL,
@@ -275,7 +275,7 @@ def GenerateChapter(
     #     Messages = MesssageHistory.copy()
     #     Messages.append(Interface.BuildUserQuery(Prompt))
 
-    #     Messages = Interface.ChatAndStreamResponse(_Logger, Messages, Writer.Config.CHAPTER_STAGE4_WRITER_MODEL)
+    #     Messages = Interface.SafeGenerateText(_Logger, Messages, Writer.Config.CHAPTER_STAGE4_WRITER_MODEL)
     #     Chapter:str = Interface.GetLastMessageText(Messages)
     #     _Logger.Log(f"Done Generating Initial Chapter (Stage 4: Final Pass)  {_ChapterNum}/{_TotalChapters}", 5)
     Chapter: str = Stage3Chapter
@@ -324,7 +324,7 @@ def ReviseChapter(Interface, _Logger, _Chapter, _Feedback, _History: list = []):
     _Logger.Log("Revising Chapter", 5)
     Messages = _History
     Messages.append(Interface.BuildUserQuery(RevisionPrompt))
-    Messages = Interface.ChatAndStreamResponse(
+    Messages = Interface.SafeGenerateText(
         _Logger, Messages, Writer.Config.CHAPTER_REVISION_WRITER_MODEL
     )
     SummaryText: str = Interface.GetLastMessageText(Messages)

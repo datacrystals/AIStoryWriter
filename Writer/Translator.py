@@ -11,7 +11,7 @@ def TranslatePrompt(Interface, _Logger, _Prompt: str, _Language: str = "French")
     _Logger.Log(f"Prompting LLM To Translate User Prompt", 5)
     Messages = []
     Messages.append(Interface.BuildUserQuery(Prompt))
-    Messages = Interface.ChatAndStreamResponse(
+    Messages = Interface.SafeGenerateText(
         _Logger, Messages, Writer.Config.TRANSLATOR_MODEL
     )
     _Logger.Log(f"Finished Prompt Translation", 5)
@@ -33,7 +33,7 @@ def TranslateNovel(
         _Logger.Log(f"Prompting LLM To Perform Chapter {i+1} Translation", 5)
         Messages = []
         Messages.append(Interface.BuildUserQuery(Prompt))
-        Messages = Interface.ChatAndStreamResponse(
+        Messages = Interface.SafeGenerateText(
             _Logger, Messages, Writer.Config.TRANSLATOR_MODEL
         )
         _Logger.Log(f"Finished Chapter {i+1} Translation", 5)

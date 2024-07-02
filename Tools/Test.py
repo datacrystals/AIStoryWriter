@@ -17,6 +17,8 @@ print("7 -> Developer testing script 2, miqulitz-120b, one model, llama3:70b edi
 print("8 -> Developer testing script 3, miqu-70b-1.5, one model, llama3:70b editor")
 print("9 -> Developer testing script 4, gemma2:27b, one model, gemma2:27b editor")
 print("10 -> Developer testing script 4, qwen2:72b, one model, qwen2:72b editor")
+print("11 -> Developer testing script 5, llama3, one model, llama3 editor")
+print("12 -> Developer testing script 6, gemma, one model, gemma editor")
 print("-------------------------------------------")
 
 
@@ -247,6 +249,48 @@ cd .. && ./Write.py \
 -RevisionModel qwen2:72b \
 -EvalModel qwen2:72b \
 -InfoModel qwen2:72b \
+-NoScrubChapters \
+-Debug
+
+''')
+    
+elif (choice == "11"):
+    os.system('''
+cd .. && ./Write.py \
+-Host localhost:11434 \
+-Seed 999 \
+-Prompt ExamplePrompts/Example1/Prompt.txt \
+-InitialOutlineModel llama3 \
+-ChapterOutlineModel llama3 \
+-ChapterS1Model llama3 \
+-ChapterS2Model llama3 \
+-ChapterS3Model llama3 \
+-ChapterS4Model llama3 \
+-ChapterRevisionModel llama3 \
+-RevisionModel llama3 \
+-EvalModel llama3 \
+-InfoModel llama3 \
+-NoScrubChapters \
+-Debug
+
+''')
+    
+elif (choice == "12"):
+    os.system('''
+cd .. && ./Write.py \
+-Host localhost:11434 \
+-Seed 999 \
+-Prompt ExamplePrompts/Example1/Prompt.txt \
+-InitialOutlineModel gemma \
+-ChapterOutlineModel gemma \
+-ChapterS1Model gemma \
+-ChapterS2Model gemma \
+-ChapterS3Model gemma \
+-ChapterS4Model gemma \
+-ChapterRevisionModel gemma \
+-RevisionModel gemma \
+-EvalModel gemma \
+-InfoModel gemma \
 -NoScrubChapters \
 -Debug
 
