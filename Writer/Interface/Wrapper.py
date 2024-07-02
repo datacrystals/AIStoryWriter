@@ -93,12 +93,12 @@ class Interface:
 
     def SafeGenerateText(self, _Logger, _Messages, _Model:str, _SeedOverride:int = -1, _Format:str = None):
         """
-        This function guarantees that the output will be greater than 150 tokens, and not whitespace.
+        This function guarantees that the output will not be whitespace.
         """
 
         NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, _SeedOverride, _Format)
 
-        while (len(Interface.GetLastMessageText(NewMsg)["content"].split(" ")) < 150 or (Interface.GetLastMessageText(NewMsg)["content"].isspace())):
+        while (self.GetLastMessageText(NewMsg).isspace()):
             _Logger.Log("Generation Failed, Reattempting Output", 7)
             NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, random.randint(0,99999), _Format)
 
