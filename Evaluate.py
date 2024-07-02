@@ -65,11 +65,13 @@ def EvaluateOutline(_Client, _Logger, _Outline1, _Outline2):
     Messages = [_Client.BuildSystemQuery("You are a helpful AI language model.")]
     Messages.append(_Client.BuildUserQuery(f"""
 Please evaluate which outlines are better from the following two outlines:
-                                        
+
+Here's the first outline:
 <Outline1>
 {_Outline1}
 </Outline1>
 
+And here is the second outline:
 <Outline2>
 {_Outline2}
 </Outline2>
@@ -83,20 +85,31 @@ Use the following criteria to evaluate (NOTE: You'll be picking outline 1 or out
 - Genre: Is the genre clear?
 - Narrative Structure: Is it clear what the structure is? Does it fit with the genre/tropes/content?
 
-Please give your response in JSON format, indicating what story is better:
+Please give your response in JSON format, indicating the ratings for each story:
 
 {{
-    "Plot": <1 or 2>,
-    "Chapters: <1 or 2>,
-    "Style": <1 or 2>,
-    "Dialogue": <1 or 2>,
-    "Tropes": <1 or 2>,
-    "Genre": <1 or 2>,
-    "Narrative": <1 or 2>,
-    "OverallWinner": <1 or 2>
+    "Outline1Plot": <int from 0-100>,
+    "Outline1Chapters: <int from 0-100>,
+    "Outline1Style": <int from 0-100>,
+    "Outline1Dialogue": <int from 0-100>,
+    "Outline1Tropes": <int from 0-100>,
+    "Outline1Genre": <int from 0-100>,
+    "Outline1Narrative": <int from 0-100>,
+    "Outline1OverallWinner": <int from 0-100>,
+
+    "Outline2Plot": <int from 0-100>,
+    "Outline2Chapters: <int from 0-100>,
+    "Outline2Style": <int from 0-100>,
+    "Outline2Dialogue": <int from 0-100>,
+    "Outline2Tropes": <int from 0-100>,
+    "Outline2Genre": <int from 0-100>,
+    "Outline2Narrative": <int from 0-100>,
+    "Outline2OverallWinner": <int from 0-100>
 }}
     
+Do not respond with anything except JSON.
     """))
+    print(Messages[-1]["content"])
     Messages = _Client.ChatAndStreamResponse(Logger, Messages, Args.Model)
     JSON = json.loads(_Client.GetLastMessageText(Messages))
     Report = ""
@@ -127,6 +140,7 @@ Parser.add_argument("-Model", default="llama3:70b", type=str, help="Model to use
 Args = Parser.parse_args()
 
 Writer.Config.OLLAMA_HOST = Args.Host
+# Writer.Config.DEBUG = True
 
 
 # Measure Generation Time
@@ -160,7 +174,7 @@ Report += f"Story 2: {Args.Story2}\n\n\n"
 
 ## Evaluate Outlines
 Report += f"## Outline"
-Report += EvaluateOutline(Story1["Outline"], Story2["Outline"])
+Report += EvaluateOutline(Interface, Logger, Story1["Outline"], Story2["Outline"])
 
 Messages = [Interface.BuildSystemQuery("You are a helpful AI language model.")]
 Messages.append(Interface.BuildUserQuery(f"""
