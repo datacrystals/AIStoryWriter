@@ -55,7 +55,7 @@ def GenerateOutline(Interface, _Logger, _OutlinePrompt, _QualityThreshold: int =
 {Outline}
     """
 
-    return FinalOutline
+    return FinalOutline, StoryElements, Outline
 
 
 def ReviseOutline(Interface, _Logger, _Outline, _Feedback, _History: list = []):

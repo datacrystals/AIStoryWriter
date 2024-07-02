@@ -88,28 +88,18 @@ Use the following criteria to evaluate (NOTE: You'll be picking outline 1 or out
 Please give your response in JSON format, indicating the ratings for each story:
 
 {{
-    "Outline1Plot": <int from 0-100>,
-    "Outline1Chapters: <int from 0-100>,
-    "Outline1Style": <int from 0-100>,
-    "Outline1Dialogue": <int from 0-100>,
-    "Outline1Tropes": <int from 0-100>,
-    "Outline1Genre": <int from 0-100>,
-    "Outline1Narrative": <int from 0-100>,
-    "Outline1OverallWinner": <int from 0-100>,
-
-    "Outline2Plot": <int from 0-100>,
-    "Outline2Chapters: <int from 0-100>,
-    "Outline2Style": <int from 0-100>,
-    "Outline2Dialogue": <int from 0-100>,
-    "Outline2Tropes": <int from 0-100>,
-    "Outline2Genre": <int from 0-100>,
-    "Outline2Narrative": <int from 0-100>,
-    "Outline2OverallWinner": <int from 0-100>
+    "Plot": <1 or 2>,
+    "Chapters: <1 or 2>,
+    "Style": <1 or 2>,
+    "Dialogue": <1 or 2>,
+    "Tropes": <1 or 2>,
+    "Genre": <1 or 2>,
+    "Narrative": <1 or 2>,
+    "OverallWinner": <1 or 2>
 }}
     
 Do not respond with anything except JSON.
     """))
-    print(Messages[-1]["content"])
     Messages = _Client.ChatAndStreamResponse(Logger, Messages, Args.Model)
     JSON = json.loads(_Client.GetLastMessageText(Messages))
     Report = ""
@@ -140,7 +130,7 @@ Parser.add_argument("-Model", default="llama3:70b", type=str, help="Model to use
 Args = Parser.parse_args()
 
 Writer.Config.OLLAMA_HOST = Args.Host
-# Writer.Config.DEBUG = True
+Writer.Config.DEBUG = True
 
 
 # Measure Generation Time
