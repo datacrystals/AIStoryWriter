@@ -7,7 +7,7 @@ import time
 
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
-
+from Writer.Interface.OpenRouter import OpenRouter
 
 dotenv.load_dotenv()
 
@@ -82,6 +82,18 @@ class Interface:
 
                 elif Provider == "openai":
                     raise NotImplementedError("OpenAI API not supported")
+
+                elif Provider == "openrouter":
+                    if (
+                        not "OPENROUTER_API_KEY" in os.environ
+                        or os.environ["OPENROUTER_API_KEY"] == ""
+                    ):
+                        raise Exception(
+                            "OPENROUTER_API_KEY not found in environment variables"
+                        )
+                    self.Clients[Model] = OpenRouter(
+                        api_key=os.environ["OPENROUTER_API_KEY"],
+                        model=ProviderModel)
 
                 elif Provider == "Anthropic":
                     raise NotImplementedError("Anthropic API not supported")
@@ -214,6 +226,15 @@ class Interface:
         elif Provider == "openai":
             raise NotImplementedError("OpenAI API not supported")
 
+        elif Provider == "openrouter":
+            Client = self.Clients[_Model]
+            Client.model = ProviderModel
+            Response = Client.chat(
+                messages = _Messages,
+                seed = Seed
+            )
+            _Messages.append({"role": "assistant", "content": Response})
+
         elif Provider == "Anthropic":
             raise NotImplementedError("Anthropic API not supported")
 
@@ -277,6 +298,9 @@ class Interface:
         if _Model.lower().startswith("ollama"):
             Model = _Model.replace("ollama/", "")
             return "ollama", Model
+        if _Model.lower().startswith("openrouter"):
+            Model = _Model.replace("openrouter/", "")
+            return "openrouter", Model
 
         # Now do the proper check for other providers
         Provider = _Model.lower().split("/")[0] if "/" in _Model else "ollama"
