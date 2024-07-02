@@ -4,6 +4,7 @@ import ollama
 import inspect
 import os
 import time
+import random
 
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
@@ -89,6 +90,19 @@ class Interface:
                 else:
                     print(f"Warning, ")
                     raise Exception(f"Model Provider {Provider} for {Model} not found")
+
+    def SafeGenerateText(self, _Logger, _Messages, _Model:str, _SeedOverride:int, _Format:str):
+        """
+        This function guarantees that the output will be greater than 150 tokens, and not whitespace.
+        """
+
+        NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, _SeedOverride, _Format)
+
+        while (len(Interface.GetLastMessageText(NewMsg)["content"].split(" ")) < 150 or (Interface.GetLastMessageText(NewMsg)["content"].isspace())):
+            _Logger.Log("Generation Failed, Reattempting Output", 7)
+            NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, random.randint(0,99999), _Format)
+
+        return NewMsg
 
     def ChatAndStreamResponse(
         self,
