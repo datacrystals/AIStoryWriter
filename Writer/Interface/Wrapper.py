@@ -1,14 +1,12 @@
 import Writer.Config
 import dotenv
-import ollama
 import inspect
 import os
 import time
 import random
-
-import google.generativeai as genai
-from google.generativeai.types import HarmCategory, HarmBlockThreshold
-from Writer.Interface.OpenRouter import OpenRouter
+import importlib
+import subprocess
+import sys
 
 dotenv.load_dotenv()
 
@@ -21,6 +19,18 @@ class Interface:
     ):
         self.Clients: dict = {}
         self.History = []
+        self.LoadModels(Models)
+
+    def ensure_package_is_installed(self, package_name):
+        try:
+            importlib.import_module(package_name)
+        except ImportError:
+            print(f"Package {package_name} not found. Installing...")
+            subprocess.check_call(
+                [sys.executable, "-m", "pip", "install", package_name]
+            )
+
+    def LoadModels(self, Models: list):
         OllamaModels = None
         for Model in Models:
             if Model in self.Clients:
@@ -28,12 +38,21 @@ class Interface:
             else:
                 Provider, ProviderModel = self.GetModelAndProvider(Model)
                 print(f"DEBUG: Loading Model {ProviderModel} from {Provider}")
+
                 if Provider == "ollama":
                     # Get ollama models (only once)
+                    self.ensure_package_is_installed("ollama")
+                    import ollama
+
+                    # We also support `provider://model@host` format
+                    if "@" in ProviderModel:
+                        ProviderModel, OllamaHost = ProviderModel.split("@")
+                    else:
+                        # Default to localhost
+                        OllamaHost = "127.0.0.1:11434"
+
                     if OllamaModels is None:
-                        OllamaModelList = ollama.Client(
-                            host=Writer.Config.OLLAMA_HOST
-                        ).list()
+                        OllamaModelList = ollama.Client(host=OllamaHost).list()
                         OllamaModels = [m["name"] for m in OllamaModelList["models"]]
 
                     # check if the model is in the list of models
@@ -44,12 +63,11 @@ class Interface:
                         print(
                             f"Model {ProviderModel} not found in Ollama models. Downloading..."
                         )
-                        OllamaDownloadStream = ollama.Client(
-                            host=Writer.Config.OLLAMA_HOST
-                        ).pull(ProviderModel, stream=True)
+                        OllamaDownloadStream = ollama.Client(host=OllamaHost).pull(
+                            ProviderModel, stream=True
+                        )
                         for chunk in OllamaDownloadStream:
                             if "completed" in chunk and "total" in chunk:
-                                # {'status': 'pulling 232a79463bc4', 'digest': 'sha256:232a79463bc4bcf9a76b1691a7b7beb9c08f5c3a109fedcebff422d7a71fba71', 'total': 7598928672, 'completed': 1042274720}
                                 OllamaDownloadProgress = (
                                     chunk["completed"] / chunk["total"]
                                 )
@@ -64,8 +82,8 @@ class Interface:
                         print("\n\n\n")
                         OllamaModels.append(ProviderModel)
 
-                    self.Clients[Model] = ollama.Client(host=Writer.Config.OLLAMA_HOST)
-                    print(f"OLLAMA Host is '{Writer.Config.OLLAMA_HOST}'")
+                    self.Clients[Model] = ollama.Client(host=OllamaHost)
+                    print(f"OLLAMA Host is '{OllamaHost}'")
 
                 elif Provider == "google":
                     # Validate Google API Key
@@ -76,6 +94,9 @@ class Interface:
                         raise Exception(
                             "GOOGLE_API_KEY not found in environment variables"
                         )
+                    self.ensure_package_is_installed("google-generativeai")
+                    import google.generativeai as genai
+
                     genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
                     self.Clients[Model] = genai.GenerativeModel(
                         model_name=ProviderModel
@@ -92,9 +113,11 @@ class Interface:
                         raise Exception(
                             "OPENROUTER_API_KEY not found in environment variables"
                         )
+                    from Writer.Interface.OpenRouter import OpenRouter
+
                     self.Clients[Model] = OpenRouter(
-                        api_key=os.environ["OPENROUTER_API_KEY"],
-                        model=ProviderModel)
+                        api_key=os.environ["OPENROUTER_API_KEY"], model=ProviderModel
+                    )
 
                 elif Provider == "Anthropic":
                     raise NotImplementedError("Anthropic API not supported")
@@ -103,16 +126,27 @@ class Interface:
                     print(f"Warning, ")
                     raise Exception(f"Model Provider {Provider} for {Model} not found")
 
-    def SafeGenerateText(self, _Logger, _Messages, _Model:str, _SeedOverride:int = -1, _Format:str = None):
+    def SafeGenerateText(
+        self,
+        _Logger,
+        _Messages,
+        _Model: str,
+        _SeedOverride: int = -1,
+        _Format: str = None,
+    ):
         """
         This function guarantees that the output will not be whitespace.
         """
 
-        NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, _SeedOverride, _Format)
+        NewMsg = self.ChatAndStreamResponse(
+            _Logger, _Messages, _Model, _SeedOverride, _Format
+        )
 
-        while (self.GetLastMessageText(NewMsg).isspace()):
+        while self.GetLastMessageText(NewMsg).isspace():
             _Logger.Log("Generation Failed, Reattempting Output", 7)
-            NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, random.randint(0,99999), _Format)
+            NewMsg = self.ChatAndStreamResponse(
+                _Logger, _Messages, _Model, random.randint(0, 99999), _Format
+            )
 
         return NewMsg
 
@@ -163,7 +197,12 @@ class Interface:
                 model=ProviderModel,
                 messages=_Messages,
                 stream=True,
-                options=dict(seed=Seed, format=_Format),
+                options=dict(
+                    seed=Seed,
+                    format=_Format,
+                    # Set temperature (creativity) to 0 for JSON mode otherwise default
+                    temperature=0 if _Format == "json" else None,
+                ),
             )
             MaxRetries = 3
             while True:
@@ -186,6 +225,12 @@ class Interface:
                         )
 
         elif Provider == "google":
+
+            from google.generativeai.types import (
+                HarmCategory,
+                HarmBlockThreshold,
+            )
+
             # replace "content" with "parts" for google
             _Messages = [{"role": m["role"], "parts": m["content"]} for m in _Messages]
             for m in _Messages:
@@ -243,10 +288,7 @@ class Interface:
         elif Provider == "openrouter":
             Client = self.Clients[_Model]
             Client.model = ProviderModel
-            Response = Client.chat(
-                messages = _Messages,
-                seed = Seed
-            )
+            Response = Client.chat(messages=_Messages, seed=Seed)
             _Messages.append({"role": "assistant", "content": Response})
 
         elif Provider == "Anthropic":
@@ -307,16 +349,11 @@ class Interface:
         return _Messages[-1]["content"]
 
     def GetModelAndProvider(self, _Model: str):
-        # Early check for ollama, since sometimes models have username/model
-        # so the full path is going to be `ollama/username/model:size`
-        if _Model.lower().startswith("ollama"):
-            Model = _Model.replace("ollama/", "")
-            return "ollama", Model
-        if _Model.lower().startswith("openrouter"):
-            Model = _Model.replace("openrouter/", "")
-            return "openrouter", Model
-
-        # Now do the proper check for other providers
-        Provider = _Model.lower().split("/")[0] if "/" in _Model else "ollama"
-        Model = _Model.lower().split("/")[1] if "/" in _Model else _Model
-        return Provider, Model
+        # Format is `Provider://Model`
+        # default to ollama if no provider is specified
+        if ":" in _Model:
+            Provider = _Model.split(":")[0]
+            Model = _Model.split("://")[1]
+            return Provider, Model
+        else:
+            return "ollama", _Model

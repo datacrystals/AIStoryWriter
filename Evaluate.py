@@ -130,7 +130,7 @@ Parser.add_argument("-Model", default="llama3:70b", type=str, help="Model to use
 Args = Parser.parse_args()
 
 Writer.Config.OLLAMA_HOST = Args.Host
-Writer.Config.DEBUG = True
+# Writer.Config.DEBUG = True
 
 
 # Measure Generation Time
