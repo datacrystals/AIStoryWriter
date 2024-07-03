@@ -319,7 +319,7 @@ class Interface:
         # default to ollama if no provider is specified
         if ":" in _Model:
             Provider = _Model.split(":")[0]
-            Model = _Model.split(":")[1]
+            Model = _Model.split("://")[1]
             return Provider, Model
         else:
             return "ollama", _Model

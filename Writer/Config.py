@@ -1,22 +1,22 @@
 INITIAL_OUTLINE_WRITER_MODEL = (
-    "ollama://llama3"  # Note this value is overridden by the argparser
+    "ollama://llama3:70b"  # Note this value is overridden by the argparser
 )
 CHAPTER_OUTLINE_WRITER_MODEL = (
-    "ollama://llama3"  # Note this value is overridden by the argparser
+    "ollama://llama3:70b"  # Note this value is overridden by the argparser
 )
-CHAPTER_STAGE1_WRITER_MODEL = "ollama://llama3"  # Note this value is overridden by the argparser
-CHAPTER_STAGE2_WRITER_MODEL = "ollama://llama3"  # Note this value is overridden by the argparser
-CHAPTER_STAGE3_WRITER_MODEL = "ollama://llama3"  # Note this value is overridden by the argparser
-CHAPTER_STAGE4_WRITER_MODEL = "ollama://llama3"  # Note this value is overridden by the argparser
+CHAPTER_STAGE1_WRITER_MODEL = "ollama://llama3:70b"  # Note this value is overridden by the argparser
+CHAPTER_STAGE2_WRITER_MODEL = "ollama://llama3:70b"  # Note this value is overridden by the argparser
+CHAPTER_STAGE3_WRITER_MODEL = "ollama://llama3:70b"  # Note this value is overridden by the argparser
+CHAPTER_STAGE4_WRITER_MODEL = "ollama://llama3:70b"  # Note this value is overridden by the argparser
 CHAPTER_REVISION_WRITER_MODEL = (
-    "ollama://llama3"  # Note this value is overridden by the argparser
+    "ollama://llama3:70b"  # Note this value is overridden by the argparser
 )
-REVISION_MODEL = "ollama://llama3"  # Note this value is overridden by the argparser
-EVAL_MODEL = "ollama://llama3"  # Note this value is overridden by the argparser
-INFO_MODEL = "ollama://llama3"  # Note this value is overridden by the argparser
-SCRUB_MODEL = "ollama://llama3"  # Note this value is overridden by the argparser
-CHECKER_MODEL = "ollama://llama3"  # Model used to check results
-TRANSLATOR_MODEL = "ollama://llama3"
+REVISION_MODEL = "ollama://llama3:70b"  # Note this value is overridden by the argparser
+EVAL_MODEL = "ollama://llama3:70b"  # Note this value is overridden by the argparser
+INFO_MODEL = "ollama://llama3:70b"  # Note this value is overridden by the argparser
+SCRUB_MODEL = "ollama://llama3:70b"  # Note this value is overridden by the argparser
+CHECKER_MODEL = "ollama://llama3:70b"  # Model used to check results
+TRANSLATOR_MODEL = "ollama://llama3:70b"
 
 OLLAMA_HOST = "127.0.0.1:11434"
 
@@ -42,7 +42,7 @@ OPTIONAL_OUTPUT_NAME = ""
 DEBUG = False
 
 # Tested models:
-"ollama://llama3"  # works as editor model, DO NOT use as writer model, it sucks
+"llama3:70b"  # works as editor model, DO NOT use as writer model, it sucks
 "vanilj/midnight-miqu-70b-v1.5"  # works rather well as the writer, not well as anything else
 "command-r"
 "qwen:72b"
