@@ -93,8 +93,8 @@ class Interface:
                             "OPENROUTER_API_KEY not found in environment variables"
                         )
                     self.Clients[Model] = OpenRouter(
-                        api_key=os.environ["OPENROUTER_API_KEY"],
-                        model=ProviderModel)
+                        api_key=os.environ["OPENROUTER_API_KEY"], model=ProviderModel
+                    )
 
                 elif Provider == "Anthropic":
                     raise NotImplementedError("Anthropic API not supported")
@@ -103,16 +103,27 @@ class Interface:
                     print(f"Warning, ")
                     raise Exception(f"Model Provider {Provider} for {Model} not found")
 
-    def SafeGenerateText(self, _Logger, _Messages, _Model:str, _SeedOverride:int = -1, _Format:str = None):
+    def SafeGenerateText(
+        self,
+        _Logger,
+        _Messages,
+        _Model: str,
+        _SeedOverride: int = -1,
+        _Format: str = None,
+    ):
         """
         This function guarantees that the output will not be whitespace.
         """
 
-        NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, _SeedOverride, _Format)
+        NewMsg = self.ChatAndStreamResponse(
+            _Logger, _Messages, _Model, _SeedOverride, _Format
+        )
 
-        while (self.GetLastMessageText(NewMsg).isspace()):
+        while self.GetLastMessageText(NewMsg).isspace():
             _Logger.Log("Generation Failed, Reattempting Output", 7)
-            NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, random.randint(0,99999), _Format)
+            NewMsg = self.ChatAndStreamResponse(
+                _Logger, _Messages, _Model, random.randint(0, 99999), _Format
+            )
 
         return NewMsg
 
@@ -243,10 +254,7 @@ class Interface:
         elif Provider == "openrouter":
             Client = self.Clients[_Model]
             Client.model = ProviderModel
-            Response = Client.chat(
-                messages = _Messages,
-                seed = Seed
-            )
+            Response = Client.chat(messages=_Messages, seed=Seed)
             _Messages.append({"role": "assistant", "content": Response})
 
         elif Provider == "Anthropic":
@@ -307,16 +315,11 @@ class Interface:
         return _Messages[-1]["content"]
 
     def GetModelAndProvider(self, _Model: str):
-        # Early check for ollama, since sometimes models have username/model
-        # so the full path is going to be `ollama/username/model:size`
-        if _Model.lower().startswith("ollama"):
-            Model = _Model.replace("ollama/", "")
-            return "ollama", Model
-        if _Model.lower().startswith("openrouter"):
-            Model = _Model.replace("openrouter/", "")
-            return "openrouter", Model
-
-        # Now do the proper check for other providers
-        Provider = _Model.lower().split("/")[0] if "/" in _Model else "ollama"
-        Model = _Model.lower().split("/")[1] if "/" in _Model else _Model
-        return Provider, Model
+        # Format is `Provider://Model`
+        # default to ollama if no provider is specified
+        if ":" in _Model:
+            Provider = _Model.split(":")[0]
+            Model = _Model.split(":")[1]
+            return Provider, Model
+        else:
+            return "ollama", _Model
