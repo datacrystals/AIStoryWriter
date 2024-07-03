@@ -11,58 +11,94 @@ import Writer.Config
 import Writer.PrintUtils
 
 
+def GetNumChapters(_Client, _Logger, _Story):
+    
+    _Logger.Log("Detecting Num Chapters In Story", 4)
+    Messages = [Interface.BuildSystemQuery("You are a helpful AI language model.")]
+    Messages.append(Interface.BuildUserQuery(f"""
+    I need to identify the number of chapters in the given story:
+                                            
+    <STORY>
+    {Story}
+    </STORY>
+
+    Please respond with JSON as follows:
+    {{
+        "NumChapters": <NumChapters>
+    }}
+
+    Only respond with just JSON - your output will be parsed by a computer.
+    
+    """))
+    Messages = Interface.SafeGenerateText(Logger, Messages, Args.Model)
+    JSON = Interface.GetLastMessageText(Messages)
+
+    _Logger.Log("Finished Detecting Num Chapters In Story", 4)
+
+    return json.loads(JSON)["NumChapters"]
+
+def GetChapter(_Client, _Logger, _Story, _Chapter):
+    
+    _Logger.Log(f"Extracting Chapter {_Chapter} From Story", 4)
+    Messages = [Interface.BuildSystemQuery("You are a helpful AI language model.")]
+    Messages.append(Interface.BuildUserQuery(f"""
+    Please extract chapter {_Chapter} from the following story:
+                                            
+    <STORY>
+    {_Story}
+    </STORY>
+
+    Copy the full chapter text for chapter {_Chapter}. Don't summarize or change any details, just copy the whole thing exactly as it's written.
+
+    This should be several thousand words at least.
+    
+    """))
+    Messages = Interface.SafeGenerateText(Logger, Messages, Args.Model)
+    _Logger.Log(f"Finished Extracting Chapter {_Chapter} From Story", 4)
+
+    return Interface.GetLastMessageText(Messages)
+
 
 def EvaluateOutline(_Client, _Logger, _Outline1, _Outline2):
     
     _Logger.Log(f"Evaluating Outlines From Story", 4)
-    Messages = [_Client.BuildSystemQuery("You are a helpful AI language model. Carefully answer the users's prompts as best as you can.")]
+    Messages = [_Client.BuildSystemQuery("You are a helpful AI language model.")]
     Messages.append(_Client.BuildUserQuery(f"""
-Please evaluate the following outline:
+Please evaluate which outlines are better from the following two outlines:
 
-Here's `Outline A`:
-```
+Here's the first outline:
+<Outline1>
 {_Outline1}
-```
+</Outline1>
 
-Use the following criteria to evaluate `Outline A`:
-
-* Plot: Does the story have a coherent plot? Is it creative?
-* Chapters: Do the chapters flow into each other (be very careful when checking this)? Do they feel connected? Do they feel homogenized or are they unique and fresh?
-* Style: Does the writing style help move the plot or is it distracting from the rest of the story? Is it excessively flowery?
-* Dialogue: Is the dialogue specific to each character? Does it feel in-character? Is there enough or too little?
-* Tropes: Do the tropes make sense for the genre? Are they interesting and well integrated?
-* Genre: Is the genre clear?
-* Narrative Structure: Is it clear what the structure is? Does it fit with the genre/tropes/content?
-
-Assign a score from 1-10 for each criterion for each, with 1 being the lowest and 10 being the highest. Provide a brief justification for your ratings.
-
-    """))
-    Messages = _Client.SafeGenerateText(Logger, Messages, Args.Model)
-    Messages.append(_Client.BuildUserQuery(f"""
-Now, evaluate the other outline:
-
-Here's `Outline B`:
-```
+And here is the second outline:
+<Outline2>
 {_Outline2}
-```
+</Outline2>
 
-Use the following criteria to evaluate `Outline B`:
+Use the following criteria to evaluate (NOTE: You'll be picking outline 1 or outline 2 later on for these criteria):
+- Plot: Does the story have a coherent plot? Is It creative?
+- Chapters: Do the chapters flow into each-other (be very careful when checking this)? Do they feel connected? Do they feel homogenized or are they unique and fresh?
+- Style: Does the writing style help move the plot or is it distracting from the rest of the story? Is it excessively flowery?
+- Dialogue: Is the dialog specific to each character? Does it feel in-character? Is there enough or too little?
+- Tropes: Do the tropes make sense for the genre? Are they interesting and well integrated?
+- Genre: Is the genre clear?
+- Narrative Structure: Is it clear what the structure is? Does it fit with the genre/tropes/content?
 
-* Plot: Does the story have a coherent plot? Is it creative?
-* Chapters: Do the chapters flow into each other (be very careful when checking this)? Do they feel connected? Do they feel homogenized or are they unique and fresh?
-* Style: Does the writing style help move the plot or is it distracting from the rest of the story? Is it excessively flowery?
-* Dialogue: Is the dialogue specific to each character? Does it feel in-character? Is there enough or too little?
-* Tropes: Do the tropes make sense for the genre? Are they interesting and well integrated?
-* Genre: Is the genre clear?
-* Narrative Structure: Is it clear what the structure is? Does it fit with the genre/tropes/content?
+Please give your response in JSON format, indicating the ratings for each story:
 
-Assign a score from 1-10 for each criterion for each, with 1 being the lowest and 10 being the highest. Provide a brief justification for your ratings.
-
-    """))
-    Messages = _Client.SafeGenerateText(Logger, Messages, Args.Model)
-    Messages.append(_Client.BuildUserQuery(f"""
-Finally, given your reviews of both outlines, indicate which outline is better (`Outline A` or `Outline B`).
-
+{{
+    "Plot": <1 or 2>,
+    "Chapters: <1 or 2>,
+    "Style": <1 or 2>,
+    "Dialogue": <1 or 2>,
+    "Tropes": <1 or 2>,
+    "Genre": <1 or 2>,
+    "Narrative": <1 or 2>,
+    "OverallWinner": <1 or 2>
+}}
+    
+Do not respond with anything except JSON.
     """))
     Messages = _Client.SafeGenerateText(Logger, Messages, Args.Model)
     JSON = json.loads(_Client.GetLastMessageText(Messages))
@@ -94,7 +130,7 @@ Parser.add_argument("-Model", default="llama3:70b", type=str, help="Model to use
 Args = Parser.parse_args()
 
 Writer.Config.OLLAMA_HOST = Args.Host
-# Writer.Config.DEBUG = True
+Writer.Config.DEBUG = True
 
 
 # Measure Generation Time
