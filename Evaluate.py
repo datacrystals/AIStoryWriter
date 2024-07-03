@@ -11,53 +11,6 @@ import Writer.Config
 import Writer.PrintUtils
 
 
-def GetNumChapters(_Client, _Logger, _Story):
-    
-    _Logger.Log("Detecting Num Chapters In Story", 4)
-    Messages = [Interface.BuildSystemQuery("You are a helpful AI language model.")]
-    Messages.append(Interface.BuildUserQuery(f"""
-    I need to identify the number of chapters in the given story:
-                                            
-    <STORY>
-    {Story}
-    </STORY>
-
-    Please respond with JSON as follows:
-    {{
-        "NumChapters": <NumChapters>
-    }}
-
-    Only respond with just JSON - your output will be parsed by a computer.
-    
-    """))
-    Messages = Interface.SafeGenerateText(Logger, Messages, Args.Model)
-    JSON = Interface.GetLastMessageText(Messages)
-
-    _Logger.Log("Finished Detecting Num Chapters In Story", 4)
-
-    return json.loads(JSON)["NumChapters"]
-
-def GetChapter(_Client, _Logger, _Story, _Chapter):
-    
-    _Logger.Log(f"Extracting Chapter {_Chapter} From Story", 4)
-    Messages = [Interface.BuildSystemQuery("You are a helpful AI language model.")]
-    Messages.append(Interface.BuildUserQuery(f"""
-    Please extract chapter {_Chapter} from the following story:
-                                            
-    <STORY>
-    {_Story}
-    </STORY>
-
-    Copy the full chapter text for chapter {_Chapter}. Don't summarize or change any details, just copy the whole thing exactly as it's written.
-
-    This should be several thousand words at least.
-    
-    """))
-    Messages = Interface.SafeGenerateText(Logger, Messages, Args.Model)
-    _Logger.Log(f"Finished Extracting Chapter {_Chapter} From Story", 4)
-
-    return Interface.GetLastMessageText(Messages)
-
 
 def EvaluateOutline(_Client, _Logger, _Outline1, _Outline2):
     
@@ -100,7 +53,7 @@ Please give your response in JSON format, indicating the ratings for each story:
     
 Do not respond with anything except JSON.
     """))
-    Messages = _Client.SafeGenerateText(Logger, Messages, Args.Model)
+    Messages = _Client.SafeGenerateText(Logger, Messages, Args.Model, _Format="json")
     JSON = json.loads(_Client.GetLastMessageText(Messages))
     Report = ""
     Report += f"Winner of Plot: {JSON['Plot']}\n"
@@ -125,7 +78,7 @@ Parser.add_argument("-Story1", help="Path to JSON file for story 1")
 Parser.add_argument("-Story2", help="Path to JSON file for story 2")
 Parser.add_argument("-Output", default="", type=str, help="Optional file output path, if none is specified, we will only print the rating to terminal",)
 Parser.add_argument("-Host", default="localhost:11434", type=str, help="HTTP URL to OLLAMA instance",)
-Parser.add_argument("-Model", default="llama3:70b", type=str, help="Model to use for writing the base outline content",)
+Parser.add_argument("-Model", default="ollama://llama3:70b", type=str, help="Model to use for writing the base outline content",)
 
 Args = Parser.parse_args()
 
