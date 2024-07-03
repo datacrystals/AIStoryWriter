@@ -197,7 +197,12 @@ class Interface:
                 model=ProviderModel,
                 messages=_Messages,
                 stream=True,
-                options=dict(seed=Seed, format=_Format),
+                options=dict(
+                    seed=Seed,
+                    format=_Format,
+                    # Set temperature (creativity) to 0 for JSON mode otherwise default
+                    temperature=0 if _Format == "json" else None,
+                ),
             )
             MaxRetries = 3
             while True:
