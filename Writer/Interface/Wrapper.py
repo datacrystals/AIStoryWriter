@@ -1,14 +1,12 @@
 import Writer.Config
 import dotenv
-import ollama
 import inspect
 import os
 import time
 import random
-
-import google.generativeai as genai
-from google.generativeai.types import HarmCategory, HarmBlockThreshold
-from Writer.Interface.OpenRouter import OpenRouter
+import importlib
+import subprocess
+import sys
 
 dotenv.load_dotenv()
 
@@ -21,6 +19,18 @@ class Interface:
     ):
         self.Clients: dict = {}
         self.History = []
+        self.LoadModels(Models)
+
+    def ensure_package_is_installed(self, package_name):
+        try:
+            importlib.import_module(package_name)
+        except ImportError:
+            print(f"Package {package_name} not found. Installing...")
+            subprocess.check_call(
+                [sys.executable, "-m", "pip", "install", package_name]
+            )
+
+    def LoadModels(self, Models: list):
         OllamaModels = None
         for Model in Models:
             if Model in self.Clients:
@@ -28,13 +38,17 @@ class Interface:
             else:
                 Provider, ProviderModel = self.GetModelAndProvider(Model)
                 print(f"DEBUG: Loading Model {ProviderModel} from {Provider}")
+
                 if Provider == "ollama":
                     # Get ollama models (only once)
+                    self.ensure_package_is_installed("ollama")
+                    import ollama
 
                     # We also support `provider://model@host` format
                     if "@" in ProviderModel:
                         ProviderModel, OllamaHost = ProviderModel.split("@")
                     else:
+                        # Default to localhost
                         OllamaHost = "127.0.0.1:11434"
 
                     if OllamaModels is None:
@@ -54,7 +68,6 @@ class Interface:
                         )
                         for chunk in OllamaDownloadStream:
                             if "completed" in chunk and "total" in chunk:
-                                # {'status': 'pulling 232a79463bc4', 'digest': 'sha256:232a79463bc4bcf9a76b1691a7b7beb9c08f5c3a109fedcebff422d7a71fba71', 'total': 7598928672, 'completed': 1042274720}
                                 OllamaDownloadProgress = (
                                     chunk["completed"] / chunk["total"]
                                 )
@@ -81,6 +94,9 @@ class Interface:
                         raise Exception(
                             "GOOGLE_API_KEY not found in environment variables"
                         )
+                    self.ensure_package_is_installed("google-generativeai")
+                    import google.generativeai as genai
+
                     genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
                     self.Clients[Model] = genai.GenerativeModel(
                         model_name=ProviderModel
@@ -97,6 +113,8 @@ class Interface:
                         raise Exception(
                             "OPENROUTER_API_KEY not found in environment variables"
                         )
+                    from Writer.Interface.OpenRouter import OpenRouter
+
                     self.Clients[Model] = OpenRouter(
                         api_key=os.environ["OPENROUTER_API_KEY"], model=ProviderModel
                     )
@@ -202,6 +220,12 @@ class Interface:
                         )
 
         elif Provider == "google":
+
+            from google.generativeai.types import (
+                HarmCategory,
+                HarmBlockThreshold,
+            )
+
             # replace "content" with "parts" for google
             _Messages = [{"role": m["role"], "parts": m["content"]} for m in _Messages]
             for m in _Messages:
