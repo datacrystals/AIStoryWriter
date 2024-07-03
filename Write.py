@@ -30,12 +30,6 @@ Parser.add_argument(
     help="Optional file output path, if none is speciifed, we will autogenerate a file name based on the story title",
 )
 Parser.add_argument(
-    "-Host",
-    default=Writer.Config.OLLAMA_HOST,
-    type=str,
-    help="HTTP URL to ollama instance",
-)
-Parser.add_argument(
     "-InitialOutlineModel",
     default=Writer.Config.INITIAL_OUTLINE_WRITER_MODEL,
     type=str,
@@ -181,8 +175,6 @@ StartTime = time.time()
 
 
 # Setup Config
-Writer.Config.OLLAMA_HOST = Args.Host
-
 Writer.Config.SEED = Args.Seed
 
 Writer.Config.INITIAL_OUTLINE_WRITER_MODEL = Args.InitialOutlineModel
