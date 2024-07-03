@@ -30,10 +30,15 @@ class Interface:
                 print(f"DEBUG: Loading Model {ProviderModel} from {Provider}")
                 if Provider == "ollama":
                     # Get ollama models (only once)
+
+                    # We also support `provider://model@host` format
+                    if "@" in ProviderModel:
+                        ProviderModel, OllamaHost = ProviderModel.split("@")
+                    else:
+                        OllamaHost = "127.0.0.1:11434"
+
                     if OllamaModels is None:
-                        OllamaModelList = ollama.Client(
-                            host=Writer.Config.OLLAMA_HOST
-                        ).list()
+                        OllamaModelList = ollama.Client(host=OllamaHost).list()
                         OllamaModels = [m["name"] for m in OllamaModelList["models"]]
 
                     # check if the model is in the list of models
@@ -44,9 +49,9 @@ class Interface:
                         print(
                             f"Model {ProviderModel} not found in Ollama models. Downloading..."
                         )
-                        OllamaDownloadStream = ollama.Client(
-                            host=Writer.Config.OLLAMA_HOST
-                        ).pull(ProviderModel, stream=True)
+                        OllamaDownloadStream = ollama.Client(host=OllamaHost).pull(
+                            ProviderModel, stream=True
+                        )
                         for chunk in OllamaDownloadStream:
                             if "completed" in chunk and "total" in chunk:
                                 # {'status': 'pulling 232a79463bc4', 'digest': 'sha256:232a79463bc4bcf9a76b1691a7b7beb9c08f5c3a109fedcebff422d7a71fba71', 'total': 7598928672, 'completed': 1042274720}
@@ -64,8 +69,8 @@ class Interface:
                         print("\n\n\n")
                         OllamaModels.append(ProviderModel)
 
-                    self.Clients[Model] = ollama.Client(host=Writer.Config.OLLAMA_HOST)
-                    print(f"OLLAMA Host is '{Writer.Config.OLLAMA_HOST}'")
+                    self.Clients[Model] = ollama.Client(host=OllamaHost)
+                    print(f"OLLAMA Host is '{OllamaHost}'")
 
                 elif Provider == "google":
                     # Validate Google API Key
