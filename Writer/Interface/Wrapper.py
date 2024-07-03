@@ -191,6 +191,11 @@ class Interface:
             )
 
         if Provider == "ollama":
+
+            # remove host
+            if "@" in ProviderModel:
+                ProviderModel = ProviderModel.split("@")[0]
+
             if _Format == "json":
                 _Logger.Log("Using Ollama JSON Format", 4)
             Stream = self.Clients[_Model].chat(
@@ -351,8 +356,8 @@ class Interface:
     def GetModelAndProvider(self, _Model: str):
         # Format is `Provider://Model`
         # default to ollama if no provider is specified
-        if ":" in _Model:
-            Provider = _Model.split(":")[0]
+        if "://" in _Model:
+            Provider = _Model.split("://")[0]
             Model = _Model.split("://")[1]
             return Provider, Model
         else:
