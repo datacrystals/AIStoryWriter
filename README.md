@@ -39,6 +39,44 @@ That's it! The system will automatically download any required models and start 
 
 Not sure which models to use with your GPU? Check out our [Model Recommendations](Docs/Models.md) page for suggestions based on different GPU capabilities. We provide a quick reference table to help you choose the right models for your hardware, ensuring optimal performance and quality for your story generation projects.
 
+## 🛠️ Usage
+
+You can customize the models used for different parts of the story generation process in two ways:
+
+### 1. Using Writer/Config.py
+
+Edit the `Writer/Config.py` file to change the default models:
+
+```python
+INITIAL_OUTLINE_WRITER_MODEL = "ollama://llama3:70b"
+CHAPTER_OUTLINE_WRITER_MODEL = "ollama://gemma2:27b"
+CHAPTER_WRITER_MODEL = "google://gemini-1.5-flash"
+...
+```
+
+### 2. Using Command-Line Arguments
+
+You can override the default models by specifying them as command-line arguments:
+
+```sh
+./Write.py -Prompt Prompts/YourChosenPrompt.txt -InitialOutlineModel "ollama://llama3:70b" ...
+```
+
+Available command-line arguments are stated in the `Write.py` file.
+
+The model format is: `{ModelProvider}://{ModelName}@{ModelHost}`
+
+- Default host is `127.0.0.1:11434`
+- Default ModelProvider is `ollama`
+- Supported providers: `ollama`, `google`, `openrouter`
+
+Example:
+```sh
+./Write.py -Prompt Prompts/YourChosenPrompt.txt -InitialOutlineModel "google://gemini-1.5-pro" -ChapterOutlineModel "ollama://llama3:70b@192.168.1.100:11434"
+```
+
+This flexibility allows you to experiment with different models for various parts of the story generation process, helping you find the optimal combination for your needs.
+
 ## 🧰 Architecture Overview
 
 ![Block Diagram](Docs/BlockDiagram.drawio.svg)
