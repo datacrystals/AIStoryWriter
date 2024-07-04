@@ -66,7 +66,7 @@ Available command-line arguments are stated in the `Write.py` file.
 
 The model format is: `{ModelProvider}://{ModelName}@{ModelHost}`
 
-- Default host is `127.0.0.1:11434`
+- Default host is `127.0.0.1:11434` (currently only affects ollama)
 - Default ModelProvider is `ollama`
 - Supported providers: `ollama`, `google`, `openrouter`
 
