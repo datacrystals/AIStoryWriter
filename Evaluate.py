@@ -67,7 +67,66 @@ Do not respond with anything except JSON.
     
     _Logger.Log(f"Finished Evaluating Outlines From Story", 4)
 
-    return Report
+    return Report, JSON
+
+
+def EvaluateChapter(_Client, _Logger, _ChapterA, _ChapterB):
+    
+    _Logger.Log(f"Evaluating Outlines From Story", 4)
+    Messages = [_Client.BuildSystemQuery("You are a helpful AI language model.")]
+    Messages.append(_Client.BuildUserQuery(f"""
+Please evaluate which outlines are better from the following two outlines:
+
+Here's chapter A:
+<CHAPTER_A>
+{_ChapterA}
+</CHAPTER_A>
+
+And here is chapter B:
+<CHAPTER_B>
+{_ChapterB}
+</CHAPTER_B>
+
+Use the following criteria to evaluate (NOTE: You'll be picking chapter A or chapter B later on for these criteria):
+- Plot: Does the story have a coherent plot? Is It creative?
+- Chapters: Do the chapters flow into each-other (be very careful when checking this)? Do they feel connected? Do they feel homogenized or are they unique and fresh?
+- Style: Does the writing style help move the plot or is it distracting from the rest of the story? Is it excessively flowery?
+- Dialogue: Is the dialog specific to each character? Does it feel in-character? Is there enough or too little?
+- Tropes: Do the tropes make sense for the genre? Are they interesting and well integrated?
+- Genre: Is the genre clear?
+- Narrative Structure: Is it clear what the structure is? Does it fit with the genre/tropes/content?
+
+Please give your response in JSON format, indicating the ratings for each story:
+
+{{
+    "Plot": "<A or B>",
+    "Chapters: "<A or B>",
+    "Style": "<A or B>",
+    "Dialogue": "<A or B>",
+    "Tropes": "<A or B>",
+    "Genre": "<A or B>",
+    "Narrative": "<A or B>",
+    "OverallWinner": "<A or B>"
+}}
+    
+Do not respond with anything except JSON.
+    """))
+    Messages = _Client.SafeGenerateText(Logger, Messages, Args.Model, _Format="json")
+    JSON = json.loads(_Client.GetLastMessageText(Messages))
+    Report = ""
+    Report += f"Winner of Plot: {JSON['Plot']}\n"
+    Report += f"Winner of Chapters: {JSON['Chapters']}\n"
+    Report += f"Winner of Style: {JSON['Style']}\n"
+    Report += f"Winner of Dialogue: {JSON['Dialogue']}\n"
+    Report += f"Winner of Tropes: {JSON['Tropes']}\n"
+    Report += f"Winner of Genre: {JSON['Genre']}\n"
+    Report += f"Winner of Narrative: {JSON['Narrative']}\n"
+    Report += f"Overall Winner: {JSON['OverallWinner']}\n"
+    
+    _Logger.Log(f"Finished Evaluating Outlines From Story", 4)
+
+    return Report, JSON
+
 
 
 
@@ -116,27 +175,38 @@ Report += f"Story 1: {Args.Story1}\n"
 Report += f"Story 2: {Args.Story2}\n\n\n"
 
 ## Evaluate Outlines
-Report += f"## Outline"
-Report += EvaluateOutline(Interface, Logger, Story1["Outline"], Story2["Outline"])
+Report += f"## Outline\n"
+OutlineReport, OutlineJSON = EvaluateOutline(Interface, Logger, Story1["Outline"], Story2["Outline"])
+Report += OutlineReport
 
-Messages = [Interface.BuildSystemQuery("You are a helpful AI language model.")]
-Messages.append(Interface.BuildUserQuery(f"""
-Please rate the below story:
+
+ShortestStory = min(len(Story1["UnscrubbedChapters"]), len(Story2["UnscrubbedChapters"]))
+ChapterJSONs:list = []
+for i in range(ShortestStory):
+
+    Report += f"## Chapter {i}\n"
+    ChapterReport, ChapterJSON = EvaluateChapter(Interface, Logger, Story1["UnscrubbedChapters"][i], Story2["UnscrubbedChapters"][i])
+    Report += ChapterReport
+    
+
+# Messages = [Interface.BuildSystemQuery("You are a helpful AI language model.")]
+# Messages.append(Interface.BuildUserQuery(f"""
+# Please rate the below story:
                                           
-<STORY>
-{Story}
-</STORY>
+# <STORY>
+# {Story}
+# </STORY>
 
-Please respond in the following categories:
-- Plot: Does the story have a coherent plot? Is It creative?
-- Chapters: Do the chapters flow into each-other (be very careful when checking this)? Do they feel connected? Do they feel homogenized or are they unique and fresh?
-- Style: Does the writing style help move the plot or is it distracting from the rest of the story? Is it excessively flowery?
-- Dialogue: Is the dialog specific to each character? Does it feel in-character? Is there enough or too little?
-- Tropes: Do the tropes make sense for the genre? Are they interesting and well integrated?
-- Genre: Is the genre clear?
+# Please respond in the following categories:
+# - Plot: Does the story have a coherent plot? Is It creative?
+# - Chapters: Do the chapters flow into each-other (be very careful when checking this)? Do they feel connected? Do they feel homogenized or are they unique and fresh?
+# - Style: Does the writing style help move the plot or is it distracting from the rest of the story? Is it excessively flowery?
+# - Dialogue: Is the dialog specific to each character? Does it feel in-character? Is there enough or too little?
+# - Tropes: Do the tropes make sense for the genre? Are they interesting and well integrated?
+# - Genre: Is the genre clear?
 
-"""))
-Messages = Interface.SafeGenerateText(Logger, Messages, Args.Model)
+# """))
+# Messages = Interface.SafeGenerateText(Logger, Messages, Args.Model)
 
 
 # Calculate Eval Time
