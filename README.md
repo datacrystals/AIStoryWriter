@@ -33,7 +33,7 @@ That's it! The system will automatically download any required models and start 
 **Optional steps:**
 
 - Modify prompts in `Writer/Prompts.py` or create your own
-- Configure the model selection in `Writer/config.py`
+- Configure the model selection in `Writer/Config.py`
 
 ## 💻 Hardware Recommendations
 
