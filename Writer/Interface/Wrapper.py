@@ -382,7 +382,11 @@ class Interface:
             # this should be a valid URL
             parsed = urlparse(_Model)
             Provider = parsed.scheme
-            Model, Host = parsed.netloc.split("@")
+            if "@" in parsed.netloc:
+                Model, Host = parsed.netloc.split("@")
+            else:
+                Model = parsed.netloc
+                Host = None
             QueryParams = parse_qs(parsed.query)
 
             # Flatten QueryParams
