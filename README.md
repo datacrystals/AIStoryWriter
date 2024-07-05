@@ -64,11 +64,12 @@ You can override the default models by specifying them as command-line arguments
 
 Available command-line arguments are stated in the `Write.py` file.
 
-The model format is: `{ModelProvider}://{ModelName}@{ModelHost}`
+The model format is: `{ModelProvider}://{ModelName}@{ModelHost}?parameter=value`
 
 - Default host is `127.0.0.1:11434` (currently only affects ollama)
 - Default ModelProvider is `ollama`
 - Supported providers: `ollama`, `google`, `openrouter`
+- For `ollama` we support the passing of parameters (e.g. `temperature`) on a per model basis
 
 Example:
 ```sh
