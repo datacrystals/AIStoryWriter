@@ -151,7 +151,7 @@ Emphasize Chapter A and B as you rate the result.
 Parser = argparse.ArgumentParser()
 Parser.add_argument("-Story1", help="Path to JSON file for story 1")
 Parser.add_argument("-Story2", help="Path to JSON file for story 2")
-Parser.add_argument("-Output", default="", type=str, help="Optional file output path, if none is specified, we will only print the rating to terminal",)
+Parser.add_argument("-Output", default="Report.md", type=str, help="Optional file output path, if none is specified, we will only print the rating to terminal",)
 Parser.add_argument("-Host", default="localhost:11434", type=str, help="HTTP URL to OLLAMA instance",)
 Parser.add_argument("-Model", default="ollama://command-r-plus", type=str, help="Model to use for writing the base outline content. Note, command-r-plus really should be used here (or something bigger), 70b models are just too small as of now.",)
 
