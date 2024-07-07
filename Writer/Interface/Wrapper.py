@@ -384,6 +384,9 @@ class Interface:
             Provider = parsed.scheme
             if "@" in parsed.netloc:
                 Model, Host = parsed.netloc.split("@")
+            elif "ollama" in _Model:
+                Model = parsed.netloc
+                Host = "localhost:11434"
             else:
                 Model = parsed.netloc
                 Host = None
