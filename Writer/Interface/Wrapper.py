@@ -39,7 +39,7 @@ class Interface:
                 Provider, ProviderModel, ModelHost, ModelOptions = (
                     self.GetModelAndProvider(Model)
                 )
-                print(f"DEBUG: Loading Model {ProviderModel} from {Provider}")
+                print(f"DEBUG: Loading Model {ProviderModel} from {Provider}@{ModelHost}")
 
                 if Provider == "ollama":
                     # Get ollama models (only once)
@@ -51,7 +51,7 @@ class Interface:
                     # Check if availabel via ollama.show(Model)
                     # check if the model is in the list of models
                     try:
-                        ollama.show(ProviderModel)
+                        ollama.Client(host=OllamaHost).show(ProviderModel)
                         pass
                     except Exception as e:
                         print(
@@ -174,7 +174,7 @@ class Interface:
         AvgCharsPerToken = 5  # estimated average chars per token
         EstimatedTokens = TotalChars / AvgCharsPerToken
         _Logger.Log(
-            f"Using Model '{ProviderModel}' from '{Provider}' | (Est. ~{EstimatedTokens}tok Context Length)",
+            f"Using Model '{ProviderModel}' from '{Provider}@{ModelHost}' | (Est. ~{EstimatedTokens}tok Context Length)",
             4,
         )
 
