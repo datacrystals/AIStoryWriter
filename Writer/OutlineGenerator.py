@@ -95,10 +95,11 @@ def ReviseOutline(Interface, _Logger, _Outline, _Feedback, _History: list = []):
     return SummaryText, Messages
 
 
-def GeneratePerChapterOutline(Interface, _Logger, _Chapter, _History: list = []):
+def GeneratePerChapterOutline(Interface, _Logger, _Chapter, _Outline:str, _History: list = []):
 
     RevisionPrompt: str = Writer.Prompts.CHAPTER_OUTLINE_PROMPT.format(
-        _Chapter=_Chapter
+        _Chapter=_Chapter,
+        _Outline=_Outline
     )
     _Logger.Log("Generating Outline For Chapter " + str(_Chapter), 5)
     Messages = _History

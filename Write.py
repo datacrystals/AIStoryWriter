@@ -278,7 +278,7 @@ ChapterOutlines: list = []
 if Writer.Config.EXPAND_OUTLINE:
     for Chapter in range(1, NumChapters + 1):
         ChapterOutline, Messages = Writer.OutlineGenerator.GeneratePerChapterOutline(
-            Interface, SysLogger, Chapter, Messages
+            Interface, SysLogger, Chapter, Outline, Messages
         )
         ChapterOutlines.append(ChapterOutline)
 
@@ -290,7 +290,7 @@ for Chapter in ChapterOutlines:
 MegaOutline: str = f"""
 
 # Base Outline
-{Outline}
+{Elements}
 
 # Detailed Outline
 {DetailedOutline}
