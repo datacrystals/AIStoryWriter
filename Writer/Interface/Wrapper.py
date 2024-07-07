@@ -381,9 +381,13 @@ class Interface:
         if "://" in _Model:
             # this should be a valid URL
             parsed = urlparse(_Model)
+            print(parsed)
             Provider = parsed.scheme
             if "@" in parsed.netloc:
                 Model, Host = parsed.netloc.split("@")
+            elif "@" in parsed.path:
+                Model = parsed.netloc + parsed.path.split("@")[0]
+                Host = parsed.path.split("@")[1]
             elif "ollama" in _Model:
                 Model = parsed.netloc
                 Host = "localhost:11434"

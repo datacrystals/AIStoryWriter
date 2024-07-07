@@ -54,11 +54,12 @@ print("Extra Flags:")
 # print("2 -> ExamplePrompts/Example2/Prompt.txt")
 # print("3 -> Custom Prompt")
 # print("-------------------------------------------")
-print("Default = ''")
+print("Default = '-ExpandOutline'")
 print("")
 ExtraFlags = input("> ")
 
-
+if ExtraFlags == "":
+    ExtraFlags = "-ExpandOutline"
 
 
 
@@ -214,6 +215,9 @@ cd .. && ./Write.py \
 -RevisionModel ollama://llama3:70b@10.1.65.4:11434 \
 -EvalModel ollama://llama3:70b@10.1.65.4:11434 \
 -InfoModel ollama://llama3:70b@10.1.65.4:11434 \
+-ScrubModel ollama://llama3:70b@10.1.65.4:11434 \
+-CheckerModel ollama://llama3:70b@10.1.65.4:11434 \
+-TranslatorModel  ollama://llama3:70b@10.1.65.4:11434 \
 -NoScrubChapters \
 -Debug {ExtraFlags}
 
