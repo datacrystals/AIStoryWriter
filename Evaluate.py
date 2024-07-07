@@ -20,16 +20,16 @@ def EvaluateOutline(_Client, _Logger, _Outline1, _Outline2):
 Please evaluate which outlines are better from the following two outlines:
 
 Here's the first outline:
-<Outline1>
+<OutlineA>
 {_Outline1}
-</Outline1>
+</OutlineA>
 
 And here is the second outline:
-<Outline2>
+<OutlineB>
 {_Outline2}
-</Outline2>
+</OutlineB>
 
-Use the following criteria to evaluate (NOTE: You'll be picking outline 1 or outline 2 later on for these criteria):
+Use the following criteria to evaluate (NOTE: You'll be picking outline A or outline B later on for these criteria):
 - Plot: Does the story have a coherent plot? Is It creative?
 - Chapters: Do the chapters flow into each-other (be very careful when checking this)? Do they feel connected? Do they feel homogenized or are they unique and fresh?
 - Style: Does the writing style help move the plot or is it distracting from the rest of the story? Is it excessively flowery?
@@ -43,16 +43,22 @@ Please give your response in JSON format, indicating the ratings for each story:
 {{
     "Thoughts": "Your notes and reasoning on which of the two is better and why.",
     "Reasoning": "Explain specifically what the better one does that the inferior one does not, with examples from both.",
-    "Plot": <1 or 2>,
-    "Chapters: <1 or 2>,
-    "Style": <1 or 2>,
-    "Tropes": <1 or 2>,
-    "Genre": <1 or 2>,
-    "Narrative": <1 or 2>,
-    "OverallWinner": <1 or 2>
+    "Plot": "<A, B, or Tie>",
+    "PlotExplanation": "Explain your reasoning.",
+    "Style": "<A, B, or Tie>",
+    "StyleExplanation": "Explain your reasoning.",
+    "Chapters": "<A, B, or Tie>",
+    "ChaptersExplanation": "Explain your reasoning.",
+    "Tropes": "<A, B, or Tie>",
+    "TropesExplanation": "Explain your reasoning.",
+    "Genre": "<A, B, or Tie>",
+    "GenreExplanation": "Explain your reasoning.",
+    "Narrative": "<A, B, or Tie>",
+    "NarrativeExplanation": "Explain your reasoning.",
+    "OverallWinner": "<A, B, or Tie>"
 }}
     
-Do not respond with anything except JSON.
+Do not respond with anything except JSON. Do not include any other fields except those shown above.
     """))
     Messages = _Client.SafeGenerateText(Logger, Messages, Args.Model, _Format="json")
     JSON = json.loads(_Client.GetLastMessageText(Messages))
@@ -181,8 +187,8 @@ with open(Args.Story2, "r") as f:
 
 # Begin Report
 Report:str = "# Story Evaluation Report\n\n"
-Report += f"Story 1: {Args.Story1}\n"
-Report += f"Story 2: {Args.Story2}\n\n\n"
+Report += f"Story A: {Args.Story1}\n"
+Report += f"Story B: {Args.Story2}\n\n\n"
 
 ## Evaluate Outlines
 Report += f"## Outline\n"
@@ -198,7 +204,9 @@ for i in range(ShortestStory):
     ChapterReport, ChapterJSON = EvaluateChapter(Interface, Logger, Story1["UnscrubbedChapters"][i], Story2["UnscrubbedChapters"][i])
     Report += ChapterReport
     
-
+Report += "\n\n# Vote Totals\nTotal A Votes: " + str(Report.count(": A\n")) + "\n"
+Report += "Total B Votes: " + str(Report.count(": B\n")) + "\n"
+Report += "Total Tie Votes: " + str(Report.count(": Tie\n")) + "\n"
 
 # Calculate Eval Time
 EndTime_s = time.time()
