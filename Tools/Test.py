@@ -241,7 +241,7 @@ cd .. && ./Write.py \
 ''')
     
 elif (choice == "10"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Seed 999 \
 -Prompt ExamplePrompts/Example1/Prompt.txt \
@@ -261,7 +261,7 @@ cd .. && ./Write.py \
 ''')
     
 elif (choice == "11"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Seed 999 \
 -Prompt ExamplePrompts/Example1/Prompt.txt \
@@ -281,7 +281,7 @@ cd .. && ./Write.py \
 ''')
     
 elif (choice == "12"):
-    os.system('''
+    os.system(f'''
 cd .. && ./Write.py \
 -Seed 999 \
 -Prompt ExamplePrompts/Example1/Prompt.txt \
