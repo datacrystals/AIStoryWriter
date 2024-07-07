@@ -93,7 +93,7 @@ def LLMSummaryCheck(Interface, _Logger, _RefSummary: str, _Work: str):
             ComparisonLangchain = Interface.SafeGenerateText(
                 _Logger,
                 ComparisonLangchain,
-                Writer.Config.CHECKER_MODEL,
+                Writer.Config.REVISION_MODEL,
                 _Format="json",
             )
             _Logger.Log("Done Asking LLM TO Revise JSON", 6)

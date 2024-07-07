@@ -396,4 +396,4 @@ class Interface:
             return Provider, Model, Host, QueryParams
         else:
             # legacy support for `Model` format
-            return "ollama", _Model, Host, None
+            return "ollama", _Model, "localhost:11434", None
