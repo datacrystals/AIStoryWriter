@@ -7,6 +7,7 @@ import random
 import importlib
 import subprocess
 import sys
+from urllib.parse import parse_qs, urlparse
 
 dotenv.load_dotenv()
 
@@ -31,12 +32,13 @@ class Interface:
             )
 
     def LoadModels(self, Models: list):
-        OllamaModels = None
         for Model in Models:
             if Model in self.Clients:
                 continue
             else:
-                Provider, ProviderModel = self.GetModelAndProvider(Model)
+                Provider, ProviderModel, ModelHost, ModelOptions = (
+                    self.GetModelAndProvider(Model)
+                )
                 print(f"DEBUG: Loading Model {ProviderModel} from {Provider}")
 
                 if Provider == "ollama":
@@ -44,22 +46,14 @@ class Interface:
                     self.ensure_package_is_installed("ollama")
                     import ollama
 
-                    # We also support `provider://model@host` format
-                    if "@" in ProviderModel:
-                        ProviderModel, OllamaHost = ProviderModel.split("@")
-                    else:
-                        # Default to localhost
-                        OllamaHost = "127.0.0.1:11434"
+                    OllamaHost = ModelHost if ModelHost is not None else None
 
-                    if OllamaModels is None:
-                        OllamaModelList = ollama.Client(host=OllamaHost).list()
-                        OllamaModels = [m["name"] for m in OllamaModelList["models"]]
-
+                    # Check if availabel via ollama.show(Model)
                     # check if the model is in the list of models
-                    if (
-                        ProviderModel not in OllamaModels
-                        and not ProviderModel + ":latest" in OllamaModels
-                    ):
+                    try:
+                        ollama.show(ProviderModel)
+                        pass
+                    except Exception as e:
                         print(
                             f"Model {ProviderModel} not found in Ollama models. Downloading..."
                         )
@@ -80,7 +74,6 @@ class Interface:
                             else:
                                 print(f"{chunk['status']} {ProviderModel}", end="\r")
                         print("\n\n\n")
-                        OllamaModels.append(ProviderModel)
 
                     self.Clients[Model] = ollama.Client(host=OllamaHost)
                     print(f"OLLAMA Host is '{OllamaHost}'")
@@ -158,7 +151,9 @@ class Interface:
         _SeedOverride: int = -1,
         _Format: str = None,
     ):
-        Provider, ProviderModel = self.GetModelAndProvider(_Model)
+        Provider, ProviderModel, ModelHost, ModelOptions = self.GetModelAndProvider(
+            _Model
+        )
 
         # Calculate Seed Information
         Seed = Writer.Config.SEED if _SeedOverride == -1 else _SeedOverride
@@ -196,20 +191,47 @@ class Interface:
             if "@" in ProviderModel:
                 ProviderModel = ProviderModel.split("@")[0]
 
+            # https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values
+            ValidParameters = [
+                "mirostat",
+                "mirostat_eta",
+                "mirostat_tau",
+                "num_ctx",
+                "repeat_last_n",
+                "repeat_penalty",
+                "temperature",
+                "seed",
+                "tfs_z",
+                "num_predict",
+                "top_k",
+                "top_p",
+            ]
+            ModelOptions = ModelOptions if ModelOptions is not None else {}
+
+            # Check if the parameters are valid
+            for key in ModelOptions:
+                if key not in ValidParameters:
+                    raise ValueError(f"Invalid parameter: {key}")
+
+            _Logger.Log(f"Using Ollama Model Options: {ModelOptions}", 4)
+
             if _Format == "json":
+                # Overwrite the format to JSON
+                ModelOptions["format"] = "json"
+
+                # if temperature is not set, set it to 0 for JSON mode
+                if "temperature" not in ModelOptions:
+                    ModelOptions["temperature"] = 0
                 _Logger.Log("Using Ollama JSON Format", 4)
+
             Stream = self.Clients[_Model].chat(
                 model=ProviderModel,
                 messages=_Messages,
                 stream=True,
-                options=dict(
-                    seed=Seed,
-                    format=_Format,
-                    # Set temperature (creativity) to 0 for JSON mode otherwise default
-                    temperature=0 if _Format == "json" else None,
-                ),
+                options=ModelOptions,
             )
             MaxRetries = 3
+
             while True:
                 try:
                     _Messages.append(self.StreamResponse(Stream, Provider))
@@ -354,11 +376,24 @@ class Interface:
         return _Messages[-1]["content"]
 
     def GetModelAndProvider(self, _Model: str):
-        # Format is `Provider://Model`
+        # Format is `Provider://Model@Host?param1=value2&param2=value2`
         # default to ollama if no provider is specified
         if "://" in _Model:
-            Provider = _Model.split("://")[0]
-            Model = _Model.split("://")[1]
-            return Provider, Model
+            # this should be a valid URL
+            parsed = urlparse(_Model)
+            Provider = parsed.scheme
+            if "@" in parsed.netloc:
+                Model, Host = parsed.netloc.split("@")
+            else:
+                Model = parsed.netloc
+                Host = None
+            QueryParams = parse_qs(parsed.query)
+
+            # Flatten QueryParams
+            for key in QueryParams:
+                QueryParams[key] = float(QueryParams[key][0])
+
+            return Provider, Model, Host, QueryParams
         else:
-            return "ollama", _Model
+            # legacy support for `Model` format
+            return "ollama", _Model, Host, None
