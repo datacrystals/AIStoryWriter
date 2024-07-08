@@ -126,22 +126,22 @@ class Interface:
         _Model: str,
         _SeedOverride: int = -1,
         _Format: str = None,
-    ):
+        _MinWordCount: int = 1
+        ):
         """
         This function guarantees that the output will not be whitespace.
         """
 
-        NewMsg = self.ChatAndStreamResponse(
-            _Logger, _Messages, _Model, _SeedOverride, _Format
-        )
+        NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, _SeedOverride, _Format)
 
-        while self.GetLastMessageText(NewMsg).isspace():
+        while (self.GetLastMessageText(NewMsg).isspace()) or (len(self.GetLastMessageText(NewMsg).split(" ")) < _MinWordCount):
             _Logger.Log("Generation Failed, Reattempting Output", 7)
-            NewMsg = self.ChatAndStreamResponse(
-                _Logger, _Messages, _Model, random.randint(0, 99999), _Format
-            )
+            del _Messages[-1] # Remove failed attempt
+            NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, random.randint(0, 99999), _Format)
 
         return NewMsg
+
+
 
     def ChatAndStreamResponse(
         self,

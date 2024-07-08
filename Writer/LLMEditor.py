@@ -15,7 +15,7 @@ def GetFeedbackOnOutline(Interface, _Logger, _Outline: str):
     _Logger.Log("Prompting LLM To Critique Outline", 5)
     History.append(Interface.BuildUserQuery(StartingPrompt))
     History = Interface.SafeGenerateText(
-        _Logger, History, Writer.Config.REVISION_MODEL
+        _Logger, History, Writer.Config.REVISION_MODEL, _MinWordCount=250
     )
     _Logger.Log("Finished Getting Outline Feedback", 5)
 

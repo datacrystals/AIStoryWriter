@@ -155,6 +155,7 @@ Parser.add_argument(
 Parser.add_argument(
     "-ExpandOutline",
     action="store_true",
+    default=True,
     help="Disables the system from expanding the outline for the story chapter by chapter prior to writing the story's chapter content",
 )
 Parser.add_argument(
