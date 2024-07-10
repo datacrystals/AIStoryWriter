@@ -424,8 +424,8 @@ class Interface:
 
             elif "ollama" in _Model:
                 if "@" in parsed.path:
-                   Model = parsed.netloc + parsed.path.split("@")[0]
-                   Host = parsed.path.split("@")[1]
+                    Model = parsed.netloc + parsed.path.split("@")[0]
+                    Host = parsed.path.split("@")[1]
                 else:
                     Model = parsed.netloc
                     Host = "localhost:11434"
