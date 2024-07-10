@@ -40,7 +40,7 @@ def GenerateOutline(Interface, _Logger, _OutlinePrompt, _QualityThreshold: int =
     _Logger.Log(f"Generating Initial Outline", 4)
     Messages = [Interface.BuildUserQuery(Prompt)]
     Messages = Interface.SafeGenerateText(
-        _Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL
+        _Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL, _MinWordCount=500
     )
     Outline: str = Interface.GetLastMessageText(Messages)
     _Logger.Log(f"Done Generating Initial Outline", 4)
@@ -87,7 +87,7 @@ def ReviseOutline(Interface, _Logger, _Outline, _Feedback, _History: list = []):
     Messages = _History
     Messages.append(Interface.BuildUserQuery(RevisionPrompt))
     Messages = Interface.SafeGenerateText(
-        _Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL
+        _Logger, Messages, Writer.Config.INITIAL_OUTLINE_WRITER_MODEL, _MinWordCount=500
     )
     SummaryText: str = Interface.GetLastMessageText(Messages)
     _Logger.Log(f"Done Revising Outline", 2)
@@ -95,16 +95,17 @@ def ReviseOutline(Interface, _Logger, _Outline, _Feedback, _History: list = []):
     return SummaryText, Messages
 
 
-def GeneratePerChapterOutline(Interface, _Logger, _Chapter, _History: list = []):
+def GeneratePerChapterOutline(Interface, _Logger, _Chapter, _Outline:str, _History: list = []):
 
     RevisionPrompt: str = Writer.Prompts.CHAPTER_OUTLINE_PROMPT.format(
-        _Chapter=_Chapter
+        _Chapter=_Chapter,
+        _Outline=_Outline
     )
     _Logger.Log("Generating Outline For Chapter " + str(_Chapter), 5)
     Messages = _History
     Messages.append(Interface.BuildUserQuery(RevisionPrompt))
     Messages = Interface.SafeGenerateText(
-        _Logger, Messages, Writer.Config.CHAPTER_OUTLINE_WRITER_MODEL
+        _Logger, Messages, Writer.Config.CHAPTER_OUTLINE_WRITER_MODEL, _MinWordCount=150
     )
     SummaryText: str = Interface.GetLastMessageText(Messages)
     _Logger.Log("Done Generating Outline For Chapter " + str(_Chapter), 5)

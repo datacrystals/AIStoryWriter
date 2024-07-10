@@ -155,6 +155,7 @@ Parser.add_argument(
 Parser.add_argument(
     "-ExpandOutline",
     action="store_true",
+    default=True,
     help="Disables the system from expanding the outline for the story chapter by chapter prior to writing the story's chapter content",
 )
 Parser.add_argument(
@@ -278,7 +279,7 @@ ChapterOutlines: list = []
 if Writer.Config.EXPAND_OUTLINE:
     for Chapter in range(1, NumChapters + 1):
         ChapterOutline, Messages = Writer.OutlineGenerator.GeneratePerChapterOutline(
-            Interface, SysLogger, Chapter, Messages
+            Interface, SysLogger, Chapter, Outline, Messages
         )
         ChapterOutlines.append(ChapterOutline)
 
@@ -290,7 +291,7 @@ for Chapter in ChapterOutlines:
 MegaOutline: str = f"""
 
 # Base Outline
-{Outline}
+{Elements}
 
 # Detailed Outline
 {DetailedOutline}

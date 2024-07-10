@@ -39,7 +39,7 @@ class Interface:
                 Provider, ProviderModel, ModelHost, ModelOptions = (
                     self.GetModelAndProvider(Model)
                 )
-                print(f"DEBUG: Loading Model {ProviderModel} from {Provider}")
+                print(f"DEBUG: Loading Model {ProviderModel} from {Provider}@{ModelHost}")
 
                 if Provider == "ollama":
                     # Get ollama models (only once)
@@ -51,7 +51,7 @@ class Interface:
                     # Check if availabel via ollama.show(Model)
                     # check if the model is in the list of models
                     try:
-                        ollama.show(ProviderModel)
+                        ollama.Client(host=OllamaHost).show(ProviderModel)
                         pass
                     except Exception as e:
                         print(
@@ -126,22 +126,22 @@ class Interface:
         _Model: str,
         _SeedOverride: int = -1,
         _Format: str = None,
-    ):
+        _MinWordCount: int = 1
+        ):
         """
         This function guarantees that the output will not be whitespace.
         """
 
-        NewMsg = self.ChatAndStreamResponse(
-            _Logger, _Messages, _Model, _SeedOverride, _Format
-        )
+        NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, _SeedOverride, _Format)
 
-        while self.GetLastMessageText(NewMsg).isspace():
+        while (self.GetLastMessageText(NewMsg).isspace()) or (len(self.GetLastMessageText(NewMsg).split(" ")) < _MinWordCount):
             _Logger.Log("Generation Failed, Reattempting Output", 7)
-            NewMsg = self.ChatAndStreamResponse(
-                _Logger, _Messages, _Model, random.randint(0, 99999), _Format
-            )
+            del _Messages[-1] # Remove failed attempt
+            NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, random.randint(0, 99999), _Format)
 
         return NewMsg
+
+
 
     def ChatAndStreamResponse(
         self,
@@ -174,7 +174,7 @@ class Interface:
         AvgCharsPerToken = 5  # estimated average chars per token
         EstimatedTokens = TotalChars / AvgCharsPerToken
         _Logger.Log(
-            f"Using Model '{ProviderModel}' from '{Provider}' | (Est. ~{EstimatedTokens}tok Context Length)",
+            f"Using Model '{ProviderModel}' from '{Provider}@{ModelHost}' | (Est. ~{EstimatedTokens}tok Context Length)",
             4,
         )
 
@@ -412,12 +412,22 @@ class Interface:
         if "://" in _Model:
             # this should be a valid URL
             parsed = urlparse(_Model)
+            print(parsed)
             Provider = parsed.scheme
             if "@" in parsed.netloc:
                 Model, Host = parsed.netloc.split("@")
+
             elif Provider == "openrouter":
                 Model = f"{parsed.netloc}{parsed.path}"
                 Host = None
+
+#            elif "@" in parsed.path:
+#                Model = parsed.netloc + parsed.path.split("@")[0]
+#                Host = parsed.path.split("@")[1]
+            elif "ollama" in _Model:
+                Model = parsed.netloc
+                Host = "localhost:11434"
+
             else:
                 Model = parsed.netloc
                 Host = None
@@ -430,4 +440,4 @@ class Interface:
             return Provider, Model, Host, QueryParams
         else:
             # legacy support for `Model` format
-            return "ollama", _Model, Host, None
+            return "ollama", _Model, "localhost:11434", None

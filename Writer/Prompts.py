@@ -443,7 +443,11 @@ Don't answer these questions directly, instead make your writing implicitly answ
 """
 
 CHAPTER_OUTLINE_PROMPT = """
-Please generate an outline for chapter {_Chapter} from the previous outline.
+Please generate an outline for chapter {_Chapter} based on the provided outline.
+
+<OUTLINE>
+{_Outline}
+</OUTLINE>
 
 As you write, keep the following in mind:
     - What is the conflict?
@@ -456,6 +460,30 @@ As you write, keep the following in mind:
 Remember to follow the provided outline when creating your chapter outline.
 
 Don't answer these questions directly, instead make your outline implicitly answer them. (Show, don't tell)
+
+Please break your response into scenes, which each have the following format (please repeat the scene format for each scene in the chapter (min of 3):
+
+# Chapter {_Chapter}
+
+## Scene: [Brief Scene Title]
+
+- **Characters & Setting:**
+  - Character: [Character Name] - [Brief Description]
+  - Location: [Scene Location]
+  - Time: [When the scene takes place]
+
+- **Conflict & Tone:**
+  - Conflict: [Type & Description]
+  - Tone: [Emotional tone]
+
+- **Key Events & Dialogue:**
+  - [Briefly describe important events, actions, or dialogue]
+
+- **Literary Devices:**
+  - [Foreshadowing, symbolism, or other devices, if any]
+
+- **Resolution & Lead-in:**
+  - [How the scene ends and connects to the next one]
 
 Again, don't write the chapter itself, just create a detailed outline of the chapter.  
 
