@@ -43,18 +43,7 @@ Not sure which models to use with your GPU? Check out our [Model Recommendations
 
 You can customize the models used for different parts of the story generation process in two ways:
 
-### 1. Using Writer/Config.py
-
-Edit the `Writer/Config.py` file to change the default models:
-
-```python
-INITIAL_OUTLINE_WRITER_MODEL = "ollama://llama3:70b"
-CHAPTER_OUTLINE_WRITER_MODEL = "ollama://gemma2:27b"
-CHAPTER_WRITER_MODEL = "google://gemini-1.5-flash"
-...
-```
-
-### 2. Using Command-Line Arguments
+### 1. Using Command-Line Arguments (Recommended)
 
 You can override the default models by specifying them as command-line arguments:
 
@@ -73,10 +62,26 @@ The model format is: `{ModelProvider}://{ModelName}@{ModelHost}?parameter=value`
 
 Example:
 ```sh
-./Write.py -Prompt Prompts/YourChosenPrompt.txt -InitialOutlineModel "google://gemini-1.5-pro" -ChapterOutlineModel "ollama://llama3:70b@192.168.1.100:11434"
+./Write.py -Prompt Prompts/YourChosenPrompt.txt -InitialOutlineModel "google://gemini-1.5-pro" -ChapterOutlineModel "ollama://llama3:70b@192.168.1.100:11434" ...
 ```
 
 This flexibility allows you to experiment with different models for various parts of the story generation process, helping you find the optimal combination for your needs.
+
+
+NOTE: If you're using a provider that needs an API key, please copy `.env.example` to `.env` and paste in your API keys there.
+
+
+### 2. Using Writer/Config.py
+
+
+Edit the `Writer/Config.py` file to change the default models:
+
+```python
+INITIAL_OUTLINE_WRITER_MODEL = "ollama://llama3:70b"
+CHAPTER_OUTLINE_WRITER_MODEL = "ollama://gemma2:27b"
+CHAPTER_WRITER_MODEL = "google://gemini-1.5-flash"
+...
+```
 
 ## 🧰 Architecture Overview
 

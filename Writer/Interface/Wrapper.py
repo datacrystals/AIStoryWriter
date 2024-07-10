@@ -414,6 +414,7 @@ class Interface:
             parsed = urlparse(_Model)
             print(parsed)
             Provider = parsed.scheme
+
             if "@" in parsed.netloc:
                 Model, Host = parsed.netloc.split("@")
 
@@ -421,12 +422,13 @@ class Interface:
                 Model = f"{parsed.netloc}{parsed.path}"
                 Host = None
 
-#            elif "@" in parsed.path:
-#                Model = parsed.netloc + parsed.path.split("@")[0]
-#                Host = parsed.path.split("@")[1]
             elif "ollama" in _Model:
-                Model = parsed.netloc
-                Host = "localhost:11434"
+                if "@" in parsed.path:
+                   Model = parsed.netloc + parsed.path.split("@")[0]
+                   Host = parsed.path.split("@")[1]
+                else:
+                    Model = parsed.netloc
+                    Host = "localhost:11434"
 
             else:
                 Model = parsed.netloc
