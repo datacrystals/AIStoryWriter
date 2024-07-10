@@ -310,13 +310,13 @@ elif (choice == "13"):
 cd .. && ./Write.py \
 -Seed 999 \
 -Prompt {Prompt} \
--InitialOutlineModel ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
--ChapterOutlineModel ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
--ChapterS1Model ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
--ChapterS2Model ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
--ChapterS3Model ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
--ChapterS4Model ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
--ChapterRevisionModel ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
+-InitialOutlineModel ollama://datacrystals/datacrystals/midnight-rose70b-v2:latest@10.1.65.4:11434 \
+-ChapterOutlineModel ollama://datacrystals/datacrystals/midnight-rose70b-v2:latest@10.1.65.4:11434 \
+-ChapterS1Model ollama://datacrystals/datacrystals/midnight-rose70b-v2:latest@10.1.65.4:11434 \
+-ChapterS2Model ollama://datacrystals/datacrystals/midnight-rose70b-v2:latest@10.1.65.4:11434 \
+-ChapterS3Model ollama://datacrystals/datacrystals/midnight-rose70b-v2:latest@10.1.65.4:11434 \
+-ChapterS4Model ollama://datacrystals/datacrystals/midnight-rose70b-v2:latest@10.1.65.4:11434 \
+-ChapterRevisionModel ollama://datacrystals/datacrystals/midnight-rose70b-v2:latest@10.1.65.4:11434 \
 -RevisionModel ollama://llama3:70b@10.1.65.4:11434 \
 -EvalModel ollama://llama3:70b@10.1.65.4:11434 \
 -InfoModel ollama://llama3:70b@10.1.65.4:11434 \
