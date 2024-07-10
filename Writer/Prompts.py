@@ -461,40 +461,29 @@ Remember to follow the provided outline when creating your chapter outline.
 
 Don't answer these questions directly, instead make your outline implicitly answer them. (Show, don't tell)
 
-Please break your response into scenes, which each have the following format:
+Please break your response into scenes, which each have the following format (please repeat the scene format for each scene in the chapter (min of 3):
 
-## Scene [Scene Number]: [Brief Scene Title]
+# Chapter {_Chapter}
 
-### Characters
-1. **[Character Name]** - [Brief Character Description]
-2. **[Character Name]** - [Brief Character Description]
+## Scene: [Brief Scene Title]
 
-### Setting
-- **Location**: [Where the scene takes place]
-- **Time**: [When the scene takes place]
-- **Atmosphere**: [Description of the environment and its mood]
+- **Characters & Setting:**
+  - Character: [Character Name] - [Brief Description]
+  - Location: [Scene Location]
+  - Time: [When the scene takes place]
 
-### Tone
-[The emotional tone of the scene, such as suspenseful, joyful, melancholic, etc.]
+- **Conflict & Tone:**
+  - Conflict: [Type & Description]
+  - Tone: [Emotional tone]
 
-### Conflict
-- **Type**: [Internal, External, or Interpersonal]
-- **Description**: [What challenge or opposition the character(s) face]
+- **Key Events & Dialogue:**
+  - [Briefly describe important events, actions, or dialogue]
 
-### Plot Development
-[How the scene moves the story forward, including any important events or revelations]
+- **Literary Devices:**
+  - [Foreshadowing, symbolism, or other devices, if any]
 
-### Dialogue or Action Highlights
-[Any significant dialogue or action that occurs in the scene]
-
-### Foreshadowing or Symbolism
-[Any elements that hint at future events or hold deeper meaning]
-
-### Scene Resolution
-[How the scene ends and leads into the next one]
-
-## Scene [Next Scene Number]: [Next Scene Title]
-(Repeat the template for the next scenes)
+- **Resolution & Lead-in:**
+  - [How the scene ends and connects to the next one]
 
 Again, don't write the chapter itself, just create a detailed outline of the chapter.  
 

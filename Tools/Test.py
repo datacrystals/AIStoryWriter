@@ -14,11 +14,12 @@ print("4 -> Gemini 1.5 pro, Gemini 1.5 pro for editing")
 print("5 -> ollama://mistral:7b, ollama://mistral:7b for editing (fast debug test, produces crap output)")
 print("6 -> Developer testing script 1, uses many local models, very slow, but decent output")
 print("7 -> Developer testing script 2, miqulitz-120b, one model, llama3:70b editor")
-print("8 -> Developer testing script 3, miqu-70b-1.5, one model, llama3:70b editor")
+print("8 -> Developer testing script 3, miqu-70b-v1.5, one model, llama3:70b editor")
 print("9 -> Developer testing script 4, gemma2:27b, one model, gemma2:27b editor")
 print("10 -> Developer testing script 4, qwen2:72b, one model, qwen2:72b editor")
 print("11 -> Developer testing script 5, llama3, one model, llama3 editor")
 print("12 -> Developer testing script 6, gemma, one model, gemma editor")
+print("13 -> Developer testing script 3, rose-70b-v2, one model, llama3:70b editor")
 print("-------------------------------------------")
 
 
@@ -299,6 +300,29 @@ cd .. && ./Write.py \
 -RevisionModel ollama://gemma@10.1.65.4:11434 \
 -EvalModel ollama://gemma@10.1.65.4:11434 \
 -InfoModel ollama://gemma@10.1.65.4:11434 \
+-NoScrubChapters \
+-Debug {ExtraFlags}
+
+''')
+    
+elif (choice == "13"):
+    os.system(f'''
+cd .. && ./Write.py \
+-Seed 999 \
+-Prompt {Prompt} \
+-InitialOutlineModel ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
+-ChapterOutlineModel ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
+-ChapterS1Model ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
+-ChapterS2Model ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
+-ChapterS3Model ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
+-ChapterS4Model ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
+-ChapterRevisionModel ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
+-RevisionModel ollama://llama3:70b@10.1.65.4:11434 \
+-EvalModel ollama://llama3:70b@10.1.65.4:11434 \
+-InfoModel ollama://llama3:70b@10.1.65.4:11434 \
+-ScrubModel ollama://llama3:70b@10.1.65.4:11434 \
+-CheckerModel ollama://llama3:70b@10.1.65.4:11434 \
+-TranslatorModel  ollama://llama3:70b@10.1.65.4:11434 \
 -NoScrubChapters \
 -Debug {ExtraFlags}
 
