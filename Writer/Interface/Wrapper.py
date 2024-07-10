@@ -313,8 +313,39 @@ class Interface:
             raise NotImplementedError("OpenAI API not supported")
 
         elif Provider == "openrouter":
+
+            # https://openrouter.ai/docs/parameters
+            # Be aware that parameters depend on models and providers.
+            ValidParameters = [
+                "max_token",
+                "presence_penalty",
+                "frequency_penalty",
+                "repetition_penalty",
+                "response_format",
+                "temperature",
+                "seed",
+                "top_k",
+                "top_p",
+                "top_a",
+                "min_p",
+            ]
+            ModelOptions = ModelOptions if ModelOptions is not None else {}
+
             Client = self.Clients[_Model]
+            Client.set_params(**ModelOptions)
             Client.model = ProviderModel
+            print(ProviderModel)
+
+            if _Format == "json":
+                # Overwrite the format to JSON
+                ModelOptions["format"] = "json"
+
+                # if temperature is not set, set it to 0 for JSON mode
+                if "temperature" not in ModelOptions:
+                    Client.temperature = 0
+                    Client.response_format = "json"
+                _Logger.Log("Using OpenRouter JSON Format", 4)
+
             Response = Client.chat(messages=_Messages, seed=Seed)
             _Messages.append({"role": "assistant", "content": Response})
 
@@ -385,12 +416,18 @@ class Interface:
             Provider = parsed.scheme
             if "@" in parsed.netloc:
                 Model, Host = parsed.netloc.split("@")
-            elif "@" in parsed.path:
-                Model = parsed.netloc + parsed.path.split("@")[0]
-                Host = parsed.path.split("@")[1]
+
+            elif Provider == "openrouter":
+                Model = f"{parsed.netloc}{parsed.path}"
+                Host = None
+
+#            elif "@" in parsed.path:
+#                Model = parsed.netloc + parsed.path.split("@")[0]
+#                Host = parsed.path.split("@")[1]
             elif "ollama" in _Model:
                 Model = parsed.netloc
                 Host = "localhost:11434"
+
             else:
                 Model = parsed.netloc
                 Host = None
