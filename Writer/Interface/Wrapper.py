@@ -133,6 +133,11 @@ class Interface:
         This function guarantees that the output will not be whitespace.
         """
 
+        # Strip Empty Messages
+        for i in range(len(_Messages) - 1, 0, -1):
+            if _Messages[i]["content"] == "":
+                del _Messages[i]
+
         NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, _SeedOverride, _Format)
 
         while (self.GetLastMessageText(NewMsg).isspace()) or (len(self.GetLastMessageText(NewMsg).split(" ")) < _MinWordCount):
