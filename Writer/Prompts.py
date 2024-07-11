@@ -587,6 +587,8 @@ Ex:
     "scene 2 content...",
     "etc."
 ]
+
+Don't include any other json fields, just make it a simple list of strings.
 ###############
 
 # STYLE #
