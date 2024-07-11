@@ -3,9 +3,10 @@ import json
 import Writer.LLMEditor
 import Writer.PrintUtils
 import Writer.Config
-import Writer.ChapterGenSummaryCheck
+import Writer.Chapter.ChapterGenSummaryCheck
 import Writer.Prompts
 
+import Writer.Scene.ChapterByScene
 
 def GenerateChapter(
     Interface,
@@ -107,58 +108,67 @@ def GenerateChapter(
 
     _Logger.Log(f"Done with base langchain setup", 2)
 
-    #### STAGE 1: Create Initial Plot
+
+    # If scene generation disabled, use the normal initial plot generator
     Stage1Chapter = ""
-    IterCounter: int = 0
-    Feedback: str = ""
-    while True:
-        Prompt = Writer.Prompts.CHAPTER_GENERATION_STAGE1.format(
-            ContextHistoryInsert=ContextHistoryInsert,
-            _ChapterNum=_ChapterNum,
-            _TotalChapters=_TotalChapters,
-            ThisChapterOutline=ThisChapterOutline,
-            FormattedLastChapterSummary=FormattedLastChapterSummary,
-            Feedback=Feedback,
-            _BaseContext=_BaseContext
-        )
+    if (not Writer.Config.SCENE_GENERATION_PIPELINE):
 
-        # Generate Initial Chapter
-        _Logger.Log(
-            f"Generating Initial Chapter (Stage 1: Plot) {_ChapterNum}/{_TotalChapters} (Iteration {IterCounter})",
-            5,
-        )
-        Messages = MesssageHistory.copy()
-        Messages.append(Interface.BuildUserQuery(Prompt))
-
-        Messages = Interface.SafeGenerateText(
-            _Logger,
-            Messages,
-            Writer.Config.CHAPTER_STAGE1_WRITER_MODEL,
-            _SeedOverride=IterCounter + Writer.Config.SEED,
-            _MinWordCount=250
-        )
-        IterCounter += 1
-        Stage1Chapter: str = Interface.GetLastMessageText(Messages)
-        _Logger.Log(
-            f"Finished Initial Generation For Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}",
-            5,
-        )
-
-        # Check if LLM did the work
-        if IterCounter > Writer.Config.CHAPTER_MAX_REVISIONS:
-            _Logger.Log(
-                "Chapter Summary-Based Revision Seems Stuck - Forcefully Exiting", 7
+        #### STAGE 1: Create Initial Plot
+        IterCounter: int = 0
+        Feedback: str = ""
+        while True:
+            Prompt = Writer.Prompts.CHAPTER_GENERATION_STAGE1.format(
+                ContextHistoryInsert=ContextHistoryInsert,
+                _ChapterNum=_ChapterNum,
+                _TotalChapters=_TotalChapters,
+                ThisChapterOutline=ThisChapterOutline,
+                FormattedLastChapterSummary=FormattedLastChapterSummary,
+                Feedback=Feedback,
+                _BaseContext=_BaseContext
             )
-            break
-        Result, Feedback = Writer.ChapterGenSummaryCheck.LLMSummaryCheck(
-            Interface, _Logger, DetailedChapterOutline, Stage1Chapter
-        )
-        if Result:
+
+            # Generate Initial Chapter
             _Logger.Log(
-                f"Done Generating Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}",
+                f"Generating Initial Chapter (Stage 1: Plot) {_ChapterNum}/{_TotalChapters} (Iteration {IterCounter})",
                 5,
             )
-            break
+            Messages = MesssageHistory.copy()
+            Messages.append(Interface.BuildUserQuery(Prompt))
+
+            Messages = Interface.SafeGenerateText(
+                _Logger,
+                Messages,
+                Writer.Config.CHAPTER_STAGE1_WRITER_MODEL,
+                _SeedOverride=IterCounter + Writer.Config.SEED,
+                _MinWordCount=250
+            )
+            IterCounter += 1
+            Stage1Chapter: str = Interface.GetLastMessageText(Messages)
+            _Logger.Log(
+                f"Finished Initial Generation For Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}",
+                5,
+            )
+
+            # Check if LLM did the work
+            if IterCounter > Writer.Config.CHAPTER_MAX_REVISIONS:
+                _Logger.Log(
+                    "Chapter Summary-Based Revision Seems Stuck - Forcefully Exiting", 7
+                )
+                break
+            Result, Feedback = Writer.Chapter.ChapterGenSummaryCheck.LLMSummaryCheck(
+                Interface, _Logger, DetailedChapterOutline, Stage1Chapter
+            )
+            if Result:
+                _Logger.Log(
+                    f"Done Generating Initial Chapter (Stage 1: Plot)  {_ChapterNum}/{_TotalChapters}",
+                    5,
+                )
+                break
+    
+    else:
+
+        Stage1Chapter = Writer.Scene.ChapterByScene.ChapterByScene(Interface, _Logger, ThisChapterOutline, _Outline, _BaseContext)
+
 
     #### STAGE 2: Add Character Development
     Stage2Chapter = ""
@@ -204,7 +214,7 @@ def GenerateChapter(
                 "Chapter Summary-Based Revision Seems Stuck - Forcefully Exiting", 7
             )
             break
-        Result, Feedback = Writer.ChapterGenSummaryCheck.LLMSummaryCheck(
+        Result, Feedback = Writer.Chapter.ChapterGenSummaryCheck.LLMSummaryCheck(
             Interface, _Logger, DetailedChapterOutline, Stage2Chapter
         )
         if Result:
@@ -257,7 +267,7 @@ def GenerateChapter(
                 "Chapter Summary-Based Revision Seems Stuck - Forcefully Exiting", 7
             )
             break
-        Result, Feedback = Writer.ChapterGenSummaryCheck.LLMSummaryCheck(
+        Result, Feedback = Writer.Chapter.ChapterGenSummaryCheck.LLMSummaryCheck(
             Interface, _Logger, DetailedChapterOutline, Stage3Chapter
         )
         if Result:

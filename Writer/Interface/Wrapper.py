@@ -1,6 +1,7 @@
 import Writer.Config
 import dotenv
 import inspect
+import json
 import os
 import time
 import random
@@ -140,6 +141,29 @@ class Interface:
             NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, random.randint(0, 99999), _Format)
 
         return NewMsg
+
+
+
+    def SafeGenerateJSON(self, _Logger, _Messages, _Model:str, _SeedOverride:int = -1, _RequiredAttribs:list = []):
+
+        while True:
+            Response = self.SafeGenerateText(_Logger, _Messages, _Model, _SeedOverride, _Format = "JSON")
+            try:
+
+                # Check that it returned valid json
+                JSONResponse = json.loads(self.GetLastMessageText(Response))
+
+                # Now ensure it has the right attributes
+                for _Attrib in _RequiredAttribs:
+                    JSONResponse[_Attrib]
+
+                # Now return the json
+                return Response, JSONResponse
+
+            except Exception as e:
+                _Logger.Log(f"JSON Error during parsing: {e}", 7)
+                del _Messages[-1] # Remove failed attempt
+                Response = self.ChatAndStreamResponse(_Logger, _Messages, _Model, random.randint(0, 99999), _Format = "JSON")
 
 
 
