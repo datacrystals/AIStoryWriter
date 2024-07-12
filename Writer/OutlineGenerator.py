@@ -105,7 +105,7 @@ def GeneratePerChapterOutline(Interface, _Logger, _Chapter, _Outline:str, _Histo
     Messages = _History
     Messages.append(Interface.BuildUserQuery(RevisionPrompt))
     Messages = Interface.SafeGenerateText(
-        _Logger, Messages, Writer.Config.CHAPTER_OUTLINE_WRITER_MODEL, _MinWordCount=150
+        _Logger, Messages, Writer.Config.CHAPTER_OUTLINE_WRITER_MODEL, _MinWordCount=100
     )
     SummaryText: str = Interface.GetLastMessageText(Messages)
     _Logger.Log("Done Generating Outline For Chapter " + str(_Chapter), 5)
