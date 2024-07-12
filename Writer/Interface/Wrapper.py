@@ -144,7 +144,7 @@ class Interface:
             if self.GetLastMessageText(NewMsg).isspace():
                 _Logger.Log("SafeGenerateText: Generation Failed Due To Empty (Whitespace) Response, Reattempting Output", 7)
             elif (len(self.GetLastMessageText(NewMsg).split(" ")) < _MinWordCount):
-                _Logger.Log(f"SafeGenerateText: Generation Failed Due To Short Response ({len(self.GetLastMessageText(NewMsg).split(" "))}, min is {_MinWordCount}), Reattempting Output", 7)
+                _Logger.Log(f"SafeGenerateText: Generation Failed Due To Short Response ({len(self.GetLastMessageText(NewMsg).split(' '))}, min is {_MinWordCount}), Reattempting Output", 7)
 
             del _Messages[-1] # Remove failed attempt
             NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, random.randint(0, 99999), _Format)
