@@ -336,16 +336,6 @@ class Interface:
             Client.model = ProviderModel
             print(ProviderModel)
 
-            if _Format == "json":
-                # Overwrite the format to JSON
-                ModelOptions["format"] = "json"
-
-                # if temperature is not set, set it to 0 for JSON mode
-                if "temperature" not in ModelOptions:
-                    Client.temperature = 0
-                    Client.response_format = "json"
-                _Logger.Log("Using OpenRouter JSON Format", 4)
-
             Response = Client.chat(messages=_Messages, seed=Seed)
             _Messages.append({"role": "assistant", "content": Response})
 
