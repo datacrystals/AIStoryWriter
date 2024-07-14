@@ -21,6 +21,7 @@ print("11 -> Developer testing script 5, llama3, one model, llama3 editor")
 print("12 -> Developer testing script 6, gemma, one model, gemma editor")
 print("13 -> Developer testing script 3, rose-70b-v2, one model, llama3:70b editor")
 print("14 -> Developer testing script 3, miqu-103b-v1, one model, llama3:70b editor")
+print("15 -> Developer testing script 3, miqu-70b-v1.5, one model, command-r-plus editor")
 print("-------------------------------------------")
 
 
@@ -347,6 +348,29 @@ cd .. && ./Write.py \
 -ScrubModel ollama://llama3:70b@10.1.65.4:11434 \
 -CheckerModel ollama://llama3:70b@10.1.65.4:11434 \
 -TranslatorModel  ollama://llama3:70b@10.1.65.4:11434 \
+-NoScrubChapters \
+-Debug {ExtraFlags}
+
+''')
+    
+elif (choice == "15"):
+    os.system(f'''
+cd .. && ./Write.py \
+-Seed 999 \
+-Prompt {Prompt} \
+-InitialOutlineModel ollama://datacrystals/midnight-miqu70b-v1.5:latest@10.1.65.4:11434 \
+-ChapterOutlineModel ollama://datacrystals/midnight-miqu70b-v1.5:latest@10.1.65.4:11434 \
+-ChapterS1Model ollama://datacrystals/midnight-miqu70b-v1.5:latest@10.1.65.4:11434 \
+-ChapterS2Model ollama://datacrystals/midnight-miqu70b-v1.5:latest@10.1.65.4:11434 \
+-ChapterS3Model ollama://datacrystals/midnight-miqu70b-v1.5:latest@10.1.65.4:11434 \
+-ChapterS4Model ollama://datacrystals/midnight-miqu70b-v1.5:latest@10.1.65.4:11434 \
+-ChapterRevisionModel ollama://datacrystals/midnight-miqu70b-v1.5:latest@10.1.65.4:11434 \
+-RevisionModel ollama://command-r-plus@10.1.65.4:11434 \
+-EvalModel ollama://command-r-plus@10.1.65.4:11434 \
+-InfoModel ollama://command-r-plus@10.1.65.4:11434 \
+-ScrubModel ollama://command-r-plus@10.1.65.4:11434 \
+-CheckerModel ollama://command-r-plus@10.1.65.4:11434 \
+-TranslatorModel  ollama://command-r-plus@10.1.65.4:11434 \
 -NoScrubChapters \
 -Debug {ExtraFlags}
 
