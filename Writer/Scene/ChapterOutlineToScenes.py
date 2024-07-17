@@ -17,7 +17,7 @@ def ChapterOutlineToScenes(Interface, _Logger, _ThisChapter:str, _Outline:str, _
     MesssageHistory.append(Interface.BuildSystemQuery(Writer.Prompts.DEFAULT_SYSTEM_PROMPT))
     MesssageHistory.append(Interface.BuildUserQuery(Writer.Prompts.CHAPTER_TO_SCENES.format(_ThisChapter=_ThisChapter, _Outline=_Outline)))
 
-    Response = Interface.SafeGenerateText(_Logger, MesssageHistory, Writer.Config.CHAPTER_OUTLINE_WRITER_MODEL, _MinWordCount=200)
+    Response = Interface.SafeGenerateText(_Logger, MesssageHistory, Writer.Config.CHAPTER_OUTLINE_WRITER_MODEL, _MinWordCount=100)
     _Logger.Log(f"Finished Splitting Chapter Into Scenes", 5)
 
     return Interface.GetLastMessageText(Response)
