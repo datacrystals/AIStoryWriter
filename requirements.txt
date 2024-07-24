@@ -1,4 +1,4 @@
 ollama
 termcolor
 google.generativeai
-dotenv-python
+python-dotenv
