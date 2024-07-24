@@ -104,7 +104,7 @@ class Interface:
                         or os.environ["OPENAI_API_KEY"] == ""
                     ):
                         raise Exception(
-                            "OPENAI_API_KEY not found in environment variables"
+                            "OPENAI_API_KEY not found in environment variables. Add dummy if using local models"
                         )
                     self.ensure_package_is_installed("openai")
                     import openai
