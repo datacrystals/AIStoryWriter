@@ -19,7 +19,12 @@ print("9 -> Developer testing script 4, gemma2:27b, one model, gemma2:27b editor
 print("10 -> Developer testing script 4, qwen2:72b, one model, qwen2:72b editor")
 print("11 -> Developer testing script 5, llama3, one model, llama3 editor")
 print("12 -> Developer testing script 6, gemma, one model, gemma editor")
-print("13 -> Developer testing script 3, rose-70b-v2, one model, llama3:70b editor")
+print("13 -> Developer testing script 7, rose-70b-v2, one model, llama3:70b editor")
+print("14 -> Developer testing script 8, miqu-103b-v1, one model, llama3:70b editor")
+print("15 -> Developer testing script 9, miqu-70b-v1.5, one model, command-r-plus editor")
+print("16 -> Developer testing script 10, mistral-nemo, one model, mistral-nemo editor")
+print("17 -> Developer testing script 11, mistral-large, one model, mistral-large editor")
+print("18 -> Developer testing script 10, mistral-large, one model, llama3.1:70b editor")
 print("-------------------------------------------")
 
 
@@ -310,19 +315,135 @@ elif (choice == "13"):
 cd .. && ./Write.py \
 -Seed 999 \
 -Prompt {Prompt} \
--InitialOutlineModel ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
--ChapterOutlineModel ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
--ChapterS1Model ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
--ChapterS2Model ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
--ChapterS3Model ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
--ChapterS4Model ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
--ChapterRevisionModel ollama://datacrystals/datacrystals/midnight-rose70b-v2 :latest@10.1.65.4:11434 \
+-InitialOutlineModel ollama://datacrystals/midnight-rose70b-v2:latest@10.1.65.4:11434 \
+-ChapterOutlineModel ollama://datacrystals/midnight-rose70b-v2:latest@10.1.65.4:11434 \
+-ChapterS1Model ollama://datacrystals/midnight-rose70b-v2:latest@10.1.65.4:11434 \
+-ChapterS2Model ollama://datacrystals/midnight-rose70b-v2:latest@10.1.65.4:11434 \
+-ChapterS3Model ollama://datacrystals/midnight-rose70b-v2:latest@10.1.65.4:11434 \
+-ChapterS4Model ollama://datacrystals/midnight-rose70b-v2:latest@10.1.65.4:11434 \
+-ChapterRevisionModel ollama://datacrystals/midnight-rose70b-v2:latest@10.1.65.4:11434 \
 -RevisionModel ollama://llama3:70b@10.1.65.4:11434 \
 -EvalModel ollama://llama3:70b@10.1.65.4:11434 \
 -InfoModel ollama://llama3:70b@10.1.65.4:11434 \
 -ScrubModel ollama://llama3:70b@10.1.65.4:11434 \
 -CheckerModel ollama://llama3:70b@10.1.65.4:11434 \
 -TranslatorModel  ollama://llama3:70b@10.1.65.4:11434 \
+-NoScrubChapters \
+-Debug {ExtraFlags}
+
+''')
+    
+elif (choice == "14"):
+    os.system(f'''
+cd .. && ./Write.py \
+-Seed 999 \
+-Prompt {Prompt} \
+-InitialOutlineModel ollama://datacrystals/midnight-miqu103b-v1:latest@10.1.65.4:11434 \
+-ChapterOutlineModel ollama://datacrystals/midnight-miqu103b-v1:latest@10.1.65.4:11434 \
+-ChapterS1Model ollama://datacrystals/midnight-miqu103b-v1:latest@10.1.65.4:11434 \
+-ChapterS2Model ollama://datacrystals/midnight-miqu103b-v1:latest@10.1.65.4:11434 \
+-ChapterS3Model ollama://datacrystals/midnight-miqu103b-v1:latest@10.1.65.4:11434 \
+-ChapterS4Model ollama://datacrystals/midnight-miqu103b-v1:latest@10.1.65.4:11434 \
+-ChapterRevisionModel ollama://datacrystals/midnight-miqu103b-v1:latest@10.1.65.4:11434 \
+-RevisionModel ollama://llama3:70b@10.1.65.4:11434 \
+-EvalModel ollama://llama3:70b@10.1.65.4:11434 \
+-InfoModel ollama://llama3:70b@10.1.65.4:11434 \
+-ScrubModel ollama://llama3:70b@10.1.65.4:11434 \
+-CheckerModel ollama://llama3:70b@10.1.65.4:11434 \
+-TranslatorModel  ollama://llama3:70b@10.1.65.4:11434 \
+-NoScrubChapters \
+-Debug {ExtraFlags}
+
+''')
+    
+elif (choice == "15"):
+    os.system(f'''
+cd .. && ./Write.py \
+-Seed 999 \
+-Prompt {Prompt} \
+-InitialOutlineModel ollama://datacrystals/midnight-miqu70b-v1.5:latest@10.1.65.4:11434 \
+-ChapterOutlineModel ollama://datacrystals/midnight-miqu70b-v1.5:latest@10.1.65.4:11434 \
+-ChapterS1Model ollama://datacrystals/midnight-miqu70b-v1.5:latest@10.1.65.4:11434 \
+-ChapterS2Model ollama://datacrystals/midnight-miqu70b-v1.5:latest@10.1.65.4:11434 \
+-ChapterS3Model ollama://datacrystals/midnight-miqu70b-v1.5:latest@10.1.65.4:11434 \
+-ChapterS4Model ollama://datacrystals/midnight-miqu70b-v1.5:latest@10.1.65.4:11434 \
+-ChapterRevisionModel ollama://datacrystals/midnight-miqu70b-v1.5:latest@10.1.65.4:11434 \
+-RevisionModel ollama://command-r-plus@10.1.65.4:11434 \
+-EvalModel ollama://command-r-plus@10.1.65.4:11434 \
+-InfoModel ollama://command-r-plus@10.1.65.4:11434 \
+-ScrubModel ollama://command-r-plus@10.1.65.4:11434 \
+-CheckerModel ollama://command-r-plus@10.1.65.4:11434 \
+-TranslatorModel  ollama://command-r-plus@10.1.65.4:11434 \
+-NoScrubChapters \
+-Debug {ExtraFlags}
+
+''')
+
+elif (choice == "16"):
+    os.system(f'''
+cd .. && ./Write.py \
+-Seed 999 \
+-Prompt {Prompt} \
+-InitialOutlineModel ollama://mistral-nemo:latest@10.1.65.4:11434 \
+-ChapterOutlineModel ollama://mistral-nemo:latest@10.1.65.4:11434 \
+-ChapterS1Model ollama://mistral-nemo:latest@10.1.65.4:11434 \
+-ChapterS2Model ollama://mistral-nemo:latest@10.1.65.4:11434 \
+-ChapterS3Model ollama://mistral-nemo:latest@10.1.65.4:11434 \
+-ChapterS4Model ollama://mistral-nemo:latest@10.1.65.4:11434 \
+-ChapterRevisionModel ollama://mistral-nemo:latest@10.1.65.4:11434 \
+-RevisionModel ollama://mistral-nemo@10.1.65.4:11434 \
+-EvalModel ollama://mistral-nemo@10.1.65.4:11434 \
+-InfoModel ollama://mistral-nemo@10.1.65.4:11434 \
+-ScrubModel ollama://mistral-nemo@10.1.65.4:11434 \
+-CheckerModel ollama://mistral-nemo@10.1.65.4:11434 \
+-TranslatorModel  ollama://mistral-nemo@10.1.65.4:11434 \
+-NoScrubChapters \
+-Debug {ExtraFlags}
+
+''')
+
+elif (choice == "17"):
+    os.system(f'''
+cd .. && ./Write.py \
+-Seed 999 \
+-Prompt {Prompt} \
+-InitialOutlineModel ollama://mistral-large:latest@10.1.65.4:11434 \
+-ChapterOutlineModel ollama://mistral-large:latest@10.1.65.4:11434 \
+-ChapterS1Model ollama://mistral-large:latest@10.1.65.4:11434 \
+-ChapterS2Model ollama://mistral-large:latest@10.1.65.4:11434 \
+-ChapterS3Model ollama://mistral-large:latest@10.1.65.4:11434 \
+-ChapterS4Model ollama://mistral-large:latest@10.1.65.4:11434 \
+-ChapterRevisionModel ollama://mistral-large:latest@10.1.65.4:11434 \
+-RevisionModel ollama://mistral-large@10.1.65.4:11434 \
+-EvalModel ollama://mistral-large@10.1.65.4:11434 \
+-InfoModel ollama://mistral-large@10.1.65.4:11434 \
+-ScrubModel ollama://mistral-large@10.1.65.4:11434 \
+-CheckerModel ollama://mistral-large@10.1.65.4:11434 \
+-TranslatorModel  ollama://mistral-large@10.1.65.4:11434 \
+-NoScrubChapters \
+-Debug {ExtraFlags}
+
+''')
+
+
+elif (choice == "18"):
+    os.system(f'''
+cd .. && ./Write.py \
+-Seed 999 \
+-Prompt {Prompt} \
+-InitialOutlineModel ollama://mistral-large:latest@10.1.65.4:11434 \
+-ChapterOutlineModel ollama://mistral-large:latest@10.1.65.4:11434 \
+-ChapterS1Model ollama://mistral-large:latest@10.1.65.4:11434 \
+-ChapterS2Model ollama://mistral-large:latest@10.1.65.4:11434 \
+-ChapterS3Model ollama://mistral-large:latest@10.1.65.4:11434 \
+-ChapterS4Model ollama://mistral-large:latest@10.1.65.4:11434 \
+-ChapterRevisionModel ollama://mistral-large:latest@10.1.65.4:11434 \
+-RevisionModel ollama://llama3.1:70b@10.1.65.4:11434 \
+-EvalModel ollama://llama3.1:70b@10.1.65.4:11434 \
+-InfoModel ollama://llama3.1:70b@10.1.65.4:11434 \
+-ScrubModel ollama://llama3.1:70b@10.1.65.4:11434 \
+-CheckerModel ollama://llama3.1:70b@10.1.65.4:11434 \
+-TranslatorModel  ollama://llama3.1:70b@10.1.65.4:11434 \
 -NoScrubChapters \
 -Debug {ExtraFlags}
 
