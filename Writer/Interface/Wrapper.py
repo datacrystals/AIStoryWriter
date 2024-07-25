@@ -1,6 +1,7 @@
 import Writer.Config
 import dotenv
 import inspect
+import json
 import os
 import time
 import random
@@ -132,14 +133,46 @@ class Interface:
         This function guarantees that the output will not be whitespace.
         """
 
+        # Strip Empty Messages
+        for i in range(len(_Messages) - 1, 0, -1):
+            if _Messages[i]["content"] == "":
+                del _Messages[i]
+
         NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, _SeedOverride, _Format)
 
         while (self.GetLastMessageText(NewMsg).isspace()) or (len(self.GetLastMessageText(NewMsg).split(" ")) < _MinWordCount):
-            _Logger.Log("Generation Failed, Reattempting Output", 7)
+            if self.GetLastMessageText(NewMsg).isspace():
+                _Logger.Log("SafeGenerateText: Generation Failed Due To Empty (Whitespace) Response, Reattempting Output", 7)
+            elif (len(self.GetLastMessageText(NewMsg).split(" ")) < _MinWordCount):
+                _Logger.Log(f"SafeGenerateText: Generation Failed Due To Short Response ({len(self.GetLastMessageText(NewMsg).split(' '))}, min is {_MinWordCount}), Reattempting Output", 7)
+
             del _Messages[-1] # Remove failed attempt
             NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, random.randint(0, 99999), _Format)
 
         return NewMsg
+
+
+
+    def SafeGenerateJSON(self, _Logger, _Messages, _Model:str, _SeedOverride:int = -1, _RequiredAttribs:list = []):
+
+        while True:
+            Response = self.SafeGenerateText(_Logger, _Messages, _Model, _SeedOverride, _Format = "JSON")
+            try:
+
+                # Check that it returned valid json
+                JSONResponse = json.loads(self.GetLastMessageText(Response))
+
+                # Now ensure it has the right attributes
+                for _Attrib in _RequiredAttribs:
+                    JSONResponse[_Attrib]
+
+                # Now return the json
+                return Response, JSONResponse
+
+            except Exception as e:
+                _Logger.Log(f"JSON Error during parsing: {e}", 7)
+                del _Messages[-1] # Remove failed attempt
+                Response = self.ChatAndStreamResponse(_Logger, _Messages, _Model, random.randint(0, 99999), _Format = "JSON")
 
 
 
@@ -414,8 +447,8 @@ class Interface:
 
             elif "ollama" in _Model:
                 if "@" in parsed.path:
-                   Model = parsed.netloc + parsed.path.split("@")[0]
-                   Host = parsed.path.split("@")[1]
+                    Model = parsed.netloc + parsed.path.split("@")[0]
+                    Host = parsed.path.split("@")[1]
                 else:
                     Model = parsed.netloc
                     Host = "localhost:11434"

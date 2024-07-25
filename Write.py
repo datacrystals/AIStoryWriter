@@ -10,11 +10,11 @@ import Writer.Config
 
 import Writer.Interface.Wrapper
 import Writer.PrintUtils
-import Writer.ChapterDetector
+import Writer.Chapter.ChapterDetector
 import Writer.Scrubber
 import Writer.Statistics
 import Writer.OutlineGenerator
-import Writer.ChapterGenerator
+import Writer.Chapter.ChapterGenerator
 import Writer.StoryInfo
 import Writer.NovelEditor
 import Writer.Translator
@@ -168,6 +168,12 @@ Parser.add_argument(
     action="store_true",
     help="Print system prompts to stdout during generation",
 )
+Parser.add_argument(
+    "-SceneGenerationPipeline",
+    action="store_true",
+    default=True,
+    help="Use the new scene-by-scene generation pipeline as an initial starting point for chapter writing",
+)
 Args = Parser.parse_args()
 
 
@@ -207,6 +213,7 @@ Writer.Config.EXPAND_OUTLINE = Args.ExpandOutline
 Writer.Config.ENABLE_FINAL_EDIT_PASS = Args.EnableFinalEditPass
 
 Writer.Config.OPTIONAL_OUTPUT_NAME = Args.Output
+Writer.Config.SCENE_GENERATION_PIPELINE = Args.SceneGenerationPipeline
 Writer.Config.DEBUG = Args.Debug
 
 # Get a list of all used providers
@@ -259,7 +266,7 @@ BasePrompt = Prompt
 # Detect the number of chapters
 SysLogger.Log("Detecting Chapters", 5)
 Messages = [Interface.BuildUserQuery(Outline)]
-NumChapters: int = Writer.ChapterDetector.LLMCountChapters(
+NumChapters: int = Writer.Chapter.ChapterDetector.LLMCountChapters(
     Interface, SysLogger, Interface.GetLastMessageText(Messages)
 )
 SysLogger.Log(f"Found {NumChapters} Chapter(s)", 5)
@@ -309,7 +316,7 @@ SysLogger.Log("Starting Chapter Writing", 5)
 Chapters = []
 for i in range(1, NumChapters + 1):
 
-    Chapter = Writer.ChapterGenerator.GenerateChapter(
+    Chapter = Writer.Chapter.ChapterGenerator.GenerateChapter(
         Interface,
         SysLogger,
         i,
