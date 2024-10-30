@@ -135,13 +135,13 @@ class Interface:
 
         # Strip Empty Messages
         for i in range(len(_Messages) - 1, 0, -1):
-            if _Messages[i]["content"] == "":
+            if _Messages[i]["content"].strip() == "":
                 del _Messages[i]
 
         NewMsg = self.ChatAndStreamResponse(_Logger, _Messages, _Model, _SeedOverride, _Format)
 
-        while (self.GetLastMessageText(NewMsg).isspace()) or (len(self.GetLastMessageText(NewMsg).split(" ")) < _MinWordCount):
-            if self.GetLastMessageText(NewMsg).isspace():
+        while (self.GetLastMessageText(NewMsg).strip() == "") or (len(self.GetLastMessageText(NewMsg).split(" ")) < _MinWordCount):
+            if self.GetLastMessageText(NewMsg).strip() == "":
                 _Logger.Log("SafeGenerateText: Generation Failed Due To Empty (Whitespace) Response, Reattempting Output", 7)
             elif (len(self.GetLastMessageText(NewMsg).split(" ")) < _MinWordCount):
                 _Logger.Log(f"SafeGenerateText: Generation Failed Due To Short Response ({len(self.GetLastMessageText(NewMsg).split(' '))}, min is {_MinWordCount}), Reattempting Output", 7)
@@ -385,7 +385,7 @@ class Interface:
             4,
         )
         # Check if the response is empty and attempt regeneration if necessary
-        if _Messages[-1]["content"].isspace():
+        if _Messages[-1]["content"].strip() == "":
             _Logger.Log("Model Returned Only Whitespace, Attempting Regeneration", 6)
             _Messages.append(
                 self.BuildUserQuery(
