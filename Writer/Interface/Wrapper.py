@@ -246,6 +246,10 @@ class Interface:
                 if key not in ValidParameters:
                     raise ValueError(f"Invalid parameter: {key}")
 
+            # Set the default num_ctx if not set by args
+            if "num_ctx" not in ModelOptions:
+                ModelOptions["num_ctx"] = Writer.Config.OLLAMA_CTX
+
             _Logger.Log(f"Using Ollama Model Options: {ModelOptions}", 4)
 
             if _Format == "json":

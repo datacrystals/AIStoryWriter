@@ -18,6 +18,8 @@ SCRUB_MODEL = "ollama://llama3:70b"  # Note this value is overridden by the argp
 CHECKER_MODEL = "ollama://llama3:70b"  # Model used to check results
 TRANSLATOR_MODEL = "ollama://llama3:70b"
 
+OLLAMA_CTX = 8192
+
 OLLAMA_HOST = "127.0.0.1:11434"
 
 SEED = 12  # Note this value is overridden by the argparser
