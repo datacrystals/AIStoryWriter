@@ -22,7 +22,7 @@ class Logger:
         # Setup Log Path
         self.LogDirPrefix = LogDirPath
         self.LogPath = LogDirPath + "/Main.log"
-        self.File = open(self.LogPath, "a")
+        self.File = open(self.LogPath, "a", encoding='utf-8')
         self.LangchainID = 0
 
         self.LogItems = []
