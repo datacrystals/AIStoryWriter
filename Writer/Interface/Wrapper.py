@@ -266,6 +266,13 @@ class Interface:
             ]
             ModelOptions = ModelOptions if ModelOptions is not None else {}
 
+            # Extract chat-level kwargs (separate from Ollama model options).
+            # `think` is a chat API parameter, not a model option, so it must
+            # not appear in the `options=` dict or the ValidParameters check.
+            ChatExtras = {}
+            if "think" in ModelOptions:
+                ChatExtras["think"] = bool(ModelOptions.pop("think"))
+
             # Check if the parameters are valid
             for key in ModelOptions:
                 if key not in ValidParameters:
@@ -276,6 +283,8 @@ class Interface:
                 ModelOptions["num_ctx"] = Writer.Config.OLLAMA_CTX
 
             _Logger.Log(f"Using Ollama Model Options: {ModelOptions}", 4)
+            if ChatExtras:
+                _Logger.Log(f"Using Ollama Chat Extras: {ChatExtras}", 4)
 
             if _Format == "json":
                 # Overwrite the format to JSON
@@ -291,6 +300,7 @@ class Interface:
                 messages=_Messages,
                 stream=True,
                 options=ModelOptions,
+                **ChatExtras,
             )
             MaxRetries = 3
 
@@ -505,9 +515,20 @@ class Interface:
             Model = unquote(Model)
             QueryParams = parse_qs(parsed.query)
 
-            # Flatten QueryParams
+            # Coerce query params: bool -> float -> raw string.
+            # Strictly more permissive than the previous float-only cast;
+            # any URL that worked before still works.
             for key in QueryParams:
-                QueryParams[key] = float(QueryParams[key][0])
+                raw = QueryParams[key][0]
+                if raw.lower() == 'true':
+                    QueryParams[key] = True
+                elif raw.lower() == 'false':
+                    QueryParams[key] = False
+                else:
+                    try:
+                        QueryParams[key] = float(raw)
+                    except ValueError:
+                        QueryParams[key] = raw
 
             return Provider, Model, Host, QueryParams
         else:
