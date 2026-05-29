@@ -496,7 +496,7 @@ class Interface:
                     Model = parsed.netloc + parsed.path.split("@")[0]
                     Host = parsed.path.split("@")[1]
                 else:
-                    Model = parsed.netloc
+                    Model = parsed.netloc + parsed.path
                     Host = "localhost:11434"
 
             else:
